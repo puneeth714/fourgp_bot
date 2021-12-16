@@ -1,0 +1,52 @@
+Trend down to up:                                                                               down to up      
+        * previous candle red, present candle is green or step one more back - candle                   --->  0.2           0.1 and 0.1
+        * RSI can be below 30 or between 38 and 30                           - RSI                 --->  0.2           0.2 or 0.1
+        * Macd hist previous is less than present and previous one are negative - Macd                --->  0.1           0.05 and 0.05
+        * aroon green indicator present greater than previous                    -Aroon               --->  0.05          
+        * aroon red indicator   present less   than previous                     -Aroon               --->  0.05
+        * ema_short is greater than ema_long                                     -Ema               --->  0.2
+        -> Informative signal :
+            * previous candle have touched the resistance level or touched the ema200 level -rs    --->  0.1           0.1 or 0.05
+            * present value is less than ema200 or ema100                                   -rs ema     --->  0.1           0.1 or 0.05
+
+Trending Up:
+        * previous candle is green and present candle is green                                  --->  0.1
+        * RSI is between 40 and 70                                                              --->  0.1
+        * Macd hist previous is lesser than present and previous one are positive               --->  0.1
+        * present candle is green(bullish)(optional)                                            --->  0.05
+        * previous candle is green(bullish)(optional)                                           --->  0.05
+        * ema_short is lesser than ema_long                                                     --->  0.15
+        -> Informative signal :
+            * previous candles touched resistance level not support level                       --->  0.05
+            * present value is greater than ema200 or ema100         take one                   --->  0.05
+
+Trend Up to down:
+        * previous candle is green and present candle is red                                    --->  0.0
+        * RSI is above 70  or above 67                                                          --->  0.0
+        * Macd hist previous is greater than present and previous one are positive              --->  0.0
+        * present candle is red(bearish)(optional)                                              --->  0.0
+        * previous candle is green(bullish)(optional)                                           --->  0.0
+        * ema_short is lesser than ema_long                                                     --->  0.0
+        -> Informative signal :
+            * previous candle touched support level not resistance level                        --->  0.0
+            * present value is less than ema200 or ema100           take one                    --->  0.0
+
+Trending down:
+        * previous candle is red and present candle is red                                      --->  0.05
+        * RSI is below 70 or below 40                                                           --->  0.05
+        * Macd hist previous is greater than present and previous one are negative              --->  0.05
+        * present candle is red(bearish)(optional)                                              --->  0.05
+        * previous candle is red(bearish)(optional)                                             --->  0.05
+        * ema_short is lesser than ema_long                                                     --->  0.05
+        -> Informative signal :
+            * previous candles touched resistance level not support level                       --->  0.02
+            * present value is less than ema200 or ema100         take one                      --->  0.03
+
+
+
+
+
+Database        :
+        Tables  : * klines
+                  * indicators
+                  * signals
