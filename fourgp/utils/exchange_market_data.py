@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 # exchange_data class is used to get data from exchange after 
 # connecting to a specific exchange given the exchange name from config file config.json 
 class exchange_data:
-    def __init__(self, config=None,exchange:str=None, coin:str=None,timeframes:list=None,limit:int=None,depth:int=None) -> None:
+    def __init__(self, config=None,exchange:str=None, coin:str=None,timeframes:list=None,limit:list=None,depth:int=None) -> None:
         """exchage_data class constructor
 
         Args:
@@ -21,7 +21,7 @@ class exchange_data:
         self.limit = limit
         self.config_to_variables()
         self.__connect_exchange__()
-        self.data = self.get_data_klines()
+        self.data
         self.config = config
         self.depth = depth
         # self.taker=self.__get_fee__('taker')
