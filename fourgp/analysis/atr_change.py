@@ -1,7 +1,6 @@
 import ccxt
+import re
 import pandas_ta as ta
-import rich
-from rich import pretty
 from tabulate import tabulate
 from fourgp.utils.make_data import MakeData
 
@@ -20,12 +19,15 @@ class AtrChange(MakeData):
         base_coin = self.config['use_this_base_currency']
         self.connection = self.config["Exchange"]
         return market_pair, timeframe, check_back, base_coin
-
+    def check_coin(self,pair):
+        return any(re.search(base_coin+"$",pair) for base_coin in self.base_coin)
     def find_atr(self):
         if self.market_pair == "all":
             self.market_pair = self.get_coins(self.base_coin)
         atr_values = {}
         for market in self.market_pair:
+            if not self.check_coin(market):
+                continue
             self.data = {}
             for time in self.timeframe:
                 for distance in self.check_back:
@@ -52,11 +54,13 @@ class AtrChange(MakeData):
         # The form [amount, change,fee_value, value_gets, percent_change]
         # using tabulate module with table format as pretty and html
         for market in self.atr_values:
-                print(market)
-                print("\n")
-                print(tabulate(self.atr_values[market].values(), headers=["Amount", "Change",
-                                                                        "Fee", "Value", "Percent Change"], tablefmt="pretty"))
-                print("\n")
+            print(market)
+            print("\n")
+            values=self.atr_values[market].items()
+            value_list = [[value[0]]+value[1] for value in values]
+            print(tabulate(value_list, headers=["Timeframe_limit","Amount", "Change",
+                                                                    "Fee", "Value", "Percent Change"], tablefmt="pretty"))
+            print("\n")
     def sort_values(self):
         # sort the values in the dictionary self.atr_values containing a dictionary which has values of 
         # The form [amount, change,fee_value, value_gets, percent_change]
