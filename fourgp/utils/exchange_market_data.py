@@ -21,7 +21,7 @@ class exchange_data:
         self.limit = limit
         self.config_to_variables()
         self.__connect_exchange__()
-        self.data
+        self.data=None
         self.config = config
         self.depth = depth
         # self.taker=self.__get_fee__('taker')

@@ -1,4 +1,4 @@
-from lib2to3.pgen2.token import AT
+#! /usr/bin/env python3
 import time
 from fourgp.technicals.indicators import Indicators
 from fourgp.utils.config import Config
@@ -21,18 +21,16 @@ def main(market_pair: str):
     config = Config(config_file)
     config = config.config
 
-    # # Load exchange market data in pandas format
-    # data = exchange_data(config=config, coin=market_pair, depth=5000)
-    # depth = data.get_market_depth()
-    # data.self.get_data_klines()
-    # ccxt_object = data.exchange
-    # data = data.data
-
-    # # time start
-    # start_time = time.time()
-    # # Make data
-    # make_data = MakeData(data, config)
-    # print(make_data.list_to_pandas()["1m"].tail(10))
+    # Load exchange market data in pandas format
+    data_obj = exchange_data(config=config, coin=market_pair, depth=5000)
+    depth = data_obj.get_market_depth()
+    data=data_obj.get_data_klines()
+    ccxt_obj=data_obj.exchange
+    # time start
+    start_time = time.time()
+    # Make data
+    make_data = MakeData(data, config)
+    print(make_data.list_to_pandas()["1m"].tail(10))
 
     # # update data if needed and rewrite existing data
     # time.sleep(60)
@@ -48,30 +46,30 @@ def main(market_pair: str):
     #     make_data.list_to_pandas(), config["Exchange"], "ETHUSDT")
     # print(data2)
 
-    # # Make indicators
-    # indicators = Indicators(config, make_data.list_to_pandas())
-    # indicators.make_indicator()
-    # # indicators.add_indicators_to_dataframe()
-    # #  Make support and resistance
-    # # convert unix time to datetime
-    # df = make_data.data
-    # print(df["5m"].tail(10))
-    # # print(df["1m"].head(200))
-    # df = make_data.time_convert()
-    # print(df["5m"].tail(10))
+    # Make indicators
+    indicators = Indicators(config, make_data.list_to_pandas())
+    indicators.make_indicator()
+    # indicators.add_indicators_to_dataframe()
+    #  Make support and resistance
+    # convert unix time to datetime
+    df = make_data.data
+    print(df["5m"].tail(10))
+    # print(df["1m"].head(200))
+    df = make_data.time_convert()
+    print(df["5m"].tail(10))
 
     #     #write dataframe to csv samples.txt
     # df["1m"].to_csv("samples.txt")
 
-    # # Get support and resistance
-    # sr = support_resistance.main_sr_dict(
-    #     df, "zig_zag", config=config["support_resistance"]["create_type"])
-    # # print(sr)
-
-    # # clean data
-    # sr = support_resistance.clean_levels(sr)
-    # print("\n\n\n")
+    # Get support and resistance
+    sr = support_resistance.main_sr_dict(
+        df, "zig_zag", config=config["support_resistance"]["create_type"])
     # print(sr)
+
+    # clean data
+    sr = support_resistance.clean_levels(sr)
+    print("\n\n\n")
+    print(sr)
 
     # # candlestick pattern
     # candle = CandlePatterns(make_data.list_to_pandas(), ["all",
@@ -97,18 +95,18 @@ def main(market_pair: str):
     # zz=indicators.zig_zag_levels()
     # print(zz["5m"])
 
-    # # Trend calculate
-    # indicator = indicators.indicators
-    # trends = Trend(df, indicator, sr, config)
-    # print(trends.trend_make())
-    # # time end
-    # end_time = time.time()
-    # print("\n\n\n")
-    # print("--- %s seconds ---" % (end_time - start_time))
-    # print("--- %s whole seconds ---" % (end_time - start_time0))
-    files=AtrChange(config)
-    files.connect()
-    files.find_atr()
-    # files.sort_values()
-    files.create_report()
+    # Trend calculate
+    indicator = indicators.indicators
+    trends = Trend(df, indicator, sr, config)
+    print(trends.trend_make())
+    # time end
+    end_time = time.time()
+    print("\n\n\n")
+    print("--- %s seconds ---" % (end_time - start_time))
+    print("--- %s whole seconds ---" % (end_time - start_time0))
+    # files=AtrChange(config)
+    # files.connect()
+    # files.find_atr()
+    # # files.sort_values()
+    # files.create_report()
 main("ETHUSDT")

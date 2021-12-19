@@ -3,5 +3,6 @@
         "BTCUSDT",
         "ETHUSDT",
         "timeframe"
-    ]
+    ],
+    "todo-tree.tree.showBadges": false
 }
