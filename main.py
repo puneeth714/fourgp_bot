@@ -10,6 +10,7 @@ from fourgp.technicals.candlesticks.candle_patterns import CandlePatterns
 from fourgp.technicals.market_data import marketTrades
 from fourgp.analysis.trend import Trend
 from fourgp.analysis.atr_change import AtrChange
+from fourgp.utils.utilities import dict_pandas
 # main function to run the program collecting data and running analysis on it and using analysis to make signals.
 
 
@@ -94,7 +95,9 @@ def main(market_pair: str):
     # #  Zig zag
     # zz=indicators.zig_zag_levels()
     # print(zz["5m"])
-
+    # zigzag
+    zz=indicators.zig_zag_levels()
+    df=dict_pandas(df,zz)
     # Trend calculate
     indicator = indicators.indicators
     trends = Trend(df, indicator, sr, config)
