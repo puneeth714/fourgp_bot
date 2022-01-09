@@ -24,7 +24,7 @@ class MakeData:
         pandas_data={}
         for each_data in self.data.keys():
             # Dataframe contains the columns names as Time,Open,High,Low,Close,Volume.
-            df=pd.DataFrame(self.data[each_data],columns = ['Time', 'Open', 'High', 'Low', 'Close', 'Volume'])
+            df=pd.DataFrame(self.data[each_data],columns = ['Timestamp', 'Open', 'High', 'Low', 'Close', 'Volume'])
             # Add the dataframe to the dictionary of pandas_data     
             pandas_data[each_data]=df
         self.data=pandas_data
@@ -34,3 +34,6 @@ class MakeData:
         for each_data in self.data:
             self.data[each_data]['Time']=pd.to_datetime(self.data[each_data]['Time'],unit='ms')
         return self.data
+    def tuples_to_pandas(self)->pd.DataFrame:
+        # convert tuple of values Timestamp , Open , High , Low , Close , Volume into pandas dataframe
+        return pd.DataFrame(self.data,columns=["Timestamp" , "Open" , "High" , "Low" , "Close" , "Volume"])

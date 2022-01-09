@@ -1,5 +1,7 @@
 import os
 from distutils.command.config import config
+from fourgp.database.database_sqlite3 import Database_sqlite3
+from fourgp.database.database_json import Database_json
 
 import ccxt
 from dotenv import load_dotenv
@@ -21,7 +23,6 @@ class exchange_data:
         self.limit = limit
         self.config_to_variables()
         self.__connect_exchange__()
-        self.data
         self.config = config
         self.depth = depth
         # self.taker=self.__get_fee__('taker')
@@ -117,3 +118,5 @@ class exchange_data:
         
     def __get_fee__(self,side:str):
         return self.exchange.load_markets()[self.market_pair][side]
+
+    

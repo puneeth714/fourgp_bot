@@ -1,4 +1,3 @@
-from lib2to3.pgen2.token import AT
 import time
 from fourgp.technicals.indicators import Indicators
 from fourgp.utils.config import Config
@@ -21,12 +20,12 @@ def main(market_pair: str):
     config = Config(config_file)
     config = config.config
 
-    # # Load exchange market data in pandas format
-    # data = exchange_data(config=config, coin=market_pair, depth=5000)
-    # depth = data.get_market_depth()
-    # data.self.get_data_klines()
-    # ccxt_object = data.exchange
-    # data = data.data
+    # Load exchange market data in pandas format
+    data = exchange_data(config=config, coin=market_pair, depth=5000)
+    depth = data.get_market_depth()
+    data.self.get_data_klines()
+    ccxt_object = data.exchange
+    data = data.data
 
     # # time start
     # start_time = time.time()

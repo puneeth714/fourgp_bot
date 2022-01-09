@@ -2,9 +2,9 @@ from datetime import datetime
 import os
 from time import time
 import pandas as pd
-from fourgp.utils.exchange_market_data import exchange_data
+# from fourgp.utils.exchange_market_data import exchange_data
 from fourgp.utils.make_data import MakeData
-
+import sqlite3
 # This module is used to update the data in the dict data_pandas with the
 # new data from the exchange append to the end of the data.
 # The dict data_pandas is a dict of pandas dataframes with the key being
@@ -75,8 +75,13 @@ def get_latest_time_of_pandas_data(data_pandas: pd.DataFrame, timeframe: str) ->
         timeframe = 172800
     elif timeframe == "1w":
         timeframe = 604800
-    return time_diff_from_data(int(latest_time_in_data/1000),
-                               present_time_in_unix, timeframe)
+    elif timeframe == "1M":
+        timeframe = 2592000
+    elif timeframe == "1y":
+        timeframe = 31536000
+    return time_diff_from_data(
+        latest_time_in_data // 1000, present_time_in_unix, timeframe
+    )
 
 
 def get_new_data(exchange: str, coin: str, timeframe: str, limit: int) -> list:
