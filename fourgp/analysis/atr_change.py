@@ -7,7 +7,7 @@ from tabulate import tabulate
 
 
 class AtrChange(MakeData):
-    def __init__(self, config) -> None:
+    def __init__(self, config) -> None: # TODO create doc string
         self.connection = None
         self.config = config
         self.atr_values = {}

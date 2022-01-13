@@ -1,7 +1,12 @@
 {
     "cSpell.words": [
+        "ADAUSDT",
+        "aroon",
         "BTCUSDT",
         "ETHUSDT",
+        "macd",
+        "SHIBUSDT",
+        "SOLBTC",
         "timeframe"
     ],
     "sqltools.connections": [
