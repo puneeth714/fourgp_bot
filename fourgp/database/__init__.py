@@ -18,4 +18,4 @@ else:
     # create data.db file in data folder
     f=open("data/data.db","r")
     f.close()
-    
+# create tables in data.db

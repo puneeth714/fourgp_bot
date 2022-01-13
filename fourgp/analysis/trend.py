@@ -1,7 +1,7 @@
-from distutils.command.config import config
-import pandas as pd
 import time
+from distutils.command.config import config
 
+import pandas as pd
 from fourgp.utils.update_data import present_time
 
 

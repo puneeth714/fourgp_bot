@@ -1,31 +1,41 @@
 import time
-from fourgp.technicals.indicators import Indicators
-from fourgp.utils.config import Config
-from fourgp.utils.exchange_market_data import exchange_data
-from fourgp.utils.make_data import MakeData, DepthData
-from fourgp.utils.update_data import dict_update_data, run_updater, insert_new_data
-from fourgp.technicals.support_resistance import support_resistance
-from fourgp.technicals.candlesticks.candle_patterns import CandlePatterns
-from fourgp.technicals.market_data import marketTrades
-from fourgp.analysis.trend import Trend
+
 from fourgp.analysis.atr_change import AtrChange
+from fourgp.analysis.trend import Trend
+from fourgp.database.create_tables import CreateTables
+from fourgp.technicals.candlesticks.candle_patterns import CandlePatterns
+from fourgp.technicals.indicators import Indicators
+from fourgp.technicals.market_data import marketTrades
+from fourgp.technicals.support_resistance import support_resistance
+from fourgp.utils.config import Config
+from fourgp.utils.data import Data
+from fourgp.utils.exchange_market_data import exchange_data
+from fourgp.utils.make_data import DepthData, MakeData
+from fourgp.utils.update_data import (dict_update_data, insert_new_data,
+                                      run_updater)
+
 # main function to run the program collecting data and running analysis on it and using analysis to make signals.
 
 
-def main(market_pair: str):
+def main(MarketPair: str):
     # whole start
     start_time0 = time.time()
     # Load configuration
     config_file = 'config.json'
     config = Config(config_file)
     config = config.config
-
+    # create database name
+    database_file_path = config['database_path']+"/"+config['database_name']
+    # create tables if not exist
+    # TODO : use only one database connection for all the works.
+    tables_create = CreateTables(
+        database=database_file_path, MarketPair=MarketPair, timeframes=config['time_frame'])
+    tables_create.make_tables()
     # Load exchange market data in pandas format
-    data = exchange_data(config=config, coin=market_pair, depth=5000)
-    depth = data.get_market_depth()
-    data.self.get_data_klines()
-    ccxt_object = data.exchange
-    data = data.data
+    data = Data(database=database_file_path, config=config, Exchange=config["Exchange"],
+                MarketPair=MarketPair, timeframes=config["time_frame"], limit=config["limit"], DataType="Kline")  # FIXME: [timeframes] is not working list not single value
+    # TODO : Kline naming convention is not correct and all other table names are not correct
+    klines = data.get_data()
 
     # # time start
     # start_time = time.time()
@@ -96,6 +106,7 @@ def main(market_pair: str):
     # zz=indicators.zig_zag_levels()
     # print(zz["5m"])
 
+
     # # Trend calculate
     # indicator = indicators.indicators
     # trends = Trend(df, indicator, sr, config)
@@ -105,9 +116,9 @@ def main(market_pair: str):
     # print("\n\n\n")
     # print("--- %s seconds ---" % (end_time - start_time))
     # print("--- %s whole seconds ---" % (end_time - start_time0))
-    files=AtrChange(config)
-    files.connect()
-    files.find_atr()
-    # files.sort_values()
-    files.create_report()
+    # files=AtrChange(config)
+    # files.connect()
+    # files.find_atr()
+    # # files.sort_values()
+    # files.create_report()
 main("ETHUSDT")
