@@ -4,10 +4,11 @@ from distutils.command.config import config
 import ccxt
 from dotenv import load_dotenv
 
+
 # exchange_data class is used to get data from exchange after 
 # connecting to a specific exchange given the exchange name from config file config.json 
 class exchange_data:
-    def __init__(self, config=None,exchange:str=None, coin:str=None,timeframes:list=None,limit:list=None,depth:int=None) -> None:
+    def __init__(self, config=None,Exchange:str=None, MarketPair:str=None,timeframes:list=None,limit:list=None) -> None:
         """exchage_data class constructor
 
         Args:
@@ -15,15 +16,12 @@ class exchange_data:
             coin ([str]): market pair to fetch data from exchange for analysis
         """
         self.config = config
-        self.exchange = exchange
-        self.market_pair = coin
-        self.timeframes = [timeframes]
+        self.Exchange = Exchange
+        self.MarketPair = MarketPair
+        self.timeframes = timeframes
         self.limit = limit
         self.config_to_variables()
         self.__connect_exchange__()
-        self.data=None
-        self.config = config
-        self.depth = depth
         # self.taker=self.__get_fee__('taker')
         # self.maker=self.__get_fee__('maker')
     def config_to_variables(self) -> None:
@@ -32,26 +30,26 @@ class exchange_data:
         if self.config!=None:
             self.load_from_config()
         elif (
-            self.exchange is None
-            and self.market_pair is None
+            self.Exchange is None
+            and self.MarketPair is None
             and self.timeframes is None
             and self.limit is None
         ):
             self.get_from_user()
         else:
             print("May have unhandled exception or error or total perfect")
-            print("Check this vars: exchange = {}, coin = {}, timeframes = {}, limit = {}".format(self.exchange,self.market_pair
+            print("Check this vars: exchange = {}, coin = {}, timeframes = {}, limit = {}".format(self.Exchange,self.MarketPair
             ,self.timeframes,self.limit))
 
     def get_from_user(self):
         print('No config file found')
-        self.exchange = input('Enter exchange: ')
+        self.Exchange = input('Enter exchange: ')
         self.coin = input('Enter market pair: ')
         self.timeframes = input('Enter time frames: ')
         self.limit = input('Enter limit: ')
 
     def load_from_config(self):
-        self.exchange = self.config['Exchange']
+        self.Exchange = self.config['Exchange']
         self.timeframes = self.config['time_frame']
         self.limit = self.config['limit']
 
@@ -62,25 +60,25 @@ class exchange_data:
         """        
         # load .env file
         load_dotenv()
-        if "binance" in self.exchange:
-            self.exchange = ccxt.binance()
-        elif "bitfinex" in self.exchange:
-            self.exchange = ccxt.bitfinex()
-        elif "bitmex" in self.exchange:
-            self.exchange = ccxt.bitmex()
-        elif "bittrex" in self.exchange:
-            self.exchange = ccxt.bittrex()
-        elif "coinbase" in self.exchange:
-            self.exchange = ccxt.coinbasepro()
-        elif "kraken" in self.exchange:
-            self.exchange = ccxt.kraken()
-        elif "poloniex" in self.exchange:
-            self.exchange = ccxt.poloniex()
+        if "binance" in self.Exchange:
+            self.Exchange = ccxt.binance()
+        elif "bitfinex" in self.Exchange:
+            self.Exchange = ccxt.bitfinex()
+        elif "bitmex" in self.Exchange:
+            self.Exchange = ccxt.bitmex()
+        elif "bittrex" in self.Exchange:
+            self.Exchange = ccxt.bittrex()
+        elif "coinbase" in self.Exchange:
+            self.Exchange = ccxt.coinbasepro()
+        elif "kraken" in self.Exchange:
+            self.Exchange = ccxt.kraken()
+        elif "poloniex" in self.Exchange:
+            self.Exchange = ccxt.poloniex()
         else:
             print('No exchange found')
-            self.exchange = input('Enter exchange: ')
-            if self.exchange == 'binance':
-                self.exchange = ccxt.binance()
+            self.Exchange = input('Enter exchange: ')
+            if self.Exchange == 'binance':
+                self.Exchange = ccxt.binance()
 
     def get_data_klines(self) -> dict:
         """get_data method returns the data from exchange after 
@@ -91,11 +89,11 @@ class exchange_data:
         """        
         #load the marketa        
         # self.exchange.load_markets()
-        if self.exchange.has['fetchOHLCV']:
+        if self.Exchange.has['fetchOHLCV']:
             # fetch the data using the fetchOHLCV method
             data = {
-                time_frame: self.exchange.fetch_ohlcv(
-                    self.market_pair, time_frame, limit=int(self.limit[time_frame])
+                time_frame: self.Exchange.fetch_ohlcv(
+                    self.MarketPair, time_frame, limit=int(self.limit[time_frame])
                 )
                 for time_frame in self.timeframes
             }
@@ -106,14 +104,16 @@ class exchange_data:
             exit(1)
         return data
     def get_market_depth(self):
-        if self.exchange.has['fetchOrderBook']:
-            data_market_depth = self.exchange.fetchOrderBook(self.market_pair, limit=int(self.depth))
+        if self.Exchange.has['fetchOrderBook']:
+            data_market_depth = self.Exchange.fetchOrderBook(self.MarketPair, limit=int(self.limit))
         else:
             print('Exchange does not support fetching order book')
             exit(1)
         return data_market_depth
     def tick_value(self):
-        return self.exchange.fetch_ticker(self.market_pair)
+        return self.Exchange.fetch_ticker(self.MarketPair)
         
     def __get_fee__(self,side:str):
-        return self.exchange.load_markets()[self.market_pair][side]
+        return self.Exchange.load_markets()[self.MarketPair][side]
+
+    

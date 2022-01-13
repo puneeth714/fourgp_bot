@@ -1,8 +1,9 @@
-import ccxt
 import re
+
+import ccxt
 import pandas_ta as ta
-from tabulate import tabulate
 from fourgp.utils.make_data import MakeData
+from tabulate import tabulate
 
 
 class AtrChange(MakeData):

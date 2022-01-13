@@ -1,10 +1,11 @@
-from datetime import datetime
 import os
+import sqlite3
+from datetime import datetime
 from time import time
-import pandas as pd
-from fourgp.utils.exchange_market_data import exchange_data
-from fourgp.utils.make_data import MakeData
 
+import pandas as pd
+from fourgp.utils.make_data import MakeData
+from fourgp.utils.exchange_market_data import exchange_data
 # This module is used to update the data in the dict data_pandas with the
 # new data from the exchange append to the end of the data.
 # The dict data_pandas is a dict of pandas dataframes with the key being
@@ -42,7 +43,7 @@ def time_diff_from_data(data_time: int, present_time: int, each_division: int) -
     return (present_time - data_time)/each_division
 
 
-def get_latest_time_of_pandas_data(data_pandas: pd.DataFrame, timeframe: str) -> float:
+def get_latest_time_of_pandas_data(latest_time_in_data, timeframe: str, data_pandas: pd.DataFrame = None) -> float:
     """To get the latest time of the pandas data.
 
     Args:
@@ -52,13 +53,15 @@ def get_latest_time_of_pandas_data(data_pandas: pd.DataFrame, timeframe: str) ->
     Returns:
         float: Returns the numbers of seconds in the timeframe.
     """
-    # get the latest time of the pandas data
-    latest_time_in_data = int(
-        data_pandas.tail(1)["Time"])
+    # # get the latest time of the pandas data
+    # latest_time_in_data = int(
+    #     data_pandas.tail(1)["Time"])
     present_time_in_unix = present_time()
     # check number of seconds in the timeframe
     if timeframe == "1m":
         timeframe = 60
+    elif timeframe == "3m":
+        timeframe = 180
     elif timeframe == "5m":
         timeframe = 300
     elif timeframe == "15m":
@@ -75,8 +78,13 @@ def get_latest_time_of_pandas_data(data_pandas: pd.DataFrame, timeframe: str) ->
         timeframe = 172800
     elif timeframe == "1w":
         timeframe = 604800
-    return time_diff_from_data(int(latest_time_in_data/1000),
-                               present_time_in_unix, timeframe)
+    elif timeframe == "1M":
+        timeframe = 2592000
+    elif timeframe == "1y":
+        timeframe = 31536000
+    return time_diff_from_data(
+        latest_time_in_data // 1000, present_time_in_unix, timeframe
+    )
 
 
 def get_new_data(exchange: str, coin: str, timeframe: str, limit: int) -> list:
@@ -92,9 +100,9 @@ def get_new_data(exchange: str, coin: str, timeframe: str, limit: int) -> list:
         list: A list consists of the new data from the exchange.
     """
     # get the new data from the exchange by calling the exchange_data function.
-    exchange_data_object = exchange_data(
-        exchange=exchange, limit=limit+1, coin=coin, timeframes=timeframe)
-    return exchange_data_object.data
+    # exchange_data_object = exchange_data(
+    #     Exchange=exchange, limit=limit+1, MarketPair=coin, timeframes=timeframe)
+    pass
 
 
 def insert_new_data(data_pandas: pd.DataFrame, new_data: pd.DataFrame) -> pd.DataFrame:
@@ -173,3 +181,17 @@ def dict_update_data(data_pandas: dict, exchange: str, coin: str) -> pd.DataFram
         data_pandas[timeframe] = insert_new_data(
             data_pandas[timeframe], data)
     return data_pandas
+
+
+def database_type(database):
+    # check if sellf.database has .db or type of self.database is sqlite3.Connection
+    if database.endswith(".db") or type(database) == sqlite3.Connection:
+        # if yes return sqlite3
+        return "sqlite3"
+    elif database.endswith(".json"):
+        # if yes return json
+        # FIXME : not implemented yet and it should be feature format.
+        return "json"
+    else:
+        # if no return none
+        return None

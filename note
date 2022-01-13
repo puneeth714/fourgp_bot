@@ -47,6 +47,106 @@ Trending down:
 
 
 Database        :
-        Tables  : * klines
-                  * indicators
-                  * signals
+      Tables    : * Kline 
+                        Naming conventions : Kline_SymbolName_timeframe
+                        Tables columns     : Timestamp , Open , High , Low , Close , Volume
+                  * Indicators
+                        Naming conventions : Indicators_SymbolName_TimeFrame
+                        Tables columns     : Timestamp , CreationTime , IndicatorsName , Val(s) [If more than one value make it as a list ]
+                  * Ticks
+                        Naming conventions : Ticks_SymbolName
+                        Tables columns     : Timestamp , Val(s) [If more than one value make it as a list ]
+                  * Signals
+                        Naming conventions : SymbolName
+                        Tables columns     : CreationTime , Buy[ A list of prices for which the signal is buy] , Sell[ A list of prices for which the signal is sell],
+                                             StopLoss[ A list of prices for which the signal is StopLoss] , TakeProfit[ A list of prices for which the signal is takeprofit]
+                  * Depth_snapshot
+                        Naming conventions : Depth_snapshot_SymbolName_TimeFrame
+                        Tables columns     : CreationTime , Price , Quantity , Total_Quantity , Total_Value , Total_Base_Quantity , Total_Base_Value , Total_Quote_Quantity , Total_Quote_Value , Is_Buy_Order , Is_Best_Price_Match , Time_Stamp
+                  * Logging
+                        Naming conventions : Logging
+                        Tables columns     : TimeStamp , CreationTime , Log_Type , Log_Message
+                  * Results
+                        Naming conventions : Results_SymbolName
+                        Tables columns     : CreationTime , pnlOverall , Status , TimeStamp
+            
+CreateTables class parameters:
+            database_connection, market_pairs[list] , timeframe[list],drop[bool]
+            member functions : 
+                  check if database_connection is a sqlite3.Connection type or is a file path or None (If none use default configuration)
+                  make_tables:      loop_through market_pairs and timeframe
+                  naming_convention:create a table name with naming convention using market_pair and timeframe form make_tables
+                  check_tables:     check the named tables are present or not
+                                          if exists continue
+                                          else create the table
+                  create_tables:    create table using database_connection
+                  drop_and_create:  if drop is True drop all the tables and create all of them again
+                  error_handle:     check if table creation is success or not else raise error
+
+
+Database Update:
+      If database has data
+            * get data from database
+            * check for any updates
+                  * if updates available
+                        * get extra data
+                        * update it to pandas data
+                        * update pandas to database
+                  * get data again from database
+      Else
+            * get data from exchange
+            * write it to database table
+            * can get data from database or use the data fetched from exchange.
+      in utils: timeframe, market pair(get what data to get i.e timeframe and market pair and)
+            * Check if there is any data(Table)(json) in database for a specified market pair and timeframe
+                  * check until when the data is stored you can use update function(Modified)
+                  * get the date or time from which to be added
+                  * Download the data
+                  * Update the data to database
+            * If not get data with default configuration.
+                  * Update or add it to database
+Database put:
+      in utils: timeframe, market pair(get what data to get i.e timeframe and market pair and)
+            * Database Update must be done first
+            * Check if specified table is present
+            * Get data from database for specified interval
+            * format the collected data to required format
+
+
+TODO :
+      1. Make interface for working with dict of pandas DataFrame with sqlite3 out of main.py ( utils )
+
+      data.py function :
+            Data class :  database , config , Exchange , MarketPair , timeframe , limit , data ,DataType
+                  * Create object of Data class.
+                  * Get data from database for -- klines , indicators , ticks , depth_snapshot , logging , results(any).
+                        1. Check if database is up to date or not and does it have data for the specified timeframe and market pair
+                              * if not update it
+                              * else get data from database
+                  * If data is not present in database get it from exchange
+                  * Write it to database.
+                  * Use data from database or exchange.
+                  * write to Logging table about the data collected from exchange or database.
+
+
+                  * For each timeframe
+                        * Check updates for this timeframe
+                        * If updates available
+                              * Get extra data
+                              * Update it to pandas data
+                              * Update pandas to database
+                        * else
+                              * Get data from database
+                  or 
+                  REAL :
+                        * For each timeframe
+                              * Check updates for this timeframe in database -> return if data base is new(No data)
+                              * Write limit update to self.limit of that timeframe
+                        * Get data from exchange for each timeframe and specified market pair and "limit".
+                        * convert to pandas
+                        * Write to database
+                        * If database is new:
+                              * use the converted pandas data
+                        * else
+                              * use the data from database for the specified timeframe and market pair and limit and convert to pandas data.
+                        * Write to Logging table about the data collected from exchange or database.

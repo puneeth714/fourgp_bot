@@ -1,37 +1,47 @@
-#! /usr/bin/env python3
 import time
-from fourgp.technicals.indicators import Indicators
-from fourgp.utils.config import Config
-from fourgp.utils.exchange_market_data import exchange_data
-from fourgp.utils.make_data import MakeData, DepthData
-from fourgp.utils.update_data import dict_update_data, run_updater, insert_new_data
-from fourgp.technicals.support_resistance import support_resistance
-from fourgp.technicals.candlesticks.candle_patterns import CandlePatterns
-from fourgp.technicals.market_data import marketTrades
-from fourgp.analysis.trend import Trend
+
 from fourgp.analysis.atr_change import AtrChange
-from fourgp.utils.utilities import dict_pandas
+from fourgp.analysis.trend import Trend
+from fourgp.database.create_tables import CreateTables
+from fourgp.technicals.candlesticks.candle_patterns import CandlePatterns
+from fourgp.technicals.indicators import Indicators
+from fourgp.technicals.market_data import marketTrades
+from fourgp.technicals.support_resistance import support_resistance
+from fourgp.utils.config import Config
+from fourgp.utils.data import Data
+from fourgp.utils.exchange_market_data import exchange_data
+from fourgp.utils.make_data import DepthData, MakeData
+from fourgp.utils.update_data import (dict_update_data, insert_new_data,
+                                      run_updater)
+
 # main function to run the program collecting data and running analysis on it and using analysis to make signals.
 
 
-def main(market_pair: str):
+def main(MarketPair: str):
     # whole start
     start_time0 = time.time()
     # Load configuration
     config_file = 'config.json'
     config = Config(config_file)
     config = config.config
-
+    # create database name
+    database_file_path = config['database_path']+"/"+config['database_name']
+    # create tables if not exist
+    # TODO : use only one database connection for all the works.
+    tables_create = CreateTables(
+        database=database_file_path, MarketPair=MarketPair, timeframes=config['time_frame'])
+    tables_create.make_tables()
     # Load exchange market data in pandas format
-    data_obj = exchange_data(config=config, coin=market_pair, depth=5000)
-    depth = data_obj.get_market_depth()
-    data=data_obj.get_data_klines()
-    ccxt_obj=data_obj.exchange
-    # time start
-    start_time = time.time()
-    # Make data
-    make_data = MakeData(data, config)
-    print(make_data.list_to_pandas()["1m"].tail(10))
+    data = Data(database=database_file_path, config=config, Exchange=config["Exchange"],
+                MarketPair=MarketPair, timeframes=config["time_frame"], limit=config["limit"], DataType="Kline")  # FIXME: [timeframes] is not working list not single value
+    # TODO : Kline naming convention is not correct and all other table names are not correct
+    klines = data.get_data()
+
+    # # time start
+    # start_time = time.time()
+    # # Make data
+    # make_data = MakeData(data, config)
+    # print(make_data.list_to_pandas()["1m"].tail(10))
 
     # # update data if needed and rewrite existing data
     # time.sleep(60)
@@ -47,30 +57,30 @@ def main(market_pair: str):
     #     make_data.list_to_pandas(), config["Exchange"], "ETHUSDT")
     # print(data2)
 
-    # Make indicators
-    indicators = Indicators(config, make_data.list_to_pandas())
-    indicators.make_indicator()
-    # indicators.add_indicators_to_dataframe()
-    #  Make support and resistance
-    # convert unix time to datetime
-    df = make_data.data
-    print(df["5m"].tail(10))
-    # print(df["1m"].head(200))
-    df = make_data.time_convert()
-    print(df["5m"].tail(10))
+    # # Make indicators
+    # indicators = Indicators(config, make_data.list_to_pandas())
+    # indicators.make_indicator()
+    # # indicators.add_indicators_to_dataframe()
+    # #  Make support and resistance
+    # # convert unix time to datetime
+    # df = make_data.data
+    # print(df["5m"].tail(10))
+    # # print(df["1m"].head(200))
+    # df = make_data.time_convert()
+    # print(df["5m"].tail(10))
 
     #     #write dataframe to csv samples.txt
     # df["1m"].to_csv("samples.txt")
 
-    # Get support and resistance
-    sr = support_resistance.main_sr_dict(
-        df, "zig_zag", config=config["support_resistance"]["create_type"])
-    # print(sr)
+    # # Get support and resistance
+    # sr = support_resistance.main_sr_dict(
+    #     df, "zig_zag", config=config["support_resistance"]["create_type"])
+    # # print(sr)
 
-    # clean data
-    sr = support_resistance.clean_levels(sr)
-    print("\n\n\n")
-    print(sr)
+    # # clean data
+    # sr = support_resistance.clean_levels(sr)
+    # print("\n\n\n")
+    # print(sr)
 
     # # candlestick pattern
     # candle = CandlePatterns(make_data.list_to_pandas(), ["all",
@@ -95,18 +105,17 @@ def main(market_pair: str):
     # #  Zig zag
     # zz=indicators.zig_zag_levels()
     # print(zz["5m"])
-    # zigzag
-    zz=indicators.zig_zag_levels()
-    df=dict_pandas(df,zz)
-    # Trend calculate
-    indicator = indicators.indicators
-    trends = Trend(df, indicator, sr, config)
-    print(trends.trend_make())
-    # time end
-    end_time = time.time()
-    print("\n\n\n")
-    print("--- %s seconds ---" % (end_time - start_time))
-    print("--- %s whole seconds ---" % (end_time - start_time0))
+
+
+    # # Trend calculate
+    # indicator = indicators.indicators
+    # trends = Trend(df, indicator, sr, config)
+    # print(trends.trend_make())
+    # # time end
+    # end_time = time.time()
+    # print("\n\n\n")
+    # print("--- %s seconds ---" % (end_time - start_time))
+    # print("--- %s whole seconds ---" % (end_time - start_time0))
     # files=AtrChange(config)
     # files.connect()
     # files.find_atr()

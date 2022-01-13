@@ -9,5 +9,13 @@
         "SOLBTC",
         "timeframe"
     ],
-    "todo-tree.tree.showBadges": false
+    "sqltools.connections": [
+        {
+            "previewLimit": 100,
+            "driver": "SQLite",
+            "name": "queries",
+            "group": "fourgp",
+            "database": "${workspaceFolder:fourgp_bot}/data/data.db"
+        }
+    ]
 }
