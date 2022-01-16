@@ -9,3 +9,4 @@ scikit-learn
 zigzag
 matplotlib
 mpl_finance
+python-dotenv
