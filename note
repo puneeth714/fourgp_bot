@@ -59,7 +59,7 @@ Database        :
                   * Signals
                         Naming conventions : SymbolName
                         Tables columns     : CreationTime , Buy[ A list of prices for which the signal is buy] , Sell[ A list of prices for which the signal is sell],
-                                             StopLoss[ A list of prices for which the signal is StopLoss] , TakeProfit[ A list of prices for which the signal is takeprofit]
+                                             StopLoss[ A list of prices for which the signal is StopLoss] , TakeProfit[ A list of prices for which the signal is takeProfit]
                   * Depth_snapshot
                         Naming conventions : Depth_snapshot_SymbolName_TimeFrame
                         Tables columns     : CreationTime , Price , Quantity , Total_Quantity , Total_Value , Total_Base_Quantity , Total_Base_Value , Total_Quote_Quantity , Total_Quote_Value , Is_Buy_Order , Is_Best_Price_Match , Time_Stamp
@@ -113,7 +113,7 @@ Database put:
             * format the collected data to required format
 
 
-TODO :
+DONE :
       1. Make interface for working with dict of pandas DataFrame with sqlite3 out of main.py ( utils )
 
       data.py function :
@@ -150,3 +150,32 @@ TODO :
                         * else
                               * use the data from database for the specified timeframe and market pair and limit and convert to pandas data.
                         * Write to Logging table about the data collected from exchange or database.
+
+TODO :
+      * Update Trend calculations.
+      * Create logging for database read and write.
+      * Create logging for exchange read.
+      * Create doc string for required functions that might not be changed.
+      * Update README.md file.
+Fixed-FIXME :
+      * Error showing config.json file not found when running for the fist time (without data.db file).
+
+Update : trend    --
+                  * Dependence on technical : 
+                              1. RSI
+                              2. Ema short and long - is ema more(down trend) or less(up trend) and ema present is less than before(down trend) or more than  before(up trend)
+                              3. Macd - histogram
+                              4. Aroon -upper and lower
+                              5. Resistance and support levels
+                  * Mathematical dependence :
+                              1. RSI --  min(RSI)=20,max(RSI)=80                                                        = x -> Directly proportional to the trend
+                              2.    * present value - Ema_short                                                         = a -> Directly proportional to the trend
+                                    * present value - Ema_long                                                          = b -> Directly proportional to the trend
+                                    * EMA_short_Previous - EMA_short_Current                                            = c -> Directly proportional to the trend
+                                    * EMA_long_Previous - EMA_long_Current                                              = d -> Directly proportional to the trend
+                              3. Macd - histogram                                                                       = y/asset price -> Directly proportional to the trend
+                              4. Aroon -upper and lower -- aroon_up                                                     = min(0),max(100) = z1 -> Directly proportional to the trend
+                                                           aroon_down = min(0),max(100)                                 = 1/z2 -> Inversely proportional to the trend
+                              5. Resistance and support levels                                                          =  1/(resistance    - present value) -- max(resistance-support)                                                                     -> Inversely proportional to the trend = 1/k1
+                                                                                                                        present value - support           -- min(0) -> Directly proportional to the trend = k2
+                        

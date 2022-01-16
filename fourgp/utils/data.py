@@ -45,6 +45,7 @@ class Data(exchange_data, MakeData, Database_sqlite3, Database_json):
         # get the data from the database containing DataType_market_pair_timeframe (some times no timeframe and some times no market_pair is not used in name)
         # get all data from table_name
         count={}
+        limit=self.limit.copy()
         #FIXME : Count is not correct shouldn't be size of table but size of data needed.
         for self.timeframe in self.timeframes:
             self.__get_table_name__()
@@ -56,10 +57,11 @@ class Data(exchange_data, MakeData, Database_sqlite3, Database_json):
             self.__get_table_name__()
             self.data=data[self.timeframe]
             self.write_data_to_database()
+        self.limit=limit
+        del limit
         # If count is less than the limit, then fetch the data  again from the database
         for self.timeframe in self.timeframes:
-            if count[self.timeframe]<self.limit[self.timeframe]:
-                self.__get_table_name__()
-                self.data=self.get_data_from_database()
-                data[self.timeframe]=self.tuples_to_pandas()
+            self.__get_table_name__()
+            self.data=self.get_data_from_database()
+            data[self.timeframe]=self.tuples_to_pandas()
         return data

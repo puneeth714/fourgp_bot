@@ -12,6 +12,7 @@ if os.path.isdir("data"):
         # create data.db file in data folder
         f=open("data.db","w")
         f.close()
+        os.chdir("../")
 else:
     # create data directory
     os.mkdir("data")

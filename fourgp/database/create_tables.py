@@ -2,8 +2,9 @@
 # check if Kline table exists in the database and create it if not with columns Timestamp , Open , High , Low , Close , Volume
 import sqlite3
 
+
 class CreateTables:
-    def __init__(self, database, MarketPair: list, timeframes: list, drop: bool=None):
+    def __init__(self, database, MarketPair: list, timeframes: list, drop: bool = None):
         self.database = database
         self.MarketPair = MarketPair
         self.timeframes = timeframes
@@ -16,7 +17,7 @@ class CreateTables:
         elif type(self.database) == str:
             connection = sqlite3.Connection(self.database)
             return connection
-        elif self.database == None:
+        elif self.database is None:
             # use data/data.db file for database
             connection = sqlite3.Connection("data/data.db")
             return connection
@@ -26,7 +27,7 @@ class CreateTables:
             for timeframe in self.timeframes:
                 self.create_table(market_pair, timeframe)
 
-    def create_table(self, SymbolName, timeframe, connection:sqlite3.Connection=None):
+    def create_table(self, SymbolName, timeframe, connection: sqlite3.Connection = None):
         if connection is None:
             connection = self.connection
         # create table in connection database with convention Kline_SymbolName_timeframe with columns Timestamp , Open , High , Low , Close , Volume
@@ -115,7 +116,7 @@ class CreateTables:
             for timeframe in self.timeframe:
                 self.drop_table(market_pair, timeframe)
 
-    def drop_table(self,SymbolName,timeframe):
+    def drop_table(self, SymbolName, timeframe):
 
         connection = self.connection
         # drop table in connection database with convention Kline_SymbolName_timeframe

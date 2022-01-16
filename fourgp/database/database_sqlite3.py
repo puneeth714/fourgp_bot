@@ -2,7 +2,9 @@ import sqlite3
 
 import pandas as pd
 from fourgp.utils.make_data import MakeData
-from fourgp.utils.update_data import get_latest_time_of_pandas_data, get_new_data, time_diff_from_data
+from fourgp.utils.update_data import get_latest_time_of_pandas_data, \
+    get_new_data, time_diff_from_data,number_of_seconds_in_timeframe \
+    , present_time
 
 # create a class to handle the sqlite3 database
 
@@ -55,7 +57,12 @@ class Database_sqlite3:
     def get_data_from_database(self):
         # get the data from the database containing DataType_market_pair_timeframe (some times no timeframe and some times no market_pair is not used in name)
         # get all data from table_name
-        query = "select * from {}".format(self.table_name)
+        seconds=number_of_seconds_in_timeframe(self.timeframe)*self.limit[self.timeframe]
+        timestamp_limit=present_time()-seconds*1000
+        # select all data from table_name where timestamp is greater than equal to timestamp_limit
+        #FIXME: #3  query is not working(getting all the data insed of the limit)
+        query = "select * from {} where timestamp >= {}".format(
+            self.table_name, timestamp_limit)
         # execute query
         cursor = self.connection.cursor()
         cursor.execute(query)
@@ -92,54 +99,22 @@ class Database_sqlite3:
         # check if database is up to date with data from exchange by comparing the latest timestamp in database with the present timestamp.
         # Get the last record from self.data
         count,limit=self.check_database()
-        if count>= limit:
-            # get the last record from database by gettign the max of timestamp
-            query = "select max(timestamp) from {}".format(self.table_name)
-            cursor = self.connection.cursor()
-            cursor.execute(query)
-            last_timestamp = int(cursor.fetchone()[0])
-
-            # last_record = self.data.iloc[-1]
-            # # get the timestamp from the last record
-            # # as the timestamp is in miliseconds
-            # last_timestamp = last_record["Timestamp"]/1000
-            # # get present time stamp
-            return int(get_latest_time_of_pandas_data(latest_time_in_data=last_timestamp,timeframe=self.timeframe)),count
-        else:
+        if count < limit:
             return int(limit),count
+        # get the last record from database by gettign the max of timestamp
+        query = "select max(timestamp) from {}".format(self.table_name)
+        cursor = self.connection.cursor()
+        cursor.execute(query)
+        last_timestamp = int(cursor.fetchone()[0])
 
-    def make_data_pandas(self, data=None):
-        # if data is not given, use self.data otherwise use data
-        if data is not None:
-            data = self.data
-        # convert list data to pandas dataframe using MakeData class
-        # FIXME : Not only sqlite3 key but also other database type key is used
-        data_obj = MakeData({"sqlite3": self.data})
-        self.data_new = data_obj.list_to_pandas()
-        return self.data_new["sqlite3"]
-
-    # def update_database(self):
-    #     # update the database with new data from exchange
-    #     # if new data is not empty
-    #     if len(new_data) > 0:
-    #         # if the database is empty
-    #         if not self.check_database():
-    #             # write the new data to the database
-    #             self.write_data_to_database(new_data)
-    #         else:
-    #             # delete the last record in the database
-    #             self.delete_last_record()
-    #             # write the new data to the database
-    #             self.write_data_to_database(new_data)
-    #     else:
-    #         # if there is no new data
-    #         pass
+        # last_record = self.data.iloc[-1]
+        # # get the timestamp from the last record
+        # # as the timestamp is in miliseconds
+        # last_timestamp = last_record["Timestamp"]/1000
+        # # get present time stamp
+        return int(get_latest_time_of_pandas_data(latest_time_in_data=last_timestamp,timeframe=self.timeframe)),count
 
     def delete_last_record(self):
-        if False:
-            # delete the last row in the database for given timeframe and market pair
-            query = "delete from {} where id = (select max(id) from {})".format(
-                self.table_name, self.table_name)
         # or delete coloumn in which TimeStamp is the max
         query = "delete from {} where TimeStamp = (select max(TimeStamp) from {})".format(
             self.table_name, self.table_name)

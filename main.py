@@ -35,37 +35,29 @@ def main(MarketPair: str):
     data = Data(database=database_file_path, config=config, Exchange=config["Exchange"],
                 MarketPair=MarketPair, timeframes=config["time_frame"], limit=config["limit"], DataType="Kline")  # FIXME: [timeframes] is not working list not single value
     # TODO : Kline naming convention is not correct and all other table names are not correct
-    klines = data.get_data()
+    make_data = data.get_data()
 
-    # # time start
-    # start_time = time.time()
-    # # Make data
-    # make_data = MakeData(data, config)
-    # print(make_data.list_to_pandas()["1m"].tail(10))
+    # atr=AtrChange(config)
+    # atr.connect()
+    # atr.find_atr()
+    # atr.create_report()
 
     # # update data if needed and rewrite existing data
-    # time.sleep(60)
-    # new_data = run_updater(
-    #     make_data.list_to_pandas()["1m"], "1m", config["Exchange"], "ETHUSDT")
-    # make_data1 = MakeData(new_data, config)
-    # data = insert_new_data(
-    #     make_data.list_to_pandas()["1m"], make_data1.list_to_pandas()["1m"])
-    # print(data.tail(10))
+    # sleep for 60 seconds
+    #time.sleep(60)
+    # fetch the data again (auto updation is done)
+    make_data = data.get_data()
 
-    # # or make iterative data
-    # data2 = dict_update_data(
-    #     make_data.list_to_pandas(), config["Exchange"], "ETHUSDT")
-    # print(data2)
+    # Make indicators
+    indicators = Indicators(config, make_data)
+    indicators.make_indicator()
 
-    # # Make indicators
-    # indicators = Indicators(config, make_data.list_to_pandas())
-    # indicators.make_indicator()
-    # # indicators.add_indicators_to_dataframe()
-    # #  Make support and resistance
-    # # convert unix time to datetime
-    # df = make_data.data
+    # indicators.add_indicators_to_dataframe()
+    #  Make support and resistance
+    # convert unix time to datetime
+    # df = make_data
     # print(df["5m"].tail(10))
-    # # print(df["1m"].head(200))
+    # print(df["1m"].head(200))
     # df = make_data.time_convert()
     # print(df["5m"].tail(10))
 
