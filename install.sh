@@ -64,7 +64,7 @@ if [ -z "$(which ta-lib-config)" ]; then
     post_operations "TA_Lib"   
     
     
-    sudo make install   # Install TA_Lib into system
+    sudo make install   # Install TA_Lib into system, need root access!!
     post_operations "TA_Lib system"
     
     cd ..
