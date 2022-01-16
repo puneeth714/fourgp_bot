@@ -22,3 +22,14 @@ select max(Timestamp) from Kline_ETHUSDT_1m;
 
 
 --Fix the bug in getting limited values
+SELECT count(*) from Kline_ETHUSDT_1m;
+SELECT count(*) from Kline_ETHUSDT_1m WHERE Timestamp > 1642206660000;
+
+SELECT count(*) from Kline_ETHUSDT_3m;
+SELECT count(*) from Kline_ETHUSDT_3m WHERE Timestamp > 1642206660000;
+
+SELECT count(*) from Kline_ETHUSDT_5m;
+SELECT count(*) from Kline_ETHUSDT_5m WHERE Timestamp > 1642206660000;
+
+SELECT count(*) from Kline_ETHUSDT_4h;
+SELECT count(*) from Kline_ETHUSDT_4h WHERE Timestamp > 1642206660000;

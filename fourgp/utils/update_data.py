@@ -25,7 +25,7 @@ def present_time() -> int:
     """
     # get current time in unix timestamp format
     now = datetime.now()
-    return now.timestamp()
+    return now.timestamp()*1000
 
 def time_diff_from_data(data_time: int, present_time: int, each_division: int) -> float:
     """Get the time difference from the data time and present time and divide it by the number of seconds.

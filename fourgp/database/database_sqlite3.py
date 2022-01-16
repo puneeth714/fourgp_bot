@@ -61,8 +61,8 @@ class Database_sqlite3:
         timestamp_limit=present_time()-seconds*1000
         # select all data from table_name where timestamp is greater than equal to timestamp_limit
         #FIXME: #3  query is not working(getting all the data insed of the limit)
-        query = "select * from {} where timestamp >= {}".format(
-            self.table_name, timestamp_limit)
+        query = """
+        select * from  (select * from {} where Timestamp >= {} order by timestamp ASC);""".format(self.table_name,timestamp_limit)
         # execute query
         cursor = self.connection.cursor()
         cursor.execute(query)
