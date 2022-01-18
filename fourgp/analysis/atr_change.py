@@ -1,4 +1,5 @@
 import re
+from tkinter.messagebox import RETRY
 
 import ccxt
 import pandas_ta as ta
@@ -85,9 +86,12 @@ class AtrChange(MakeData):
         fee_value = amount*total_fee
         value_gets = change-fee_value
         percent_change = value_gets*100/amount
-        #FIXME: Change the rounding to 2 decimal places to more accurately represent the change.
+
+        # FIXME: Change the rounding to 2 decimal places to more accurately represent the change.
         # (Values with 2 decimal places are not accurate and some are showing 0.00)
-        return [amount, round(change, 2), round(fee_value, 2), round(value_gets, 2), round(percent_change, 2)]
+        return [amount, f"{change:.12f}".rstrip("0"), f"{fee_value:.6f}".rstrip("0"),
+                        f"{value_gets:.12f}".rstrip("0"), f"{percent_change:.12f}".rstrip("0")]
+
 
     def get_values(self, market: str, timeframe: str, distance: int) -> list:
         # FIXME : use database to fetch data.
