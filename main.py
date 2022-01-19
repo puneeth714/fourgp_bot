@@ -1,5 +1,5 @@
 import time
-
+import pandas as pd
 from fourgp.analysis.atr_change import AtrChange
 from fourgp.analysis.trend import Trend
 from fourgp.database.create_tables import CreateTables
@@ -13,7 +13,7 @@ from fourgp.utils.exchange_market_data import exchange_data
 from fourgp.utils.make_data import DepthData, MakeData
 from fourgp.utils.update_data import (dict_update_data, insert_new_data,
                                       run_updater)
-
+from fourgp.utils.utilities import dict_pandas, get_specific_coloumn
 # main function to run the program collecting data and running analysis on it and using analysis to make signals.
 
 
@@ -44,15 +44,27 @@ def main(MarketPair: str):
 
     # # update data if needed and rewrite existing data
     # sleep for 60 seconds
-    #time.sleep(60)
+    # time.sleep(60)
     # fetch the data again (auto updation is done)
-    make_data = data.get_data()
+    # make_data = data.get_data()
 
-    # Make indicators
-    indicators = Indicators(config, make_data)
-    indicators.make_indicator()
-
-    # indicators.add_indicators_to_dataframe()
+    # # Make indicators
+    # indicators = Indicators(config, make_data)
+    # indicators.make_indicator()
+    # # add timestamp of make_data to indicators
+    # # get the timestamp from make_data and return it
+    # coloumn_name = "Timestamp"
+    # coloumn_data = get_specific_coloumn(
+    #     data=make_data, coloumn_name=coloumn_name)
+    # indicator_data = dict_pandas(
+    #     data_dictionary=indicators.indicators, coloumn_data=coloumn_data)
+    # data.data = indicator_data
+    # # write the data to the database
+    # data.DataType = "Indicators"
+    # data.put_data()
+    # Get indicators
+    data.DataType="Indicators"
+    indicators = data.get_data()
     #  Make support and resistance
     # convert unix time to datetime
     # df = make_data

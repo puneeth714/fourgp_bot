@@ -33,7 +33,7 @@ class CreateTables:
         # create table in connection database with convention Kline_SymbolName_timeframe with columns Timestamp , Open , High , Low , Close , Volume
         query = """
         create table if not exists Kline_{}_{}(
-            Timestamp text,
+            Timestamp text NOT NULL PRIMARY KEY,
             Open real,
             High real,
             Low real,
@@ -45,8 +45,7 @@ class CreateTables:
         # create table in connection database with convention Indicators_SymbolName_timeframe with columns Timestamp , CreationTime , IndicatorsName , values
         query = """
         create table if not exists Indicators_{}_{}(
-            Timestamp text,
-            CreationTime text,
+            Timestamp text NOT NULL PRIMARY KEY,
             IndicatorsName text,
             Vals text
             )""".format(SymbolName, timeframe)
@@ -55,7 +54,7 @@ class CreateTables:
         # create table in connection database with convention Tick_SymbolName with coloums Timestamp , values
         query = """
         create table if not exists Tick_{}(
-            Timestamp text,
+            Timestamp text NOT NULL PRIMARY KEY,
             Vals text
             )""".format(SymbolName)
         connection.execute(query)
@@ -64,7 +63,7 @@ class CreateTables:
         # StopLoss[ A list of prices for which the signal is StopLoss] , TakeProfit[ A list of prices for which the signal is takeprofit]
         query = """
         create table if not exists SignalName(
-            CreationTime text,
+            CreationTime text NOT NULL PRIMARY KEY,
             Buy text,
             Sell text,
             StopLoss text,
@@ -75,7 +74,7 @@ class CreateTables:
         # create table in connection database with convention Depth_snapshot_SymbolName_timeframe with columns CreationTime , Price , Quantity , Total_Quantity , Total_Value , Total_Base_Quantity , Total_Base_Value , Total_Quote_Quantity , Total_Quote_Value , Is_Buy_Order , Is_Best_Price_Match , Time_Stamp
         query = """
         create table if not exists Depth_snapshot_{}_{}(
-            CreationTime text,
+            CreationTime text NOT NULL PRIMARY KEY,
             Price real,
             Quantity real,
             Total_Quantity real,
@@ -93,7 +92,7 @@ class CreateTables:
         # create table in connection database with convention Logging with columns TimeStamp,CreationTime , Log_Type , Log_Message
         query = """
         create table if not exists Logging(
-            TimeStamp text,
+            TimeStamp text NOT NULL PRIMARY KEY,
             CreationTime text,
             Log_Type text,
             Log_Message text
@@ -103,7 +102,7 @@ class CreateTables:
         # create table in connection database with convention Results_SymbolName with columns CreationTime , pnlOverall , Status , Time_Stamp
         query = """
         create table if not exists Results_{}(
-            CreationTime text,
+            CreationTime text NOT NULL PRIMARY KEY,
             pnlOverall real,
             Status text,
             TimeStamp text

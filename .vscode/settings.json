@@ -16,6 +16,13 @@
             "name": "queries",
             "group": "fourgp",
             "database": "${workspaceFolder:fourgp_bot}/data/data.db"
+        },
+        {
+            "previewLimit": 100,
+            "driver": "SQLite",
+            "name": "test_data",
+            "group": "fourgp",
+            "database": "${workspaceFolder:fourgp_bot}/data/data_test.db"
         }
     ]
 }

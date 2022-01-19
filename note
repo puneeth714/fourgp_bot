@@ -151,31 +151,64 @@ DONE :
                               * use the data from database for the specified timeframe and market pair and limit and convert to pandas data.
                         * Write to Logging table about the data collected from exchange or database.
 
-TODO :
+TODO #6 :
       * Update Trend calculations.
       * Create logging for database read and write.
       * Create logging for exchange read.
       * Create doc string for required functions that might not be changed.
       * Update README.md file.
+      # Handle internet connection error while fetching data from exchange.
 Fixed-FIXME :
       * Error showing config.json file not found when running for the fist time (without data.db file).
 
 Update : trend    --
-                  * Dependence on technical : 
-                              1. RSI
-                              2. Ema short and long - is ema more(down trend) or less(up trend) and ema present is less than before(down trend) or more than  before(up trend)
-                              3. Macd - histogram
-                              4. Aroon -upper and lower
-                              5. Resistance and support levels
-                  * Mathematical dependence :
-                              1. RSI --  min(RSI)=20,max(RSI)=80                                                        = x -> Directly proportional to the trend
-                              2.    * present value - Ema_short                                                         = a -> Directly proportional to the trend
-                                    * present value - Ema_long                                                          = b -> Directly proportional to the trend
-                                    * EMA_short_Previous - EMA_short_Current                                            = c -> Directly proportional to the trend
-                                    * EMA_long_Previous - EMA_long_Current                                              = d -> Directly proportional to the trend
-                              3. Macd - histogram                                                                       = y/asset price -> Directly proportional to the trend
-                              4. Aroon -upper and lower -- aroon_up                                                     = min(0),max(100) = z1 -> Directly proportional to the trend
-                                                           aroon_down = min(0),max(100)                                 = 1/z2 -> Inversely proportional to the trend
-                              5. Resistance and support levels                                                          =  1/(resistance    - present value) -- max(resistance-support)                                                                     -> Inversely proportional to the trend = 1/k1
-                                                                                                                        present value - support           -- min(0) -> Directly proportional to the trend = k2
-                        
+* Dependence on technical : 
+            1. RSI
+            2. Ema short and long - is ema more(down trend) or less(up trend) and ema present is less than before(down trend) or more than  before(up trend)
+            3. Macd - histogram
+            4. Aroon -upper and lower
+            5. Resistance and support levels
+* Mathematical dependence :
+            1. RSI --  min(RSI)=20,max(RSI)=80                                                        = x -> Directly proportional to the trend
+            2.    * present value - Ema_short                                                         = a -> Directly proportional to the trend
+                  * present value - Ema_long                                                          = b -> Directly proportional to the trend
+                  * EMA_short_Previous - EMA_short_Current                                            = c -> Directly proportional to the trend
+                  * EMA_long_Previous - EMA_long_Current                                              = d -> Directly proportional to the trend
+            3. Macd - histogram                                                                       = y/asset price -> Directly proportional to the trend
+            4. Aroon -upper and lower -- aroon_up                                                     = min(0),max(100) = z1 -> Directly proportional to the trend
+                                          aroon_down = min(0),max(100)                                 = 1/z2 -> Inversely proportional to the trend
+            5. Resistance and support levels                                                          =  1/(resistance    - present value) -- max(resistance-support)                                                                     -> Inversely proportional to the trend = 1/k1
+                                                                                                      present value - support           -- min(0) -> Directly proportional to the trend = k2
+Indicators Update process:
+      * Get table name for that indicator
+      * Check if data is present in database or not
+      if true:
+            * Check if data is new or not
+                  * if not new
+                        * Get Klines for specified timeframe and limit
+                        * Calculate the indicators
+                        * Write to database ---- constraint : Write to database only the new data(need a function to do so)
+                  * else
+                        * use that data
+      else:
+            * Should have klines data(as Klines is first entrance to program no problem with this test case(if klines not present))
+            in database
+            * Get all klines data from database/exchange 
+            * use it to calculate indicators
+            * Write the indicators to database
+            * clip the calculated data by the specified limit
+      * Write to Logging table about the data collected from exchange or database.
+
+Version-2:
+      * Get updates for limits
+      * If first time or no data in database
+            * Get indicators data --
+                  1.Get kline data from database or already fetched data
+                  2.Use the kline data and calculate the indicators.
+                  3.Write the indicators to database
+                  4.Clip the calculated data by the specified limit
+      * else if data is present and need to update
+            * Get indicators data --
+                  1.Get limit data from database or already fetched data
+                  2.Use the limit data and calculate the indicators.
+                  3.clip the pandas data by the specified limit(Update limit)

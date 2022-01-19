@@ -2,14 +2,18 @@ import sqlite3
 
 from fourgp.database.database_json import Database_json
 from fourgp.database.database_sqlite3 import Database_sqlite3
+# TODO : added need updates in doc string indicators
+from fourgp.technicals.indicators import Indicators
 from fourgp.utils.exchange_market_data import exchange_data
 from fourgp.utils.make_data import MakeData
 from fourgp.utils.update_data import (database_type, dict_update_data,
                                       insert_new_data, run_updater)
+from fourgp.utils.utilities import dict_pandas, get_specific_coloumn
+
 # from main import database_file_path
 
 
-class Data(exchange_data, MakeData, Database_sqlite3, Database_json):
+class Data(exchange_data, MakeData, Database_sqlite3, Database_json, Indicators):
     def __init__(self, database: str or sqlite3.Connection = None, config=None, Exchange: str = None,
                  MarketPair: str = None, timeframes: list = None, limit: list = None, data=None, DataType: str = None, ForceGet: bool = False) -> None:
         """The Data class is used to get data from the exchange and to make data for analysis and also to store 
@@ -44,24 +48,67 @@ class Data(exchange_data, MakeData, Database_sqlite3, Database_json):
     def get_data(self):
         # get the data from the database containing DataType_market_pair_timeframe (some times no timeframe and some times no market_pair is not used in name)
         # get all data from table_name
-        count={}
-        limit=self.limit.copy()
-        #FIXME : Count is not correct shouldn't be size of table but size of data needed.
+        count = {}
+        limit = self.limit.copy()
+        # Fixed-FIXME : Count is not correct shouldn't be size of table but size of data needed.
         for self.timeframe in self.timeframes:
             self.__get_table_name__()
-            self.limit[self.timeframe],count[self.timeframe]=self.check_updates()
-        self.data=self.get_data_klines()
-        data=self.list_to_pandas()
+            self.limit[self.timeframe], count[self.timeframe] = self.check_updates()
+        self.data = self.data_select(limit=limit)
         # write the data dict of pandas to a database
-        for self.timeframe in self.timeframes:
-            self.__get_table_name__()
-            self.data=data[self.timeframe]
-            self.write_data_to_database()
-        self.limit=limit
+        self.put_data(self.data)
+        self.limit = limit
         del limit
         # If count is less than the limit, then fetch the data  again from the database
+        self.database_data()
+
+    def database_data(self, force=None):
+        data = {}
         for self.timeframe in self.timeframes:
             self.__get_table_name__()
-            self.data=self.get_data_from_database()
-            data[self.timeframe]=self.tuples_to_pandas()
+            data[self.timeframe] = self.get_data_from_database(force_all=force)
+        return data
+
+    def put_data(self, data):
+        # write data to database from the dictionary of pandas data
+        self.data = data.copy()
+        # FIXME #8 : Fix for writting indicators data into database
+        #8 THe tables created when self.DataType is Indicators are not desirable.
+        for self.timeframe in data.keys():
+            self.__get_table_name__()
+            self.data = data[self.timeframe]
+            self.write_data_to_database()
+
+    def data_select(self, limit=None):
+        if self.DataType == 'Kline':
+            self.data = self.get_data_klines()
+            return self.list_to_pandas()
+        elif self.DataType == 'Indicators':
+            self.DataType = "Kline"
+            limit_copy = self.limit.copy()
+            self.limit = limit
+            self.data = self.database_data()
+            self.limit = limit_copy
+            self.DataType = "Indicators"
+            self.periods = self.config["periods"]
+            # create indicators dictionary
+            self.indicators = {}
+            self.make_indicator()
+            # add timestamp of make_data to indicators
+            # get the timestamp from make_data and return it
+            coloumn_name = "Timestamp"
+            coloumn_data = get_specific_coloumn(
+                data=self.data, coloumn_name=coloumn_name)
+            indicator_data = dict_pandas(
+                data_dictionary=self.indicators, coloumn_data=coloumn_data)
+            return self.clip_data(indicator_data, limit_copy)
+
+    def clip_data(self, data, limit) -> dict:
+        # clip the data from the database
+        # just get last limit number of data from the pandas data
+        for each in data.keys():
+            for timeframe in limit.keys():
+                if timeframe in each:
+                    data[each] = data[each].tail(limit[timeframe])
+                    continue
         return data

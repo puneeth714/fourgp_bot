@@ -2,3 +2,4 @@ __pycache__/
 data.db
 .env
 out.log
+database_updates.py
