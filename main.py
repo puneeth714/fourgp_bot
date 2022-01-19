@@ -33,14 +33,15 @@ def main(MarketPair: str):
     tables_create.make_tables()
     # Load exchange market data in pandas format
     data = Data(database=database_file_path, config=config, Exchange=config["Exchange"],
-                MarketPair=MarketPair, timeframes=config["time_frame"], limit=config["limit"], DataType="Kline")  # FIXME: [timeframes] is not working list not single value
+                MarketPair=MarketPair, timeframes=config["time_frame"], limit=config["limit"])  # FIXME: [timeframes] is not working list not single value
     # TODO : Kline naming convention is not correct and all other table names are not correct
+    data.DataType="Kline"
     make_data = data.get_data()
 
-    # atr=AtrChange(config)
-    # atr.connect()
-    # atr.find_atr()
-    # atr.create_report()
+    atr=AtrChange(config)
+    atr.connect()
+    atr.find_atr(Database=database_file_path)
+    atr.create_report()
 
     # # update data if needed and rewrite existing data
     # sleep for 60 seconds

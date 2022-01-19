@@ -72,7 +72,11 @@ class Database_sqlite3:
         # data = cursor.fetchall()
         # # close the cursor
         # cursor.close()
-        data = pd.read_sql_query(query, self.connection)
+        try:
+            data = pd.read_sql_query(query, self.connection)
+        except Exception as e:
+            print(e)
+            return False
         return data
 
     def write_data_to_database(self, data_opt: pd.DataFrame = None):

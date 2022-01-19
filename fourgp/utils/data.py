@@ -62,7 +62,7 @@ class Data(exchange_data, MakeData, Database_sqlite3, Database_json, Indicators)
         # If count is less than the limit, then fetch the data  again from the database
         self.database_data()
 
-    def database_data(self, force=None):
+    def database_data(self, force=None)->dict:
         data = {}
         for self.timeframe in self.timeframes:
             self.__get_table_name__()
