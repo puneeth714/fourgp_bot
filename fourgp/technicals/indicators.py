@@ -43,8 +43,11 @@ class Indicators:
             self.data[indicator] = self.indicators[indicator]
 
     def print_indicators(self):
-        print(self.indicators)
-
+        # print the self.indicators in formatted way
+        for indicator in self.indicators.keys():
+            print(indicator)
+            print(self.indicators[indicator])
+            print("\n")
     def zig_zag_levels(self):
         return {
             timeframe: zig_zag_binary(
@@ -52,3 +55,5 @@ class Indicators:
             )
             for timeframe in self.data.keys()
         }
+    def get_indicators(self):
+        pass

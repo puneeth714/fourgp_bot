@@ -85,7 +85,7 @@ class AtrChange(MakeData):
         fee_value = amount*total_fee
         value_gets = change-fee_value
         percent_change = value_gets*100/amount
-        #FIXME: Change the rounding to 2 decimal places to more accurately represent the change.
+        #FIXME: #7 Change the rounding to 2 decimal places to more accurately represent the change.
         # (Values with 2 decimal places are not accurate and some are showing 0.00)
         return [amount, round(change, 2), round(fee_value, 2), round(value_gets, 2), round(percent_change, 2)]
 

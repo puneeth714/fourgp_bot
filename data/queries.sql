@@ -33,3 +33,8 @@ SELECT count(*) from Kline_ETHUSDT_5m WHERE Timestamp > 1642206660000;
 
 SELECT count(*) from Kline_ETHUSDT_4h;
 SELECT count(*) from Kline_ETHUSDT_4h WHERE Timestamp > 1642206660000;
+
+SELECT * from Kline_ETHUSDT_1m order by Timestamp desc;
+
+--get all table names and drop table names starting with Indicators_ in sqlite3
+SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'Indicators_%';
