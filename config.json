@@ -16,7 +16,7 @@
     "support_resistance" : {"create_type":"zig_zag"},
     "market_data_limit" : "1",
     "atr_change_percentage" : "0.5",
-    "atr_change_markets" : ["BTCUSDT","ETHUSDT","SOLUSDT","ADAUSDT","SHIBUSDT"], 
+    "atr_change_markets" : ["BTCUSDT","ETHUSDT","SOLBTC","ADAUSDT","SHIBUSDT"], 
     "use_this_base_currency" : ["USDT"],
     "atr_change_distance":[2,5,10],
     "volume_pair_list":"True",

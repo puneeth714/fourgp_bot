@@ -212,3 +212,19 @@ Version-2:
                   1.Get limit data from database or already fetched data
                   2.Use the limit data and calculate the indicators.
                   3.clip the pandas data by the specified limit(Update limit)
+
+Atr_change Update for getting data from database: [#11](https://github.com/puneeth714/fourgp_bot/issues/11)
+      * Process:
+      * should inherit from Data class
+            * Connect Exchange i.e set self.Exchange to exchange and call __connect_exchange__() method. --  **Optional when calling outside**
+            * Connect database i.e set self.database to database path and call make_database() method.
+            * Set DataType,MarketPair,Timeframe,Limit values in the for loop.
+            * call database_data function with **data=False**.
+            * set self.data[time+"_"+str(distance)]=data returned.
+
+Atr_change Update 2 for getting data from database: [#11](https://github.com/puneeth714/fourgp_bot/issues/11)
+      * Process :
+      * Should have Inherited AtrChange to Data class
+      * Call get_data() method
+      * In data_select():
+            1.

@@ -1,19 +1,18 @@
 import re
-from tkinter.messagebox import RETRY
-
 import ccxt
 import pandas_ta as ta
 from fourgp.utils.make_data import MakeData
+from fourgp.utils.data import Data
 from tabulate import tabulate
 
 
-class AtrChange(MakeData):
+class AtrChange(Data):
     def __init__(self, config) -> None:  # TODO create doc string
-        self.connection = None
+        self.connection_exchange = None
         self.config = config
         self.atr_values = {}
         tmp = self.get_configs()
-        self.market_pair, self.timeframe, self.check_back, self.base_coin = tmp[
+        self.market_pair, self.timeframe_atr, self.check_back, self.base_coin = tmp[
             0], tmp[1], tmp[2], tmp[3]
         del tmp
 
@@ -22,30 +21,58 @@ class AtrChange(MakeData):
         timeframe = self.config['time_frame']
         check_back = self.config['atr_change_distance']
         base_coin = self.config['use_this_base_currency']
-        self.connection = self.config["Exchange"]
+        self.connection_exchange = self.config["Exchange"]
         return [market_pair, timeframe, check_back, base_coin]
 
     def check_coin(self, pair) -> str:
         return any(re.search(base_coin+"$", pair) for base_coin in self.base_coin)
 
-    def find_atr(self) -> None:
+    def find_atr(self, Database=True) -> None:
         if self.market_pair == "all":
             self.market_pair = self.get_coins(self.base_coin)
+        if Database != None:
+            self.database = Database
+            self.make_database()
         atr_values = {}
         for market in self.market_pair:
             if not self.check_coin(market):
                 continue
-            self.data = {}
-            for time in self.timeframe:
+            data_is = {}
+            for time in self.timeframe_atr:
                 for distance in self.check_back:
-                    self.data[time+"_"+str(distance)] = self.get_values(
-                        market=market, timeframe=time, distance=distance)
-                    data_is = self.list_to_pandas()
+                    if Database != None:
+                        self.DataType = "Kline"
+                        self.MarketPair = market
+                        self.timeframes = [time]
+                        self.limit = {time: distance}
+                        data = self.database_data()
+                        if self.__check_status__(data=data):
+                            data_is[time+"_"+str(distance)
+                                    ] = data[list(data.keys())[0]]
+                        else:
+                            data_is = self.__no_database__(
+                                time=time, distance=distance, market=market)
+                    else:
+                        data_is = self.__no_database__(
+                            time=time, distance=distance, market=market)
                     atr_values[time+"_"+str(distance)] = self.profit_calculate(
                         self.get_present_price(data_is[time+"_"+str(distance)]), self.indicator(
                             data_is[time+"_"+str(distance)], distance))
             self.atr_values[market] = atr_values
             atr_values = {}
+    def __check_status__(self,data):
+        try:
+            if data[list(data.keys())[0]].empty ==False:
+                return True
+        except:
+            if data[list(data.keys())[0]] !=False:
+                return False
+            
+    def __no_database__(self, time, distance, market):
+        self.data={}
+        self.data[time+"_"+str(distance)] = self.get_values(
+            market=market, timeframe=time, distance=distance)
+        return self.list_to_pandas()
 
     def create_report(self) -> None:
         # # create a pretty format terminal output for the dictionary self.atr_values containing a
@@ -86,16 +113,15 @@ class AtrChange(MakeData):
         fee_value = amount*total_fee
         value_gets = change-fee_value
         percent_change = value_gets*100/amount
-        #FIXME: #7 Change the rounding to 2 decimal places to more accurately represent the change.
+        # FIXME: #7 Change the rounding to 2 decimal places to more accurately represent the change.
 
         # (Values with 2 decimal places are not accurate and some are showing 0.00)
         return [amount, f"{change:.12f}".rstrip("0"), f"{fee_value:.6f}".rstrip("0"),
                         f"{value_gets:.12f}".rstrip("0"), f"{percent_change:.12f}".rstrip("0")]
 
-
     def get_values(self, market: str, timeframe: str, distance: int) -> list:
         # FIXME : use database to fetch data.
-        return self.connection.fetchOHLCV(market, timeframe=timeframe, limit=distance)
+        return self.connection_exchange.fetchOHLCV(market, timeframe=timeframe, limit=distance)
 
     def indicator(self, data: dict, distance: int) -> float:
         return float(
@@ -105,11 +131,11 @@ class AtrChange(MakeData):
         )
 
     def connect(self) -> None:
-        if self.connection == "binance":
-            self.connection = ccxt.binance()
+        if self.connection_exchange == "binance":
+            self.connection_exchange = ccxt.binance()
 
     def get_coins(self, base_coin: list) -> list:
-        vals = self.connection.fetch_tickers()
+        vals = self.connection_exchange.fetch_tickers()
         # get all values of symbol key in vals dictionary
         if type(vals) != dict:
             print("Error Requesting Tickers")
