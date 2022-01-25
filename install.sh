@@ -15,7 +15,7 @@ post_operations()
     fi
 }
 
-# install cypthon
+# install cython
 if [[ -z "$(pip show cython)" ]]; then  # If cython is not installed
     echo "Installing cython"
     pip install cython  # Install cython
@@ -48,7 +48,7 @@ if [ -z "$(which ta-lib-config)" ]; then
     echo "Using $source_file as source file"
     # Check if ta-lib-0.4.0-src.tar.gz is present in /tmp
     if [ ! -f /tmp/$source_file ]; then
-        echo "ta-lib-0.4.0-src.tar.gz is not present in /tmp, downloading it"
+        echo "$source_file is not present in /tmp, downloading it"
         wget $source -O /tmp/$source_file   # Download source file
     else
         echo "$source_file already exists. Using it"
