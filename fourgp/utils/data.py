@@ -60,7 +60,8 @@ class Data(exchange_data, MakeData, Database_sqlite3, Database_json, Indicators)
         self.limit = limit
         del limit
         # If count is less than the limit, then fetch the data  again from the database
-        self.database_data()
+        return self.database_data()
+
 
     def database_data(self, force=None)->dict:
         data = {}
@@ -72,7 +73,6 @@ class Data(exchange_data, MakeData, Database_sqlite3, Database_json, Indicators)
     def put_data(self, data):
         # write data to database from the dictionary of pandas data
         self.data = data.copy()
-        # FIXME #8 : Fix for writting indicators data into database
         #8 THe tables created when self.DataType is Indicators are not desirable.
         for self.timeframe in data.keys():
             self.__get_table_name__()

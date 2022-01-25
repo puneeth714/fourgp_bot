@@ -35,13 +35,13 @@ def main(MarketPair: str):
     data = Data(database=database_file_path, config=config, Exchange=config["Exchange"],
                 MarketPair=MarketPair, timeframes=config["time_frame"], limit=config["limit"])  # FIXME: [timeframes] is not working list not single value
     # TODO : Kline naming convention is not correct and all other table names are not correct
-    data.DataType="Kline"
+    data.DataType = "Kline"
     make_data = data.get_data()
 
-    atr=AtrChange(config)
-    atr.connect()
-    atr.find_atr(Database=database_file_path)
-    atr.create_report()
+    # atr=AtrChange(config)
+    # atr.connect()
+    # atr.find_atr(Database=database_file_path)
+    # atr.create_report()
 
     # # update data if needed and rewrite existing data
     # sleep for 60 seconds
@@ -64,28 +64,28 @@ def main(MarketPair: str):
     # data.DataType = "Indicators"
     # data.put_data()
     # Get indicators
-    data.DataType="Indicators"
+    data.DataType = "Indicators"
     indicators = data.get_data()
     #  Make support and resistance
     # convert unix time to datetime
     # df = make_data
-    # print(df["5m"].tail(10))
-    # print(df["1m"].head(200))
     # df = make_data.time_convert()
     # print(df["5m"].tail(10))
 
     #     #write dataframe to csv samples.txt
     # df["1m"].to_csv("samples.txt")
 
-    # # Get support and resistance
-    # sr = support_resistance.main_sr_dict(
-    #     df, "zig_zag", config=config["support_resistance"]["create_type"])
-    # # print(sr)
-
-    # # clean data
-    # sr = support_resistance.clean_levels(sr)
-    # print("\n\n\n")
+    # Get support and resistance
+    sr = support_resistance.main_sr_dict(
+        make_data, "zig_zag", config=config["support_resistance"]["create_type"])
     # print(sr)
+    # clean data
+    sr = support_resistance.clean_levels(sr)
+    sr = support_resistance.get_support_resistance(sr_each=sr)
+    # convert sr dictionary to dataframe
+    sr = pd.DataFrame(sr)
+
+
 
     # # candlestick pattern
     # candle = CandlePatterns(make_data.list_to_pandas(), ["all",
@@ -97,25 +97,26 @@ def main(MarketPair: str):
     # market= marketTrades(market_pair,ccxt_object,config["market_data_limit"])
     # print(market.get_trades())
 
-    # #  Depth of the market
-    # depth_sort=DepthData(depth)
-    # a=depth_sort.get_depth_prices()
-    # print(a)
-    # b=depth_sort.get_total_asks()
-    # print(b)
-    # c=depth_sort.get_total_bids()
-    # print(c)
-    # depth_sort.create_depth_chart()
+    #  Depth of the market
+    data.limit = config["depth_data_limit"]
+    depth=data.get_market_depth()
+    depth_sort=DepthData(depth)
+
+    # asks=depth_sort.get_total_asks()
+    # print(asks)
+    # bids=depth_sort.get_total_bids()
+    # print(bids)
+    depth_sort.create_depth_chart()
 
     # #  Zig zag
     # zz=indicators.zig_zag_levels()
     # print(zz["5m"])
 
 
-    # # Trend calculate
-    # indicator = indicators.indicators
-    # trends = Trend(df, indicator, sr, config)
-    # print(trends.trend_make())
+    # Trend calculate
+    indicator = indicators[config["primary_timeframe"]]
+    trends = Trend(make_data, indicator, sr, config)
+    print(trends.trend_make())
     # # time end
     # end_time = time.time()
     # print("\n\n\n")

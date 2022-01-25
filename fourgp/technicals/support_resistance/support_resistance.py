@@ -11,8 +11,7 @@ from fourgp.technicals.support_resistance.pricelevels.scoring.touch_scorer impor
 from fourgp.utils.make_data import MakeData
 
 
-
-def from_config(data:pd.DataFrame, config:dict)->dict:
+def from_config(data: pd.DataFrame, config: dict) -> dict:
     """Get the collection name from the config file and call the appropriate function   
 
     Args:
@@ -33,7 +32,7 @@ def from_config(data:pd.DataFrame, config:dict)->dict:
         return levels
 
 
-def from_user_input(data: pd.DataFrame)->dict:
+def from_user_input(data: pd.DataFrame) -> dict:
     """Get the collection name from the user and call the appropriate function
 
     Args:
@@ -59,7 +58,14 @@ def from_user_input(data: pd.DataFrame)->dict:
         return from_user_input(data)
 
 
-def from_collection_name(data:pd.DataFrame, collection_name:str)->dict:
+def get_support_resistance(sr_each) -> float:
+    sr = []
+    for i in sr_each:
+        sr += sr_each[i]
+    return sr
+
+
+def from_collection_name(data: pd.DataFrame, collection_name: str) -> dict:
     """Get the collection name from the argument and call the appropriate function
 
     Args:
@@ -84,7 +90,7 @@ def from_collection_name(data:pd.DataFrame, collection_name:str)->dict:
         return from_user_input(data)
 
 
-def clean_levels(levels:dict) -> dict:
+def clean_levels(levels: dict) -> dict:
     """Clean the levels of support and resistance extact the values itself.
 
     Args:
@@ -94,9 +100,9 @@ def clean_levels(levels:dict) -> dict:
         dict: The cleaned levels of support and resistance(mean all unwanted values,data stuctures are removed)) 
     """
     new = {}
-    each_timeframe=[]
+    each_timeframe = []
     for level, value in levels.items():
-        if levels[level] is  None:
+        if levels[level] is None:
             print("No levels found for {}".format(level))
             continue
         for vals in range(len(levels[level])):
@@ -108,7 +114,7 @@ def clean_levels(levels:dict) -> dict:
     return new
 
 
-def correct_date(df: pd.DataFrame)->pd.DataFrame:
+def correct_date(df: pd.DataFrame) -> pd.DataFrame:
     """Change the date to the correct format i.e from unix to datetime
 
     Args:
@@ -122,7 +128,7 @@ def correct_date(df: pd.DataFrame)->pd.DataFrame:
     return df
 
 
-def main_sr(data: pd.DataFrame, collection_name: str = None, config: dict = None)->dict:
+def main_sr(data: pd.DataFrame, collection_name: str = None, config: dict = None) -> dict:
     """The main function to collect the levels of support and resistance calls the appropriate function based on the collection name
 
     Args:
@@ -142,7 +148,7 @@ def main_sr(data: pd.DataFrame, collection_name: str = None, config: dict = None
         return from_user_input(df)
 
 
-def main_sr_dict(data: dict, collection_name: str = None, config: dict = None)->dict:
+def main_sr_dict(data: dict, collection_name: str = None, config: dict = None) -> dict:
     """This function calls the main_sr function and returns the levels of support and resistance
 
     Args:
@@ -160,7 +166,7 @@ def main_sr_dict(data: dict, collection_name: str = None, config: dict = None)->
     }
 
 
-def raw_levels(df: pd.DataFrame)->dict:
+def raw_levels(df: pd.DataFrame) -> dict:
     cl = RawPriceClusterLevels(
         None, merge_percent=0.25, use_maximums=True, bars_for_peak=91)
     cl.fit(df)
@@ -170,7 +176,7 @@ def raw_levels(df: pd.DataFrame)->dict:
     return cl.levels
 
 
-def scoring(df: pd.DataFrame)->dict:
+def scoring(df: pd.DataFrame) -> dict:
     cl = RawPriceClusterLevels(
         None, merge_percent=0.25, use_maximums=True, bars_for_peak=91)
     cl.fit(df)
@@ -182,7 +188,7 @@ def scoring(df: pd.DataFrame)->dict:
     return scorer.scores
 
 
-def zig_zag(df: pd.DataFrame)->dict:
+def zig_zag(df: pd.DataFrame) -> dict:
     zig_zag_percent = 0.8
 
     zl = ZigZagClusterLevels(peak_percent_delta=zig_zag_percent, merge_distance=None,

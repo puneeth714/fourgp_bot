@@ -1,5 +1,4 @@
 import time
-from distutils.command.config import config
 
 import pandas as pd
 from fourgp.utils.update_data import present_time
@@ -69,7 +68,7 @@ class Trend:
         ema_val = [[values["ema_{}_9".format(time_frame)][0], values["ema_{}_9".format(time_frame)][1]], [
             values["ema_{}_50".format(time_frame)][0], values["ema_{}_50".format(time_frame)][1]]]
         Ema = self.Ema_check(ema_val=ema_val)
-        support_resistance_val = self.get_support_resistance()
+        support_resistance_val = self.sr
         candles_check = self.__get_candles__(5)
         present_val = ticker
         SR = self.SR_check(support_resistance_val,
@@ -200,3 +199,6 @@ class Trend:
             for indicator in self.indicators
             if "_"+time_frame+"_" in indicator
         }
+    #6 updated trend
+    def Trend(self):
+        pass

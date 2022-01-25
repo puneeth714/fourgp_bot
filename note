@@ -164,21 +164,110 @@ Fixed-FIXME :
 Update : trend    --
 * Dependence on technical : 
             1. RSI
+                  * RSI price slope 
             2. Ema short and long - is ema more(down trend) or less(up trend) and ema present is less than before(down trend) or more than  before(up trend)
             3. Macd - histogram
             4. Aroon -upper and lower
             5. Resistance and support levels
 * Mathematical dependence :
             1. RSI --  min(RSI)=20,max(RSI)=80                                                        = x -> Directly proportional to the trend
+               Should only check in higher timeframe(Relatively) : more than 15 min always.(I.e informative)
+                  * Check Slope of present value of RSI and previous local min or max
+                  * Check present value of price and previous local min or max.
+                  * if slop difference (rsi_slope-price_slope) is negative:
+                        * Then the trend reversal may happen                                          = x1 -> Inversely proportional to the trend
+                    else:
+                        * The trend is not changing                                                   = x2 -> Directly proportional to the trend
+                  
             2.    * present value - Ema_short                                                         = a -> Directly proportional to the trend
                   * present value - Ema_long                                                          = b -> Directly proportional to the trend
                   * EMA_short_Previous - EMA_short_Current                                            = c -> Directly proportional to the trend
                   * EMA_long_Previous - EMA_long_Current                                              = d -> Directly proportional to the trend
-            3. Macd - histogram                                                                       = y/asset price -> Directly proportional to the trend
+            3. Macd - histogram                                                                       = y/asset price #FIXME -> Directly proportional to the trend
             4. Aroon -upper and lower -- aroon_up                                                     = min(0),max(100) = z1 -> Directly proportional to the trend
                                           aroon_down = min(0),max(100)                                 = 1/z2 -> Inversely proportional to the trend
-            5. Resistance and support levels                                                          =  1/(resistance    - present value) -- max(resistance-support)                                                                     -> Inversely proportional to the trend = 1/k1
-                                                                                                      present value - support           -- min(0) -> Directly proportional to the trend = k2
+            5. Resistance and support levels                                                          =  (resistance    - present value) -- max(resistance-support)                                                                     -> Directly proportional to the trend = 1/k1
+                                                                                                      1/(present value - support)           -- min(0) -> Inversely proportional to the trend = k2
+* Functions : 
+      RSI :
+            * parameters -> self,RSI(present)
+            * function -> Check if RSI is in local min or max
+            * return -> RSI(present)
+      RSI_Price_Slope: More weight
+            * parameters -> self,RSI(informative_all),close_prices(informative_all)
+            * function ->* call get_slope(RSI)
+                        * call get_slope(close_prices)
+                        slope_difference = slope_RSI - slope_close_prices
+                        if slope_difference is negative:
+                              * return 1/slope_difference
+                        elsif slope_difference is positive:
+                              * return slope_difference
+                        else:
+                              * return 0
+      Ema_short :
+            * parameters -> self,ema_short(present),value(present)
+            * function->------------------------------------------Need to add functionality to check n previous values and get the average of them.(difference).
+                        * difference = present value - ema_short
+                        return difference
+      Ema_long :
+            * parameters -> self,ema_long(present),value(present)-----last n values
+            * function->------------------------------------------Need to add functionality to check n previous values and get the average of them.(difference).
+                        * difference = present value - ema_long
+                        return difference
+      EMA_short_Previous :
+            * parameters -> self,ema_short_Previous(present),ema_short_current(present)---last n values
+            * function->------------------------------------------Need to add functionality to check n previous values and get the average of them.(difference).
+                        * difference = ema_short_current - ema_short_Previous
+                        return difference
+      EMA_long_Previous :
+            * parameters -> self,ema_long_Previous(present),ema_long_current(present)---last n values
+            * function->------------------------------------------Need to add functionality to check n previous values and get the average of them.(difference).
+                        * difference = ema_long_current - ema_long_Previous
+                        return difference
+      Macd :
+            * parameters -> self, macd_histogram(present)
+            * function -> 
+                        * return macd_histogram(divide it by present price in trend)
+      Aroon_up :
+            * parameters -> self,aroon_up(present)
+            * function -> 
+                        * return aroon_up
+      Aroon_down :
+            * parameters -> self,aroon_down(present)
+            * function -> 
+                        * return 1/aroon_down
+      Resistance and support :
+            * parameters -> self,resistance(all),support(all),High(all),present_value(present)
+            * function -> 
+                        * near_to_s =resistance    - present value
+                        * near_to_r =1/(present value - support)
+                        * touched_r = touch(resistance,price(all),up)
+                        * touched_s = touch(support,price(all),down)
+                        * difference = near_to_s - near_to_r
+                        if difference is negative:
+                              * difference= 1/(present_time-touched_r time)
+                        elif difference is positive:
+                              * difference= present_time-touched_s time
+                        else:
+                              * difference= 1
+                        return near_to_r*difference*touched_r
+      Touch :
+            * parameters -> self,touching,prices,side
+            * function -> 
+                  if side is up:
+                        * for each_price in prices:(should iterate from present val to past)
+                              if prices>touching:
+                                    * return index(prices)
+                        # if not touched the resistance level
+                        return 1
+                  elif side is down:
+                        * for each_price in prices:(should iterate from present val to past)
+                              if prices<touching:
+                                    * return index(prices)       
+                        # if not touched the support level
+                        return 1
+      Make_trend :
+            * all parameters to make = 
 Indicators Update process:
       * Get table name for that indicator
       * Check if data is present in database or not
@@ -227,4 +316,13 @@ Atr_change Update 2 for getting data from database: [#11](https://github.com/pun
       * Should have Inherited AtrChange to Data class
       * Call get_data() method
       * In data_select():
-            1.
+            1.call find_atr()
+      
+Depth_data :
+      TODO:Change the structure of depth_data table 
+      * Write to database format
+            * Timestamp,bids,asks,price_point
+      * What to calculate 
+            * Total bids and asks volumes.
+            * Nearest bid and ask with highest and lowest price volumes.
+
