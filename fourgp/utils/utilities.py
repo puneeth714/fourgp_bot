@@ -14,10 +14,12 @@ def dict_pandas(data_dictionary,coloumn_data):
         data[timeframe]=pd.DataFrame(data[timeframe])
     return data
 def convert_to_string(data):
-    if type(data)==list or type(data)==np.ndarray or type(data):
-        return list(map(str,data))
-    else:
+    if type(data) != list and type(data) != np.ndarray and not type(data):
         return data
+    if type(data[0])==np.ndarray:
+        return list(map(lambda x: str(list(x)),data))
+    else:
+        return list(map(str,data))
 def get_specific_coloumn(data:dict,coloumn_name:str):
     for timeframe in data:
         data[timeframe]=data[timeframe][coloumn_name].to_numpy()

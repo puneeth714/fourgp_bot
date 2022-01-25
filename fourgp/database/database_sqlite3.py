@@ -1,10 +1,11 @@
 import sqlite3
+from numpy import size
 
 import pandas as pd
 from fourgp.utils.make_data import MakeData
 from fourgp.utils.update_data import get_latest_time_of_pandas_data, \
     get_new_data, time_diff_from_data, number_of_seconds_in_timeframe, present_time
-
+import ast
 # create a class to handle the sqlite3 database
 
 
@@ -137,3 +138,48 @@ class Database_sqlite3:
         cursor.execute(query)
         self.connection.commit()
         cursor.close()
+
+    def convert_From_To(self, data: pd.DataFrame, coloumn: str, typeIs: str) -> pd.DataFrame:
+       # Convert the data in a coloumn of data from str to list
+        if typeIs == "float":
+            data = data.apply(lambda x: float(x))
+        elif typeIs == "int":
+            data = data.apply(lambda x: int(x))
+        elif typeIs in {"list", "dict"}:
+            send = data.apply(lambda x: self.string_to_list(x))
+            data = send
+        elif typeIs == "str":
+            data = data.apply(lambda x: str(x))
+        else:
+            print("Type is not found")
+            exit(1)
+        return data
+
+    def string_to_list(self, string: str) -> list:
+        # convert string to list
+        string = string.replace("[", "")
+        string = string.replace("]", "")
+        return string.split(",")
+
+    def dict_Convert(self, data: pd.DataFrame) -> dict:
+        for timeframe in data:
+            for coloumn in data[timeframe]:
+                if type(data[timeframe][coloumn][1]) == str:
+                    if not self.__check_int__(data[timeframe][coloumn][1]):
+                        data[timeframe][coloumn] = self.convert_From_To(
+                            data[timeframe][coloumn], coloumn, "list")
+                    elif self.__check_int__(data[timeframe][coloumn][1]):
+                        data[timeframe][coloumn] = self.convert_From_To(
+                            data[timeframe][coloumn], coloumn, "float")
+                    else:
+                        print("Error in converting {} to dict".format(coloumn))
+                        exit(1)
+        return data
+
+    def __check_int__(self, data: str) -> bool:
+        # check if data is int
+        try:
+            float(data)
+            return True
+        except ValueError:
+            return False

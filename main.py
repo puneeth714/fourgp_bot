@@ -1,5 +1,6 @@
 import time
 import pandas as pd
+from pprint import pprint
 from fourgp.analysis.atr_change import AtrChange
 from fourgp.analysis.trend import Trend
 from fourgp.database.create_tables import CreateTables
@@ -66,6 +67,8 @@ def main(MarketPair: str):
     # Get indicators
     data.DataType = "Indicators"
     indicators = data.get_data()
+    indicators = data.dict_Convert(data=indicators)
+    pprint(indicators)
     #  Make support and resistance
     # convert unix time to datetime
     # df = make_data
@@ -114,14 +117,14 @@ def main(MarketPair: str):
 
 
     # Trend calculate
-    indicator = indicators[config["primary_timeframe"]]
-    trends = Trend(make_data, indicator, sr, config)
-    print(trends.trend_make())
+    # indicator = indicators[config["primary_timeframe"]]
+    # trends = Trend(make_data, indicator, sr, config)
+    # print(trends.trend_make())
     # # time end
-    # end_time = time.time()
-    # print("\n\n\n")
+    end_time = time.time()
+    print("\n\n\n")
     # print("--- %s seconds ---" % (end_time - start_time))
-    # print("--- %s whole seconds ---" % (end_time - start_time0))
+    print("--- %s whole seconds ---" % (end_time - start_time0))
     # files=AtrChange(config)
     # files.connect()
     # files.find_atr()
