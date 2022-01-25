@@ -16,7 +16,7 @@ from fourgp.utils.update_data import (dict_update_data, insert_new_data,
                                       run_updater)
 from fourgp.utils.utilities import dict_pandas, get_specific_coloumn
 # main function to run the program collecting data and running analysis on it and using analysis to make signals.
-
+marketpair="ETHUSDT"
 
 def main(MarketPair: str):
     # whole start
@@ -130,4 +130,4 @@ def main(MarketPair: str):
     # files.find_atr()
     # # files.sort_values()
     # files.create_report()
-main("ETHUSDT")
+main(marketpair)
