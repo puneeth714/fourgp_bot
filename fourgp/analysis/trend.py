@@ -46,8 +46,8 @@ class Trend:
 
     def trend_make(self) -> float:
         time_frame = self.config["primary_timeframe"]
-        candles = self.__get_candles__(2)
-        values: dict = self.__technicals__(time_frame)
+        candles = self.__get_candles__(time_frame,2)
+        values: dict = self.__technicals__(time_frame,2)
         informatives = self.__technicals__(
             self.config["informative_timeframe"])
         ticker: float = self.__ticker_price__()
@@ -89,17 +89,17 @@ class Trend:
         # find the smallest positive value in positives direction and the largest  value in negatives direction
         if positives:
             # Its the nearest resistance
-            smallest_positive_value_change = min(positives, key=positives.get)
-            smallest_positive_value = positives[smallest_positive_value_change]
+            smallest_positive_value = min(positives, key=positives.get)
+            # smallest_positive_value = positives[smallest_positive_value_change]
         else:
             smallest_positive_value = 0
         if negatives:
             # Its the nearest support
-            largest_negative_value_change = max(negatives, key=negatives.get)
-            largest_negative_value = negatives[largest_negative_value_change]
+            largest_negative_value = max(negatives, key=negatives.get)
+            # largest_negative_value = negatives[largest_negative_value_change]
         else:
             largest_negative_value = 0
-        return smallest_positive_value,largest_negative_value
+        return largest_negative_value,smallest_positive_value
 
     def get_support_resistance(self) -> float:
         sr = []
@@ -192,7 +192,7 @@ class Trend:
         __data__ = self.data if count == -1 \
                     else self.data.tail(count)
 
-        return self.__data__[timeframe]
+        return __data__[timeframe]
 
     def get_all_indicator_names(self) -> list:
         return list(self.indicators.keys())
@@ -208,8 +208,8 @@ class Trend:
             Dict[str, pd.DataFrame]: key is indicator, value as pandas DataFrame
         """
         Indicators = {}
-        __indicators__ = self.indicators if count == -1 \
-            else self.indicators.tail(count)
+        __indicators__ = self.indicators[time_frame] if count == -1 \
+            else self.indicators[time_frame].tail(count)
 
         for indicator in __indicators__:
             if "_" + time_frame + "_" in indicator:
@@ -219,7 +219,7 @@ class Trend:
 
     # 6 updated trend
 
-    def Trend(self):
+    def trend_find(self):
         timeframe = self.config["primary_timeframe"]
         informative_timeframe = self.config["informative_timeframe"]
         # all parameters
@@ -232,43 +232,43 @@ class Trend:
         values: dict = self.__technicals__(time_frame=timeframe)
         informatives = self.__technicals__(informative_timeframe)
         # if want latest value
-        self.marketpair = self.marketpair
+        self.marketpair = self.config["market_pair"][0]
         ticker: float = self.__ticker_price__(force_now=False)
         sr = self.sr
         trends = {}
         # generic
         close_values_informatives=candles_informative["Close"].values
-        close_present=candles["timeframe"]["Close"].values[0]
+        close_present=candles["Close"].values[0]
         # RSI
-        rsi_lenght=self.config["periods"]["rsi"][1]
-        rsi_present=values["rsi"+timeframe+rsi_lenght][-1]
-        rsi_informative_lenght=self.config["limit"]["rsi"][0]
-        rsi_informative=informatives["rsi"+informative_timeframe+rsi_lenght]
+        rsi_lenght=str(self.config["periods"]["rsi"][1])
+        rsi_present=float(values["rsi"+"_"+timeframe+"_"+rsi_lenght].tail(1))
+        rsi_informative_lenght=self.config["periods"]["rsi"][0]
+        rsi_informative=informatives["rsi"+"_"+informative_timeframe+"_"+rsi_lenght]
         RSI=self.rsi(rsi_present=rsi_present)
         RSI_informative=self.rsi_Price_Slope(rsi_informative=rsi_informative
         ,close_informative=close_values_informatives)
         # EMA
-        ema_lenght=self.config["periods"]["ema"][1]
-        ema_short_present=values["ema"+"_"+timeframe+"_"+ema_lenght][-1]
-        ema_long_present=values["ema"+"_"+informative_timeframe+"_"+ema_lenght][-1]
-        ema_short_previous=values["ema"+"_"+timeframe+"_"+ema_lenght][-2]
-        ema_long_previous=values["ema"+"_"+informative_timeframe+"_"+ema_lenght][-2]
+        ema_lenght=str(self.config["periods"]["ema"][1])
+        ema_short_present=float(values["ema"+"_"+timeframe+"_"+ema_lenght].tail(1))
+        ema_long_present=float(informatives["ema"+"_"+informative_timeframe+"_"+ema_lenght].tail(1))
+        ema_short_previous=float(values["ema"+"_"+timeframe+"_"+ema_lenght].tail(2).values[0])
+        ema_long_previous=informatives["ema"+"_"+informative_timeframe+"_"+ema_lenght].tail(2).values[0]
         EMA_short=self.ema_Short(ema_short_present,close_present)
         EMA_long=self.ema_Long(ema_long_present,close_present)
         EMA_Short_Previous=self.ema_Short_Previous(ema_short_previous,ema_short_present)
         EMA_Long_Previous=self.ema_Long_Previous(ema_long_previous,ema_long_present)
         # MACD
-        Macd_lenght=self.config["periods"]["macd"][0]
-        Macd_presnt_histogram=values["macd"+"_"+timeframe+"_"+Macd_lenght][-1][2]
-        MACD=self.macd(Macd_presnt_histogram,close_present)
+        Macd_lenght=str(self.config["periods"]["macd"][0])
+        Macd_present_histogram=float(values["macd"+"_"+timeframe+"_"+Macd_lenght].tail(1).values[0][2])
+        MACD=self.macd(Macd_present_histogram,close_present)
         # Aroon up
-        aroon_up_lenght=self.config["periods"]["aroon"][0]
-        arron_up_present=values["aroon"+"_"+timeframe+"_"+aroon_up_lenght][-1]
+        aroon_up_lenght=str(self.config["periods"]["aroon"][0])
+        arron_up_present=float(values["aroon"+"_"+timeframe+"_"+aroon_up_lenght].tail(1).values[0][1])
         AROON_UP=self.aroonUp(arron_up_present=arron_up_present)
         # Aroon down
-        aroon_down_lenght=self.config["periods"]["aroon"][0]
-        arron_down_present=values["aroon"+"_"+timeframe+"_"+aroon_down_lenght][-1]
-        AROON_DOWN=self.aroonDown(aroon_down_present=aroon_down_lenght)
+        aroon_down_lenght=str(self.config["periods"]["aroon"][0])
+        arron_down_present=float(values["aroon"+"_"+timeframe+"_"+aroon_down_lenght].tail(1).values[0][0])
+        AROON_DOWN=self.aroonDown(aroon_down_present=arron_down_present)
         # Support and Resistance
         SUPPORT_RESISTANCE=self.support_resistance(sr=sr,candles_all=candles,present_value=ticker)
 
@@ -284,13 +284,13 @@ class Trend:
         return TREND
     def rsi(self,rsi_present):
         # check if rsi value is in between 30 and 70
-        if rsi_present<30 or rsi_present>70:
+        if rsi_present>30 or rsi_present<70:
             return rsi_present
     def rsi_Price_Slope(self,rsi_informative,close_informative):
         # Implement the slope of the price and slope of rsi vals for 
         # the last n candles
         pass
-    def ema__Short(self,ema_short_present,close_present):
+    def ema_Short(self,ema_short_present,close_present):
         # Implement the ema short value
         difference=close_present-ema_short_present
         return difference
@@ -315,10 +315,14 @@ class Trend:
         return arron_up_present
     def aroonDown(self,aroon_down_present):
         # Based on aroon down value
-        return 1/aroon_down_present
+        try:
+            return 1/aroon_down_present
+        except Exception as e:
+            print(e)
+            return 1
     def support_resistance(self,sr,candles_all,present_value):
         # Based on support and resistance values
-        resistance,support=self.SR_check(support_resistance_val=sr,candles_check=candles_all,present_value=present_value)
+        resistance,support=self.SR_check(support_resistance_val=sr,candles_check=candles_all,present_val=present_value)
         distance_to_s=resistance-present_value
         distance_to_r=present_value-support
         r_count,s_count=self.__touch__([resistance,support],candles_all)
@@ -336,11 +340,11 @@ class Trend:
         for each_price in prices["High"][::-1]:
             resistance_count+=1
             if each_price>touching[0]:
-                price_r= each_price
+                break
         for each_price in prices["Low"][::-1]:
             support_count+=1
             if each_price<touching[1]:
-                price_s= each_price
+                break
         return resistance_count,support_count
     def trend_Max_Min(self):
         # Will work on finding max and min values of the given parameters

@@ -14,7 +14,7 @@
     "depth_data_limit" : 100,
     "primary_timeframe" : "5m",
     "informative_timeframe" : "4h",
-    "support_resistance" : {"create_type":"zig_zag"},
+    "support_resistance" : {"create_type":"zig_zag","use_from_config":"True","sr":[]},
     "market_data_limit" : "1",
     "atr_change_percentage" : "0.5",
     "atr_change_markets" : ["BTCUSDT","ETHUSDT","SOLBTC","ADAUSDT","SHIBUSDT"], 
@@ -22,5 +22,6 @@
     "atr_change_distance":[2,5,10],
     "volume_pair_list":"True",
     "whitelist_pairs_static":[]
+    
 
 }

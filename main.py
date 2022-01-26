@@ -63,11 +63,13 @@ def main(MarketPair: str):
     # # write the data to the database
     # data.DataType = "Indicators"
     # data.put_data()
-    # Get indicators
-    data.DataType = "Indicators"
-    indicators = data.get_data()
-    indicators = data.dict_Convert(data=indicators)
-    pprint(indicators)
+
+    # # Get indicators
+    # data.DataType = "Indicators"
+    # indicators = data.get_data()
+    # indicators = data.dict_Convert(data=indicators)
+    # pprint(indicators)
+
     #  Make support and resistance
     # convert unix time to datetime
     # df = make_data
@@ -78,12 +80,18 @@ def main(MarketPair: str):
     # df["1m"].to_csv("samples.txt")
 
     # Get support and resistance
-    sr = support_resistance.main_sr_dict(
-        make_data, "zig_zag", config=config["support_resistance"]["create_type"])
-    # print(sr)
-    # clean data
-    sr = support_resistance.clean_levels(sr)
-    sr = support_resistance.get_support_resistance(sr_each=sr)
+    if input("Do you want to use values in configuration :\nTrue/False :")=="True" \
+        or config["support_resistance"]["use_from_config"]=="True":
+        sr=config["support_resistance"]["sr"]
+        print("Using values from configuration")
+    else:
+        sr = support_resistance.main_sr_dict(
+            make_data, "zig_zag", config=config["support_resistance"]["create_type"])
+        # print(sr)
+        # clean data
+        sr = support_resistance.filter_levels(sr)
+        sr = support_resistance.clean_levels(sr)
+        sr = support_resistance.get_support_resistance(sr_each=sr)
     # convert sr dictionary to dataframe
     # sr = pd.DataFrame(sr)
 
@@ -99,26 +107,27 @@ def main(MarketPair: str):
     # market= marketTrades(market_pair,ccxt_object,config["market_data_limit"])
     # print(market.get_trades())
 
-    #  Depth of the market
-    data.limit = config["depth_data_limit"]
-    depth=data.get_market_depth()
-    depth_sort=DepthData(depth)
+    # #  Depth of the market
+    # data.limit = config["depth_data_limit"]
+    # depth=data.get_market_depth()
+    # depth_sort=DepthData(depth)
 
-    # asks=depth_sort.get_total_asks()
-    # print(asks)
-    # bids=depth_sort.get_total_bids()
-    # print(bids)
-    depth_sort.create_depth_chart()
+    # # asks=depth_sort.get_total_asks()
+    # # print(asks)
+    # # bids=depth_sort.get_total_bids()
+    # # print(bids)
+    # depth_sort.create_depth_chart()
 
     # #  Zig zag
     # zz=indicators.zig_zag_levels()
     # print(zz["5m"])
 
 
-    #Trend calculate
-    # indicator = indicators[config["primary_timeframe"]]
-    trends = Trend(make_data, indicators, sr, config)
-    print(trends.trend_find())
+    # #Trend calculate
+    # # indicator = indicators[config["primary_timeframe"]]
+    # trends = Trend(make_data, indicators, sr, config)
+    # print(trends.trend_find())
+    
     # time end
     end_time = time.time()
     print("\n\n\n")
