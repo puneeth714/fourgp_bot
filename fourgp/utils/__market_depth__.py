@@ -1,4 +1,6 @@
 import matplotlib
+
+
 class DepthData:
     def __init__(self, depth_data: dict) -> None:
         self.depth_data = depth_data
@@ -24,6 +26,7 @@ class DepthData:
 
     def which_has_more_volume(self) -> str:
         return 'asks' if self.get_total_asks() > self.get_total_bids() else 'bids'
+
     def create_depth_chart(self) -> None:
        # create market depth chart same as depth chart in Binance
         matplotlib.use('Agg')
@@ -41,10 +44,10 @@ class DepthData:
         plt.savefig('depth.png')
         plt.close()
         return
-    def find_min_max(self,price,current_price):
+
+    def find_min_max(self, price, current_price):
         # Get the nearest min and max volumes in top and bottom of the given price from the depth data
         if price > current_price:
             max(self.asks[1])
-        elif price<current_price:
+        elif price < current_price:
             min(self.bids[1])
-

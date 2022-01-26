@@ -27,6 +27,7 @@ def present_time() -> int:
     now = datetime.now()
     return now.timestamp()
 
+
 def time_diff_from_data(data_time: int, present_time: int, each_division: int) -> float:
     """Get the time difference from the data time and present time and divide it by the number of seconds.
 
@@ -56,10 +57,12 @@ def get_latest_time_of_pandas_data(latest_time_in_data, timeframe: str, data_pan
     # latest_time_in_data = int(
     #     data_pandas.tail(1)["Time"])
     present_time_in_unix = present_time()
-    timeframe=number_of_seconds_in_timeframe(timeframe)
+    timeframe = number_of_seconds_in_timeframe(timeframe)
     return time_diff_from_data(
         latest_time_in_data, present_time_in_unix, timeframe
     )
+
+
 def number_of_seconds_in_timeframe(timeframe: str) -> int:
     # check number of seconds in the timeframe
     if timeframe == "1m":
@@ -87,6 +90,7 @@ def number_of_seconds_in_timeframe(timeframe: str) -> int:
     elif timeframe == "1y":
         timeframe = 31536000
     return timeframe
+
 
 def get_new_data(exchange: str, coin: str, timeframe: str, limit: int) -> list:
     """Get the new data from the exchange and by calling the exchange_data function in fourgp.utils.exchange_market_data.py

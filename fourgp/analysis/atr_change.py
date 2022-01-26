@@ -60,16 +60,17 @@ class AtrChange(Data):
                             data_is[time+"_"+str(distance)], distance))
             self.atr_values[market] = atr_values
             atr_values = {}
-    def __check_status__(self,data):
+
+    def __check_status__(self, data):
         try:
-            if data[list(data.keys())[0]].empty ==False:
+            if data[list(data.keys())[0]].empty == False:
                 return True
         except:
-            if data[list(data.keys())[0]] !=False:
+            if data[list(data.keys())[0]] != False:
                 return False
-            
+
     def __no_database__(self, time, distance, market):
-        self.data={}
+        self.data = {}
         self.data[time+"_"+str(distance)] = self.get_values(
             market=market, timeframe=time, distance=distance)
         return self.list_to_pandas()

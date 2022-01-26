@@ -17,6 +17,7 @@ from fourgp.utils.update_data import (dict_update_data, insert_new_data,
 from fourgp.utils.utilities import dict_pandas, get_specific_coloumn
 # main function to run the program collecting data and running analysis on it and using analysis to make signals.
 
+
 def main(MarketPair: str):
     # whole start
     start_time0 = time.time()
@@ -64,11 +65,11 @@ def main(MarketPair: str):
     # data.DataType = "Indicators"
     # data.put_data()
 
-    # # Get indicators
-    # data.DataType = "Indicators"
-    # indicators = data.get_data()
-    # indicators = data.dict_Convert(data=indicators)
-    # pprint(indicators)
+    # Get indicators
+    data.DataType = "Indicators"
+    indicators = data.get_data()
+    indicators = data.dict_Convert(data=indicators)
+    pprint(indicators)
 
     #  Make support and resistance
     # convert unix time to datetime
@@ -80,9 +81,9 @@ def main(MarketPair: str):
     # df["1m"].to_csv("samples.txt")
 
     # Get support and resistance
-    if input("Do you want to use values in configuration :\nTrue/False :")=="True" \
-        or config["support_resistance"]["use_from_config"]=="True":
-        sr=config["support_resistance"]["sr"]
+    if input("Do you want to use values in configuration :\nTrue/False :") == "True" \
+            or config["support_resistance"]["use_from_config"] == "True":
+        sr = config["support_resistance"]["sr"]
         print("Using values from configuration")
     else:
         sr = support_resistance.main_sr_dict(
@@ -94,8 +95,6 @@ def main(MarketPair: str):
         sr = support_resistance.get_support_resistance(sr_each=sr)
     # convert sr dictionary to dataframe
     # sr = pd.DataFrame(sr)
-
-
 
     # # candlestick pattern
     # candle = CandlePatterns(make_data.list_to_pandas(), ["all",
@@ -122,17 +121,17 @@ def main(MarketPair: str):
     # zz=indicators.zig_zag_levels()
     # print(zz["5m"])
 
+    # Trend calculate
+    # indicator = indicators[config["primary_timeframe"]]
+    trends = Trend(make_data, indicators, sr, config)
+    print(trends.trend_find())
 
-    # #Trend calculate
-    # # indicator = indicators[config["primary_timeframe"]]
-    # trends = Trend(make_data, indicators, sr, config)
-    # print(trends.trend_find())
-    
     # time end
     end_time = time.time()
     print("\n\n\n")
     # print("--- %s seconds ---" % (end_time - start_time))
     print("--- %s whole seconds ---" % (end_time - start_time0))
+
     # files=AtrChange(config)
     # files.connect()
     # files.find_atr()

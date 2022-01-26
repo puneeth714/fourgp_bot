@@ -199,6 +199,8 @@ def zig_zag(df: pd.DataFrame) -> dict:
     #plot_with_pivots(df['Close'].values, zl.levels, zig_zag_percent)
     # plot_with_pivots(df['Close'].values, zl.levels,  zig_zag_percent, path='image.png')  # in case you want to save chart to  image
     return zl.levels
-def filter_levels(sr,size):
+
+
+def filter_levels(sr, size):
     # get the levels with most touches
     pass

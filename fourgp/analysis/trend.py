@@ -46,8 +46,8 @@ class Trend:
 
     def trend_make(self) -> float:
         time_frame = self.config["primary_timeframe"]
-        candles = self.__get_candles__(time_frame,2)
-        values: dict = self.__technicals__(time_frame,2)
+        candles = self.__get_candles__(time_frame, 2)
+        values: dict = self.__technicals__(time_frame, 2)
         informatives = self.__technicals__(
             self.config["informative_timeframe"])
         ticker: float = self.__ticker_price__()
@@ -99,7 +99,7 @@ class Trend:
             # largest_negative_value = negatives[largest_negative_value_change]
         else:
             largest_negative_value = 0
-        return largest_negative_value,smallest_positive_value
+        return largest_negative_value, smallest_positive_value
 
     def get_support_resistance(self) -> float:
         sr = []
@@ -180,7 +180,7 @@ class Trend:
             ccxt.binance().fetch_ticker(self.marketpair)["last"]
         return self.data[self.config["primary_timeframe"]].tail(1)["Close"].values[0]
 
-    def __get_candles__(self, timeframe,count=-1) -> pd.DataFrame:
+    def __get_candles__(self, timeframe, count=-1) -> pd.DataFrame:
         """Get last "count" number of candles for each timeframe
 
         Args:
@@ -190,7 +190,7 @@ class Trend:
             pd.DataFrame: candles (pd.DataFrame)
         """
         __data__ = self.data if count == -1 \
-                    else self.data.tail(count)
+            else self.data.tail(count)
 
         return __data__[timeframe]
 
@@ -227,8 +227,8 @@ class Trend:
         # ema_long_present,ema_short_previous,ema_long_previous,macd_hist_present,
         # aroon_up_present,aroon_down_present,support_all,resistance_all,High(all)
 
-        candles = self.__get_candles__(timeframe,-1)
-        candles_informative = self.__get_candles__(informative_timeframe,-1)
+        candles = self.__get_candles__(timeframe, -1)
+        candles_informative = self.__get_candles__(informative_timeframe, -1)
         values: dict = self.__technicals__(time_frame=timeframe)
         informatives = self.__technicals__(informative_timeframe)
         # if want latest value
@@ -237,40 +237,51 @@ class Trend:
         sr = self.sr
         trends = {}
         # generic
-        close_values_informatives=candles_informative["Close"].values
-        close_present=candles["Close"].values[0]
+        close_values_informatives = candles_informative["Close"].values
+        close_present = candles["Close"].values[0]
         # RSI
-        rsi_lenght=str(self.config["periods"]["rsi"][1])
-        rsi_present=float(values["rsi"+"_"+timeframe+"_"+rsi_lenght].tail(1))
-        rsi_informative_lenght=self.config["periods"]["rsi"][0]
-        rsi_informative=informatives["rsi"+"_"+informative_timeframe+"_"+rsi_lenght]
-        RSI=self.rsi(rsi_present=rsi_present)
-        RSI_informative=self.rsi_Price_Slope(rsi_informative=rsi_informative
-        ,close_informative=close_values_informatives)
+        rsi_lenght = str(self.config["periods"]["rsi"][1])
+        rsi_present = float(values["rsi"+"_"+timeframe+"_"+rsi_lenght].tail(1))
+        rsi_informative_lenght = self.config["periods"]["rsi"][0]
+        rsi_informative = informatives["rsi" +
+                                       "_"+informative_timeframe+"_"+rsi_lenght]
+        RSI = self.rsi(rsi_present=rsi_present)
+        RSI_informative = self.rsi_Price_Slope(
+            rsi_informative=rsi_informative, close_informative=close_values_informatives)
         # EMA
-        ema_lenght=str(self.config["periods"]["ema"][1])
-        ema_short_present=float(values["ema"+"_"+timeframe+"_"+ema_lenght].tail(1))
-        ema_long_present=float(informatives["ema"+"_"+informative_timeframe+"_"+ema_lenght].tail(1))
-        ema_short_previous=float(values["ema"+"_"+timeframe+"_"+ema_lenght].tail(2).values[0])
-        ema_long_previous=informatives["ema"+"_"+informative_timeframe+"_"+ema_lenght].tail(2).values[0]
-        EMA_short=self.ema_Short(ema_short_present,close_present)
-        EMA_long=self.ema_Long(ema_long_present,close_present)
-        EMA_Short_Previous=self.ema_Short_Previous(ema_short_previous,ema_short_present)
-        EMA_Long_Previous=self.ema_Long_Previous(ema_long_previous,ema_long_present)
+        ema_lenght = str(self.config["periods"]["ema"][1])
+        ema_short_present = float(
+            values["ema"+"_"+timeframe+"_"+ema_lenght].tail(1))
+        ema_long_present = float(
+            informatives["ema"+"_"+informative_timeframe+"_"+ema_lenght].tail(1))
+        ema_short_previous = float(
+            values["ema"+"_"+timeframe+"_"+ema_lenght].tail(2).values[0])
+        ema_long_previous = informatives["ema"+"_" +
+                                         informative_timeframe+"_"+ema_lenght].tail(2).values[0]
+        EMA_short = self.ema_Short(ema_short_present, close_present)
+        EMA_long = self.ema_Long(ema_long_present, close_present)
+        EMA_Short_Previous = self.ema_Short_Previous(
+            ema_short_previous, ema_short_present)
+        EMA_Long_Previous = self.ema_Long_Previous(
+            ema_long_previous, ema_long_present)
         # MACD
-        Macd_lenght=str(self.config["periods"]["macd"][0])
-        Macd_present_histogram=float(values["macd"+"_"+timeframe+"_"+Macd_lenght].tail(1).values[0][2])
-        MACD=self.macd(Macd_present_histogram,close_present)
+        Macd_lenght = str(self.config["periods"]["macd"][0])
+        Macd_present_histogram = float(
+            values["macd"+"_"+timeframe+"_"+Macd_lenght].tail(1).values[0][2])
+        MACD = self.macd(Macd_present_histogram, close_present)
         # Aroon up
-        aroon_up_lenght=str(self.config["periods"]["aroon"][0])
-        arron_up_present=float(values["aroon"+"_"+timeframe+"_"+aroon_up_lenght].tail(1).values[0][1])
-        AROON_UP=self.aroonUp(arron_up_present=arron_up_present)
+        aroon_up_lenght = str(self.config["periods"]["aroon"][0])
+        arron_up_present = float(
+            values["aroon"+"_"+timeframe+"_"+aroon_up_lenght].tail(1).values[0][1])
+        AROON_UP = self.aroonUp(arron_up_present=arron_up_present)
         # Aroon down
-        aroon_down_lenght=str(self.config["periods"]["aroon"][0])
-        arron_down_present=float(values["aroon"+"_"+timeframe+"_"+aroon_down_lenght].tail(1).values[0][0])
-        AROON_DOWN=self.aroonDown(aroon_down_present=arron_down_present)
+        aroon_down_lenght = str(self.config["periods"]["aroon"][0])
+        arron_down_present = float(
+            values["aroon"+"_"+timeframe+"_"+aroon_down_lenght].tail(1).values[0][0])
+        AROON_DOWN = self.aroonDown(aroon_down_present=arron_down_present)
         # Support and Resistance
-        SUPPORT_RESISTANCE=self.support_resistance(sr=sr,candles_all=candles,present_value=ticker)
+        SUPPORT_RESISTANCE = self.support_resistance(
+            sr=sr, candles_all=candles, present_value=ticker)
 
         # Trend
         # for calculation of trend the upper bound and lower bound of multiplication of all parameters are used
@@ -278,80 +289,94 @@ class Trend:
         # i.e theorotically if take upper bound as 1 and lower bound as 0 then trend value will be between 0 and 1
 
         # weight distribution of each parameter is given i note.
-        TREND_MAX=None
-        TREND_MIN=None
-        TREND=RSI*EMA_short*EMA_long*EMA_Long_Previous*EMA_Short_Previous*MACD*AROON_UP*AROON_DOWN*SUPPORT_RESISTANCE
+        TREND_MAX = None
+        TREND_MIN = None
+        TREND = RSI+EMA_short+EMA_long+EMA_Long_Previous + \
+            EMA_Short_Previous+MACD+AROON_UP+AROON_DOWN+SUPPORT_RESISTANCE
         return TREND
-    def rsi(self,rsi_present):
+
+    def rsi(self, rsi_present):
         # check if rsi value is in between 30 and 70
-        if rsi_present>30 or rsi_present<70:
+        if rsi_present > 30 or rsi_present < 70:
             return rsi_present
-    def rsi_Price_Slope(self,rsi_informative,close_informative):
-        # Implement the slope of the price and slope of rsi vals for 
+
+    def rsi_Price_Slope(self, rsi_informative, close_informative):
+        # Implement the slope of the price and slope of rsi vals for
         # the last n candles
         pass
-    def ema_Short(self,ema_short_present,close_present):
+
+    def ema_Short(self, ema_short_present, close_present):
         # Implement the ema short value
-        difference=close_present-ema_short_present
+        difference = close_present-ema_short_present
         return difference
-    def ema_Long(self,ema_long_present,close_present):
+
+    def ema_Long(self, ema_long_present, close_present):
         # Implement the ema long value
-        difference=close_present-ema_long_present
+        difference = close_present-ema_long_present
         return difference
-    def ema_Short_Previous(self,ema_short_previous,ema_short_current):
+
+    def ema_Short_Previous(self, ema_short_previous, ema_short_current):
         # Implement the ema short previous value
-        difference=ema_short_current-ema_short_previous
+        difference = ema_short_current-ema_short_previous
         return difference
-    def ema_Long_Previous(self,ema_long_previous,ema_long_current):
+
+    def ema_Long_Previous(self, ema_long_previous, ema_long_current):
         # Implement the ema long previous value
-        difference=ema_long_current-ema_long_previous
+        difference = ema_long_current-ema_long_previous
         return difference
-    def macd(self,macd_histogram,current_price):
+
+    def macd(self, macd_histogram, current_price):
         # Implement the macd value
-        stregth=macd_histogram/current_price
+        stregth = macd_histogram/current_price
         return stregth
-    def aroonUp(self,arron_up_present):
+
+    def aroonUp(self, arron_up_present):
         # Based on aroon up value
         return arron_up_present
-    def aroonDown(self,aroon_down_present):
+
+    def aroonDown(self, aroon_down_present):
         # Based on aroon down value
         try:
             return 1/aroon_down_present
         except Exception as e:
             print(e)
             return 1
-    def support_resistance(self,sr,candles_all,present_value):
+
+    def support_resistance(self, sr, candles_all, present_value):
         # Based on support and resistance values
-        resistance,support=self.SR_check(support_resistance_val=sr,candles_check=candles_all,present_val=present_value)
-        distance_to_s=resistance-present_value
-        distance_to_r=present_value-support
-        r_count,s_count=self.__touch__([resistance,support],candles_all)
-        difference=s_count-r_count
-        if difference<0:
-            difference=1/(r_count)
-        elif difference>0:
-            difference=s_count
+        resistance, support = self.SR_check(
+            support_resistance_val=sr, candles_check=candles_all, present_val=present_value)
+        distance_to_s = resistance-present_value
+        distance_to_r = present_value-support
+        r_count, s_count = self.__touch__([resistance, support], candles_all)
+        difference = s_count-r_count
+        if difference < 0:
+            difference = 1/(r_count)
+        elif difference > 0:
+            difference = s_count
         else:
-            difference=1
+            difference = 1
         return distance_to_s*(1/distance_to_r)*difference
-    def __touch__(self,touching,prices):
-        resistance_count=0
-        support_count=0
+
+    def __touch__(self, touching, prices):
+        resistance_count = 0
+        support_count = 0
         for each_price in prices["High"][::-1]:
-            resistance_count+=1
-            if each_price>touching[0]:
+            resistance_count += 1
+            if each_price > touching[0]:
                 break
         for each_price in prices["Low"][::-1]:
-            support_count+=1
-            if each_price<touching[1]:
+            support_count += 1
+            if each_price < touching[1]:
                 break
-        return resistance_count,support_count
+        return resistance_count, support_count
+
     def trend_Max_Min(self):
         # Will work on finding max and min values of the given parameters
         # RSI
-        RSI_min=70
-        RSI_max=30
+        RSI_min = 70
+        RSI_max = 30
         # EMA
         # val= val*constant/(lenght,seconds)
-        EMA_short_min=0
+        EMA_short_min = 0
         # MACD

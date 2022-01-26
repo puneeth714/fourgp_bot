@@ -5,10 +5,10 @@ import ccxt
 from dotenv import load_dotenv
 
 
-# exchange_data class is used to get data from exchange after 
-# connecting to a specific exchange given the exchange name from config file config.json 
+# exchange_data class is used to get data from exchange after
+# connecting to a specific exchange given the exchange name from config file config.json
 class exchange_data:
-    def __init__(self, config=None,Exchange:str=None, MarketPair:str=None,timeframes:list=None,limit:list=None) -> None:
+    def __init__(self, config=None, Exchange: str = None, MarketPair: str = None, timeframes: list = None, limit: list = None) -> None:
         """exchage_data class constructor
 
         Args:
@@ -24,10 +24,11 @@ class exchange_data:
         self.__connect_exchange__()
         # self.taker=self.__get_fee__('taker')
         # self.maker=self.__get_fee__('maker')
+
     def config_to_variables(self) -> None:
         """config_to_variables method reads the config file config.json and sets the values to the class variables
-        """        
-        if self.config!=None:
+        """
+        if self.config != None:
             self.load_from_config()
         elif (
             self.Exchange is None
@@ -38,8 +39,8 @@ class exchange_data:
             self.get_from_user()
         else:
             print("May have unhandled exception or error or total perfect")
-            print("Check this vars: exchange = {}, coin = {}, timeframes = {}, limit = {}".format(self.Exchange,self.MarketPair
-            ,self.timeframes,self.limit))
+            print("Check this vars: exchange = {}, coin = {}, timeframes = {}, limit = {}".format(
+                self.Exchange, self.MarketPair, self.timeframes, self.limit))
 
     def get_from_user(self):
         print('No config file found')
@@ -53,11 +54,10 @@ class exchange_data:
         self.timeframes = self.config['time_frame']
         self.limit = self.config['limit']
 
-
     def __connect_exchange__(self) -> None:
         """__connect_exchange__ method connects to exchange given exchange name from config file config.json 
         and sets the exchange object of ccxt library to self.exchange
-        """        
+        """
         # load .env file
         load_dotenv()
         if "binance" in self.Exchange:
@@ -86,14 +86,15 @@ class exchange_data:
 
         Returns:
             dict: [klines data from exchange for a given market pair ,specified timeframe ,specified range]
-        """        
-        #load the marketa        
+        """
+        # load the marketa
         # self.exchange.load_markets()
         if self.Exchange.has['fetchOHLCV']:
             # fetch the data using the fetchOHLCV method
             data = {
                 time_frame: self.Exchange.fetch_ohlcv(
-                    self.MarketPair, time_frame, limit=int(self.limit[time_frame])
+                    self.MarketPair, time_frame, limit=int(
+                        self.limit[time_frame])
                 )
                 for time_frame in self.timeframes
             }
@@ -103,17 +104,18 @@ class exchange_data:
             print('Exchange does not support fetching OHLCV')
             exit(1)
         return data
+
     def get_market_depth(self):
         if self.Exchange.has['fetchOrderBook']:
-            data_market_depth = self.Exchange.fetchOrderBook(self.MarketPair, limit=int(self.limit))
+            data_market_depth = self.Exchange.fetchOrderBook(
+                self.MarketPair, limit=int(self.limit))
         else:
             print('Exchange does not support fetching order book')
             exit(1)
         return data_market_depth
+
     def tick_value(self):
         return self.Exchange.fetch_ticker(self.MarketPair)
-        
-    def __get_fee__(self,side:str):
-        return self.Exchange.load_markets()[self.MarketPair][side]
 
-    
+    def __get_fee__(self, side: str):
+        return self.Exchange.load_markets()[self.MarketPair][side]

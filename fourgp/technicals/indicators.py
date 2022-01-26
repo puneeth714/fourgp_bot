@@ -33,7 +33,8 @@ class Indicators:
                         self.indicators[indicators+"_"+timeframe+"_"+str(period)] = ta.macd(
                             self.data[timeframe]["Close"], fastperiod=12, slowperiod=26, signalperiod=9).to_numpy()
                     elif indicators == "aroon":
-                        self.indicators[indicators+"_"+timeframe+"_"+str(period)] = ta.aroon(self.data[timeframe]["High"], self.data[timeframe]["Low"]).to_numpy()
+                        self.indicators[indicators+"_"+timeframe+"_"+str(period)] = ta.aroon(
+                            self.data[timeframe]["High"], self.data[timeframe]["Low"]).to_numpy()
                     else:
                         print("indicator not found")
         # self.print_indicators()
@@ -48,12 +49,14 @@ class Indicators:
             print(indicator)
             print(self.indicators[indicator])
             print("\n")
+
     def zig_zag_levels(self):
         return {
             timeframe: zig_zag_binary(
-                self.data[timeframe],self.config
+                self.data[timeframe], self.config
             )
             for timeframe in self.data.keys()
         }
+
     def get_indicators(self):
         pass
