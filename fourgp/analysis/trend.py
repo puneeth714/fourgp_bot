@@ -1,11 +1,13 @@
 import time
 
 import pandas as pd
+from fourgp.technicals.indicators import Indicators
 from fourgp.utils.update_data import present_time
+from typing import Dict
 
 
 class Trend:
-    def __init__(self, data: dict, indicators: dict, sr: dict, config: dict) -> None:
+    def __init__(self, data: dict, indicators: pd.DataFrame, sr: dict, config: dict) -> None:
         """Trend class constructor method.
 
         Args:
@@ -75,7 +77,7 @@ class Trend:
                            candles_check, present_val=present_val)
         return candle+RSI+MACD+Aroon+Ema+SR
 
-    def SR_check(self, support_resistance_val,  present_val)->float:
+    def SR_check(self, support_resistance_val, candles_check: pd.DataFrame, present_val) -> float:
         positives = {}
         negatives = {}
         for sr in support_resistance_val:
@@ -172,52 +174,65 @@ class Trend:
             print("Candle is Confusing ://")
             return 0.0
 
-    def __ticker_price__(self,force_now=False) -> float:
-        if force_now==True:
+    def __ticker_price__(self, force_now=False) -> float:
+        if force_now == True:
             import ccxt
-            return ccxt.binance().fetch_ticker(self.marketpair)["last"]
+            ccxt.binance().fetch_ticker(self.marketpair)["last"]
         return self.data[self.config["primary_timeframe"]].tail(1)["Close"].values[0]
 
-    def __get_candles__(self,timeframe, number_of) -> pd.DataFrame:
-        return self.data[timeframe].tail(number_of)
+    def __get_candles__(self, timeframe,count=-1) -> pd.DataFrame:
+        """Get last "count" number of candles for each timeframe
+
+        Args:
+            count (int, optional): number of candles for each timeframe. Defaults to -1 (all candles).
+
+        Returns:
+            pd.DataFrame: candles (pd.DataFrame)
+        """
+        __data__ = self.data if count == -1 \
+                    else self.data.tail(count)
+
+        return self.__data__[timeframe]
 
     def get_all_indicator_names(self) -> list:
         return list(self.indicators.keys())
 
-    def __technicals__(self, time_frame,force_all=False) -> None:
-        #TODO #13 : combine both if statement and outer boaddy make function more scalable given a parameter count of indicators the function will return last count of indicators
-        if force_all==True:
-            indicators = {
-                indicator: self.indicators[indicator]
-                for indicator in self.indicators
-                if "_" + time_frame + "_" in indicator
-            }
+    def __technicals__(self, time_frame: str, count=-1) -> Dict[str, pd.DataFrame]:
+        """Return a dictionary containing indicator as key (string) and its value as pandas DataFrame (using self.indicators DataFrame)
 
-            return  indicators
-        return {
-            indicator: [
-                self.indicators[indicator][len(
-                    self.indicators[indicator]) - 1],
-                self.indicators[indicator][len(
-                    self.indicators[indicator]) - 2],
-            ]
-            for indicator in self.indicators
-            if "_"+time_frame+"_" in indicator
-        }
-    #6 updated trend
-    def trend_find(self):
-        timeframe=self.config["primary_timeframe"]
-        informative_timeframe=self.config["informative_timeframe"]
-        # all parameters 
-            # RSI_present,RSI_informative_all,close_informative_all,ema_short_present,close_present,
-            # ema_long_present,ema_short_previous,ema_long_previous,macd_hist_present,
-            # aroon_up_present,aroon_down_present,support_all,resistance_all,High(all)
-        # if want latest value
-        self.marketpair=self.config["market_pair"][0]
+        Args:
+            time_frame ([str]): time as string (e.g. "1m", "5m", "1h", "1d")
+            count (int, optional): number of rows to fetch for each indicator. Defaults to -1 (return all rows)
+
+        Returns:
+            Dict[str, pd.DataFrame]: key is indicator, value as pandas DataFrame
+        """
+        Indicators = {}
+        __indicators__ = self.indicators if count == -1 \
+            else self.indicators.tail(count)
+
+        for indicator in __indicators__:
+            if "_" + time_frame + "_" in indicator:
+                Indicators[indicator] = __indicators__[indicator]
+
+        return Indicators
+
+    # 6 updated trend
+
+    def Trend(self):
+        timeframe = self.config["primary_timeframe"]
+        informative_timeframe = self.config["informative_timeframe"]
+        # all parameters
+        # RSI_present,RSI_informative_all,close_informative_all,ema_short_present,close_present,
+        # ema_long_present,ema_short_previous,ema_long_previous,macd_hist_present,
+        # aroon_up_present,aroon_down_present,support_all,resistance_all,High(all)
+
         candles = self.__get_candles__(timeframe,-1)
         candles_informative = self.__get_candles__(informative_timeframe,-1)
         values: dict = self.__technicals__(time_frame=timeframe)
         informatives = self.__technicals__(informative_timeframe)
+        # if want latest value
+        self.marketpair = self.marketpair
         ticker: float = self.__ticker_price__(force_now=False)
         sr = self.sr
         trends = {}
