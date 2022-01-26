@@ -91,7 +91,7 @@ def from_collection_name(data: pd.DataFrame, collection_name: str) -> dict:
 
 
 def clean_levels(levels: dict) -> dict:
-    """Clean the levels of support and resistance extact the values itself.
+    """Clean the levels of support and resistance extract the values itself.
 
     Args:
         levels (dict): The raw levels of support and resistance

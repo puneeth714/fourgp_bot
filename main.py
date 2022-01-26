@@ -16,7 +16,6 @@ from fourgp.utils.update_data import (dict_update_data, insert_new_data,
                                       run_updater)
 from fourgp.utils.utilities import dict_pandas, get_specific_coloumn
 # main function to run the program collecting data and running analysis on it and using analysis to make signals.
-marketpair="ETHUSDT"
 
 def main(MarketPair: str):
     # whole start
@@ -86,7 +85,7 @@ def main(MarketPair: str):
     sr = support_resistance.clean_levels(sr)
     sr = support_resistance.get_support_resistance(sr_each=sr)
     # convert sr dictionary to dataframe
-    sr = pd.DataFrame(sr)
+    # sr = pd.DataFrame(sr)
 
 
 
@@ -116,11 +115,11 @@ def main(MarketPair: str):
     # print(zz["5m"])
 
 
-    # Trend calculate
+    #Trend calculate
     # indicator = indicators[config["primary_timeframe"]]
-    # trends = Trend(make_data, indicator, sr, config)
-    # print(trends.trend_make())
-    # # time end
+    trends = Trend(make_data, indicators, sr, config)
+    print(trends.trend_find())
+    # time end
     end_time = time.time()
     print("\n\n\n")
     # print("--- %s seconds ---" % (end_time - start_time))
@@ -130,4 +129,4 @@ def main(MarketPair: str):
     # files.find_atr()
     # # files.sort_values()
     # files.create_report()
-main(marketpair)
+main("ETHUSDT")

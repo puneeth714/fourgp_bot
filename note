@@ -326,3 +326,49 @@ Depth_data :
             * Total bids and asks volumes.
             * Nearest bid and ask with highest and lowest price volumes.
 
+Trend weight distribution:
+      * present parameters:
+            1.RSI
+            2.RSI_PRICE_SLOPE(not implemented yet).
+            3.EMA:  
+                  * Ema_short
+                  * Ema_long
+                  * EMA_Short_Previous
+                  * EMA_Long_Previous
+            4.MACD
+            5.AROON:
+                  * AROON_UP
+                  * AROON_DOWN
+            6.SUPPORT_RESISTANCE
+      * each parameter overall weight :
+            * values -> value,weight(specified as constants at present , need to work for optimization in future)
+            * value = value returned by the specific indicator/function (check trend module for more info...)
+            * weight= weight of that parameter
+                  * depends on how much this parameter is important to the trend calculations
+                  (i.e how much the trend is sensitive to this parameter)
+                  * Can calculate based on many factors
+                        * By using parameter optimization algorithms like swarm particle,genetic algorithm,Bayesian optimization
+                        grid and random search etc..(can use scikit learn).
+                        * By machine learning using neural networks specifically reinforcement learning. can dynamically set weights.
+            * overall value = parameter_value*weight
+      * For finding min and max of parameters
+            * First we should get the global or local minima and maxima for the specific parameter(eg., indicators).
+            * Multiply the value with weights of the parameter.
+                  i.e overall value
+      * For finding trend :
+            * There can be more than one implementation for this, but i am discussing only about one.
+            * All values are multiplied
+            * This might not be efficient and more complex function can be driven based on differential exponential equations.
+            * equation = (w1.p1).(w2.p2)....
+            * Or equation = (w1.p1)+(w2.p2)....
+            * max(equation) = (w1.max(p1))+(w2.max(p2))....
+            * min(equation) = (w1.min(p1))+(w2.min(p2))....
+            * Converting the discrete values max(equation) , min(equation) , equation into probability distribution.
+            * therefore we can use the probability distribution to find the trend.
+            * probability distribution = 
+                        1. mix(equation)=0
+                        2. equation=equation-min(equation)
+                        3. max(equation)=max(equation)-min(equation)
+                        4. equation=equation/max(equation)
+
+      * 

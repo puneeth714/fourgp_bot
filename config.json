@@ -13,7 +13,7 @@
     "type_of_trade" : "live",
     "depth_data_limit" : 100,
     "primary_timeframe" : "5m",
-    "informative_timeframe" : "1h",
+    "informative_timeframe" : "4h",
     "support_resistance" : {"create_type":"zig_zag"},
     "market_data_limit" : "1",
     "atr_change_percentage" : "0.5",
