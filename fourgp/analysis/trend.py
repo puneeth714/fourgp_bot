@@ -187,7 +187,7 @@ class Trend:
             ccxt.binance().fetch_ticker(self.marketpair)["last"]
         return self.data[self.config["primary_timeframe"]].tail(1)["Close"].values[0]
 
-    def __get_candles__(self, timeframe,count=-1) -> pd.DataFrame:
+    def __get_candles__(self, timeframe, count=-1) -> pd.DataFrame:
         """Get last "count" number of candles for each timeframe
 
         Args:
@@ -196,10 +196,10 @@ class Trend:
         Returns:
             pd.DataFrame: candles (pd.DataFrame)
         """
-        __data__ = self.data if count == -1 \
-                    else self.data.tail(count)
-
-        return self.__data__[timeframe]
+        if count == -1:
+            return self.data[timeframe]
+        else:
+            return self.data[timeframe].tail(count)
 
     def get_all_indicator_names(self) -> list:
         return list(self.indicators.keys())
@@ -215,12 +215,13 @@ class Trend:
             Dict[str, pd.DataFrame]: key is indicator, value as pandas DataFrame
         """
         Indicators = {}
-        __indicators__ = self.indicators if count == -1 \
-            else self.indicators.tail(count)
-
-        for indicator in __indicators__:
+        for indicator in self.indicators:
             if "_" + time_frame + "_" in indicator:
-                Indicators[indicator] = __indicators__[indicator]
+                if count == -1:
+                    Indicators[indicator] = self.indicators[indicator]
+                else:
+                    Indicators[indicator] = self.indicators[indicator].tail(
+                        count)
 
         return Indicators
 
