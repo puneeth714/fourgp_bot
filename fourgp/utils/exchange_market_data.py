@@ -105,7 +105,7 @@ class exchange_data:
             exit(1)
         return data
 
-    def get_market_depth(self):
+    def get_market_depth(self)->dict:
         if self.Exchange.has['fetchOrderBook']:
             data_market_depth = self.Exchange.fetchOrderBook(
                 self.MarketPair, limit=int(self.limit))

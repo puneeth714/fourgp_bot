@@ -73,20 +73,12 @@ class CreateTables:
         connection.commit()
         # create table in connection database with convention Depth_snapshot_SymbolName_timeframe with columns CreationTime , Price , Quantity , Total_Quantity , Total_Value , Total_Base_Quantity , Total_Base_Value , Total_Quote_Quantity , Total_Quote_Value , Is_Buy_Order , Is_Best_Price_Match , Time_Stamp
         query = """
-        create table if not exists Depth_snapshot_{}_{}(
+        create table if not exists Depth_snapshot(
             CreationTime text NOT NULL PRIMARY KEY,
             Price real,
-            Quantity real,
-            Total_Quantity real,
-            Total_Value real,
-            Total_Base_Quantity real,
-            Total_Base_Value real,
-            Total_Quote_Quantity real,
-            Total_Quote_Value real,
-            Is_Buy_Order text,
-            Is_Best_Price_Match text,
-            TimeStamp text
-            )""".format(SymbolName, timeframe)
+            Bids real,
+            Asks real
+            )"""
         connection.execute(query)
         connection.commit()
         # create table in connection database with convention Logging with columns TimeStamp,CreationTime , Log_Type , Log_Message

@@ -50,12 +50,14 @@ class Indicators:
             print(self.indicators[indicator])
             print("\n")
 
-    def zig_zag_levels(self):
+    def zig_zag_levels(self,data=None):
+        if data is None:
+            data = self.data
         return {
             timeframe: zig_zag_binary(
-                self.data[timeframe], self.config
+                data[timeframe], self.config
             )
-            for timeframe in self.data.keys()
+            for timeframe in data.keys()
         }
 
     def get_indicators(self):

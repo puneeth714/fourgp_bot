@@ -1,6 +1,6 @@
 import pandas as pd
 import sqlite3
-from fourgp.utils.__market_depth__ import DepthData
+from fourgp.utils.market_depth import DepthData
 # MakeData is a class that contains methods to create dataframes from the data provided by
 # the exchange (i.e data from the exchage_market_data file)
 

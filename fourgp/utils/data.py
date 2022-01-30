@@ -1,6 +1,6 @@
 import sqlite3
 
-from fourgp.database.database_json import Database_json
+from fourgp.database.database_generic import Database_generic
 from fourgp.database.database_sqlite3 import Database_sqlite3
 # TODO : added need updates in doc string indicators
 from fourgp.technicals.indicators import Indicators
@@ -9,12 +9,13 @@ from fourgp.utils.make_data import MakeData
 from fourgp.utils.update_data import (database_type, dict_update_data,
                                       insert_new_data, run_updater)
 from fourgp.utils.utilities import dict_pandas, get_specific_coloumn
+from fourgp.utils.market_depth import DepthData
 
 # from main import database_file_path
 
 
-class Data(exchange_data, MakeData, Database_sqlite3, Database_json, Indicators):
-    def __init__(self, database: str or sqlite3.Connection = None, config=None, Exchange: str = None,
+class Data(exchange_data, MakeData, Database_sqlite3, Database_generic, Indicators, DepthData):
+    def __init__(self, database: str  = None, config=None, Exchange: str = None,
                  MarketPair: str = None, timeframes: list = None, limit: list = None, data=None, DataType: str = None, ForceGet: bool = False) -> None:
         """The Data class is used to get data from the exchange and to make data for analysis and also to store 
         data in a database. By default the data is stored in a sqlite3 database.

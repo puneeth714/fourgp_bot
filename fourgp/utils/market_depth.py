@@ -1,5 +1,6 @@
 import matplotlib
-
+import pandas as pd
+from datetime import datetime
 
 class DepthData:
     def __init__(self, depth_data: dict) -> None:
@@ -51,3 +52,13 @@ class DepthData:
             max(self.asks[1])
         elif price < current_price:
             min(self.bids[1])
+    def make_depth(self,depth_data=None):
+        if depth_data is not  None:
+            depth=pd.DataFrame(depth_data)
+        else:
+            depth=pd.DataFrame(self.depth_data)
+        depth.columns=["symbol","Bids","Asks","timestamp","datetime","nounce"]
+        depth=depth[["Bids", "Asks"]]
+        depth=depth.to_dict()
+        timenow=datetime.timestamp(datetime.now())
+        return depth,timenow

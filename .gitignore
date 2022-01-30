@@ -3,3 +3,4 @@ data.db
 .env
 out.log
 database_updates.py
+data.json

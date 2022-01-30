@@ -40,9 +40,8 @@ class Database_sqlite3:
             self.table_name = "SignalName"
         elif self.DataType == "SignalName":
             self.table_name = "SignalName"
-        elif self.DataType == "Depth_snapshot":
-            self.table_name = "Depth_snapshot_{}_{}".format(
-                self.MarketPair, self.timeframe)
+        elif self.DataType == "Depth":
+            self.table_name = "Depth_snapshot"
         elif self.DataType == "Logging":
             self.table_name = "Logging"
         elif self.DataType == "Results":
@@ -139,7 +138,7 @@ class Database_sqlite3:
         self.connection.commit()
         cursor.close()
 
-    def convert_From_To(self, data: pd.DataFrame, coloumn: str, typeIs: str) -> pd.DataFrame:
+    def convert_From_str_To(self, data: pd.DataFrame, coloumn: str, typeIs: str) -> pd.DataFrame:
        # Convert the data in a coloumn of data from str to list
         if typeIs == "float":
             data = data.apply(lambda x: float(x))
@@ -166,10 +165,10 @@ class Database_sqlite3:
             for coloumn in data[timeframe]:
                 if type(data[timeframe][coloumn][1]) == str:
                     if not self.__check_int__(data[timeframe][coloumn][1]):
-                        data[timeframe][coloumn] = self.convert_From_To(
+                        data[timeframe][coloumn] = self.convert_From_str_To(
                             data[timeframe][coloumn], coloumn, "list")
                     elif self.__check_int__(data[timeframe][coloumn][1]):
-                        data[timeframe][coloumn] = self.convert_From_To(
+                        data[timeframe][coloumn] = self.convert_From_str_To(
                             data[timeframe][coloumn], coloumn, "float")
                     else:
                         print("Error in converting {} to dict".format(coloumn))
