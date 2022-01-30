@@ -371,3 +371,16 @@ Trend weight distribution:
                         3. max(equation)=max(equation)-min(equation)
                         4. equation=equation/max(equation)
 
+#TODO:
+      1.Zigzag 
+            * need to make more customizable parameters. Like which timeframe to use, configuration for calculating.
+            * need to write data given by Zigzag to database.
+      2.Trend_weight_distribution
+            * change the algorithm to calculate the trend.(Not reliable as of now).
+            * Need to make it more customizable. like getting weights from configuration or optimization techniques.
+      3.Add configuration is it is needed to write the data to database of any data for future use.
+            * By checking the memory space constraints. and comparing with the process of creating it from scratch.(using Klines).
+            * By checking the time constraints.
+Feature     4.Work on the algorithm for strategy.
+            5.Work on the TradeMover functionality.
+            5.Work on the trade executions.
