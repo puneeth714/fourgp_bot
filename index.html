@@ -1,18 +1,151 @@
 <html><head><style>body {
-   color: black;
-}
-</style></head><body><h1 id="fourgp-bot">Fourgp Bot</h1>
-<p>A complex market making bot. Which works with both candles and ticks to create signals for cryptocurrency trading.</p>
-<h2 id="installation">Installation</h2>
-<ul>
-<li>clone the repository <a href="https://github.com/puneeth714/fourgp_bot.git">fourgp-bot</a></li>
-<li>install the dependencies by running <code>sh install.sh</code> (or <code>pip install -r requirements.txt</code>).</li>
-<li><strong>pip</strong> install is recommended for windows users as install script is for unix or linux users.</li>
-<li>But there are some <strong><em>conflicts</em></strong> with pip.</li>
-<li>run the main.py file with <code>python3 main.py</code></li>
-</ul>
-<h2 id="usage">Usage</h2>
-<ul>
-<li>change the configurations in <code>config.json</code> as per your requirements.</li>
-</ul>
-</body></html>
+    color: black;
+ }
+ </style></head><body><h1 id="fourgp-bot">Fourgp Bot</h1>
+ <p>A complex market making bot. Which works with both candles and ticks to create signals for cryptocurrency trading.</p>
+ <h2 id="installation">Installation</h2>
+ <ul>
+ <li>clone the repository <a href="https://github.com/puneeth714/fourgp_bot.git">fourgp-bot</a></li>
+ <li>install the dependencies by running <code>bash install.sh</code>.</li>
+ <li><strong>pip</strong> install is recommended for windows users as install script is for unix or linux users.</li>
+ <li>But there are some <strong><em>conflicts</em></strong> with pip.</li>
+ </ul>
+ <h2 id="usage">Usage</h2>
+ <ul>
+ <li>change the configurations in <code>config.json</code> as per your requirements.</li>
+ <li>Run the main.py file with <code>python3 main.py</code></li>
+ </ul>
+ <h2 id="trend-calculation">Trend calculation</h2>
+ <h1 id="functions">Functions</h1>
+ <ul>
+ <li><p>Functions : </p>
+ <pre><code>RSI :
+       * parameters -&gt; self,RSI(<span class="hljs-built_in">present</span>)
+       * <span class="hljs-function"><span class="hljs-keyword">function</span></span> -&gt; Check <span class="hljs-keyword">if</span> RSI is <span class="hljs-keyword">in</span> local <span class="hljs-built_in">min</span> or <span class="hljs-built_in">max</span>
+       * <span class="hljs-keyword">return</span> -&gt; RSI(<span class="hljs-built_in">present</span>)
+ RSI_Price_Slope: More weight
+       * parameters -&gt; self,RSI(informative_all),close_prices(informative_all)
+       * <span class="hljs-function"><span class="hljs-keyword">function</span></span> -&gt;* <span class="hljs-keyword">call</span> get_slope(RSI)
+                   * <span class="hljs-keyword">call</span> get_slope(close_prices)
+                   slope_difference = slope_RSI - slope_close_prices
+                   <span class="hljs-keyword">if</span> slope_difference is negative:
+                         * <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>/slope_difference
+                   elsif slope_difference is positive:
+                         * <span class="hljs-keyword">return</span> slope_difference
+                   <span class="hljs-keyword">else</span>:
+                         * <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>
+ Ema_short :
+       * parameters -&gt; self,ema_short(<span class="hljs-built_in">present</span>),<span class="hljs-keyword">value</span>(<span class="hljs-built_in">present</span>)
+       * <span class="hljs-function"><span class="hljs-keyword">function</span></span>-&gt;------------------------------------------Need to add functionality to check n previous values and get the average of them.(difference).
+                   * difference = <span class="hljs-built_in">present</span> <span class="hljs-keyword">value</span> - ema_short
+                   <span class="hljs-keyword">return</span> difference
+ Ema_long :
+       * parameters -&gt; self,ema_long(<span class="hljs-built_in">present</span>),<span class="hljs-keyword">value</span>(<span class="hljs-built_in">present</span>)-----last n values
+       * <span class="hljs-function"><span class="hljs-keyword">function</span></span>-&gt;------------------------------------------Need to add functionality to check n previous values and get the average of them.(difference).
+                   * difference = <span class="hljs-built_in">present</span> <span class="hljs-keyword">value</span> - ema_long
+                   <span class="hljs-keyword">return</span> difference
+ EMA_short_Previous :
+       * parameters -&gt; self,ema_short_Previous(<span class="hljs-built_in">present</span>),ema_short_current(<span class="hljs-built_in">present</span>)---last n values
+       * <span class="hljs-function"><span class="hljs-keyword">function</span></span>-&gt;------------------------------------------Need to add functionality to check n previous values and get the average of them.(difference).
+                   * difference = ema_short_current - ema_short_Previous
+                   <span class="hljs-keyword">return</span> difference
+ EMA_long_Previous :
+       * parameters -&gt; self,ema_long_Previous(<span class="hljs-built_in">present</span>),ema_long_current(<span class="hljs-built_in">present</span>)---last n values
+       * <span class="hljs-function"><span class="hljs-keyword">function</span></span>-&gt;------------------------------------------Need to add functionality to check n previous values and get the average of them.(difference).
+                   * difference = ema_long_current - ema_long_Previous
+                   <span class="hljs-keyword">return</span> difference
+ Macd :
+       * parameters -&gt; self, macd_histogram(<span class="hljs-built_in">present</span>)
+       * <span class="hljs-function"><span class="hljs-keyword">function</span></span> -&gt; 
+                   * <span class="hljs-keyword">return</span> macd_histogram(divide it by <span class="hljs-built_in">present</span> price <span class="hljs-keyword">in</span> trend)
+ Aroon_up :
+       * parameters -&gt; self,aroon_up(<span class="hljs-built_in">present</span>)
+       * <span class="hljs-function"><span class="hljs-keyword">function</span></span> -&gt; 
+                   * <span class="hljs-keyword">return</span> aroon_up
+ Aroon_down :
+       * parameters -&gt; self,aroon_down(<span class="hljs-built_in">present</span>)
+       * <span class="hljs-function"><span class="hljs-keyword">function</span></span> -&gt; 
+                   * <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>/aroon_down
+ Resistance and support :
+       * parameters -&gt; self,resistance(<span class="hljs-built_in">all</span>),support(<span class="hljs-built_in">all</span>),High(<span class="hljs-built_in">all</span>),present_value(<span class="hljs-built_in">present</span>)
+       * <span class="hljs-function"><span class="hljs-keyword">function</span></span> -&gt; 
+                   * near_to_s =resistance    - <span class="hljs-built_in">present</span> <span class="hljs-keyword">value</span>
+                   * near_to_r =<span class="hljs-number">1</span>/(<span class="hljs-built_in">present</span> <span class="hljs-keyword">value</span> - support)
+                   * touched_r = <span class="hljs-keyword">touch</span>(resistance,price(<span class="hljs-built_in">all</span>),up)
+                   * touched_s = <span class="hljs-keyword">touch</span>(support,price(<span class="hljs-built_in">all</span>),down)
+                   * difference = near_to_s - near_to_r
+                   <span class="hljs-keyword">if</span> difference is negative:
+                         * difference= <span class="hljs-number">1</span>/(present_time-touched_r time)
+                   elif difference is positive:
+                         * difference= present_time-touched_s time
+                   <span class="hljs-keyword">else</span>:
+                         * difference= <span class="hljs-number">1</span>
+                   <span class="hljs-keyword">return</span> near_to_r*difference*touched_r
+ <span class="hljs-keyword">Touch</span> :
+       * parameters -&gt; self,touching,prices,side
+       * <span class="hljs-function"><span class="hljs-keyword">function</span></span> -&gt; 
+             <span class="hljs-keyword">if</span> side is up:
+                   * for each_price <span class="hljs-keyword">in</span> prices:(should iterate from <span class="hljs-built_in">present</span> val to past)
+                         <span class="hljs-keyword">if</span> prices&gt;touching:
+                               * <span class="hljs-keyword">return</span> <span class="hljs-built_in">index</span>(prices)
+                   # <span class="hljs-keyword">if</span> not touched the resistance level
+                   <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>
+             elif side is down:
+                   * for each_price <span class="hljs-keyword">in</span> prices:(should iterate from <span class="hljs-built_in">present</span> val to past)
+                         <span class="hljs-keyword">if</span> prices&lt;touching:
+                               * <span class="hljs-keyword">return</span> <span class="hljs-built_in">index</span>(prices)       
+                   # <span class="hljs-keyword">if</span> not touched the support level
+                   <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>
+ Make_trend :
+       * <span class="hljs-built_in">all</span> parameters to make = Add up <span class="hljs-built_in">all</span> the parameters
+ </code></pre><h2 id="indicators-update-process-">Indicators Update process:</h2>
+ <pre><code>* Get table name <span class="hljs-keyword">for</span> that indicator
+ * Check <span class="hljs-keyword">if</span> data is present <span class="hljs-keyword">in</span> database <span class="hljs-keyword">or</span> <span class="hljs-keyword">not</span>
+ <span class="hljs-keyword">if</span> <span class="hljs-literal">true</span>:
+       * Check <span class="hljs-keyword">if</span> data is <span class="hljs-built_in">new</span> <span class="hljs-keyword">or</span> <span class="hljs-keyword">not</span>
+             * <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">new</span>
+                   * Get Klines <span class="hljs-keyword">for</span> specified timeframe <span class="hljs-keyword">and</span> limit
+                   * Calculate <span class="hljs-keyword">the</span> indicators
+                   * Write <span class="hljs-built_in">to</span> database <span class="hljs-comment">---- constraint : Write to database only the new data(need a function to do so)</span>
+             * <span class="hljs-keyword">else</span>
+                   * use that data
+ <span class="hljs-keyword">else</span>:
+       * Should have klines data(<span class="hljs-keyword">as</span> Klines is <span class="hljs-keyword">first</span> entrance <span class="hljs-built_in">to</span> program no problem <span class="hljs-keyword">with</span> this test <span class="hljs-keyword">case</span>(<span class="hljs-keyword">if</span> klines <span class="hljs-keyword">not</span> present))
+       <span class="hljs-keyword">in</span> database
+       * Get all klines data <span class="hljs-built_in">from</span> database/exchange 
+       * use <span class="hljs-keyword">it</span> <span class="hljs-built_in">to</span> calculate indicators
+       * Write <span class="hljs-keyword">the</span> indicators <span class="hljs-built_in">to</span> database
+       * clip <span class="hljs-keyword">the</span> calculated data <span class="hljs-keyword">by</span> <span class="hljs-keyword">the</span> specified limit
+ * Write <span class="hljs-built_in">to</span> Logging table about <span class="hljs-keyword">the</span> data collected <span class="hljs-built_in">from</span> exchange <span class="hljs-keyword">or</span> database.
+ </code></pre></li>
+ </ul>
+ <h1 id="version-2-">Version-2:</h1>
+ <pre><code>  * Get updates <span class="hljs-keyword">for</span> limits
+   * If <span class="hljs-keyword">first</span> <span class="hljs-built_in">time</span> <span class="hljs-keyword">or</span> no data <span class="hljs-keyword">in</span> database
+         * Get indicators data <span class="hljs-comment">--</span>
+               <span class="hljs-number">1.</span>Get kline data <span class="hljs-built_in">from</span> database <span class="hljs-keyword">or</span> already fetched data
+               <span class="hljs-number">2.</span>Use <span class="hljs-keyword">the</span> kline data <span class="hljs-keyword">and</span> calculate <span class="hljs-keyword">the</span> indicators.
+               <span class="hljs-number">3.</span>Write <span class="hljs-keyword">the</span> indicators <span class="hljs-built_in">to</span> database
+               <span class="hljs-number">4.</span>Clip <span class="hljs-keyword">the</span> calculated data <span class="hljs-keyword">by</span> <span class="hljs-keyword">the</span> specified limit
+   * <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> data is present <span class="hljs-keyword">and</span> need <span class="hljs-built_in">to</span> update
+         * Get indicators data <span class="hljs-comment">--</span>
+               <span class="hljs-number">1.</span>Get limit data <span class="hljs-built_in">from</span> database <span class="hljs-keyword">or</span> already fetched data
+               <span class="hljs-number">2.</span>Use <span class="hljs-keyword">the</span> limit data <span class="hljs-keyword">and</span> calculate <span class="hljs-keyword">the</span> indicators.
+               <span class="hljs-number">3.</span>clip <span class="hljs-keyword">the</span> pandas data <span class="hljs-keyword">by</span> <span class="hljs-keyword">the</span> specified limit(Update limit)
+ </code></pre><h2 id="atr_change-update-for-getting-data-from-database-11-https-github-com-puneeth714-fourgp_bot-issues-11-">Atr_change Update for getting data from database: <a href="https://github.com/puneeth714/fourgp_bot/issues/11">#11</a></h2>
+ <pre><code>  * Process:
+   * should inherit <span class="hljs-keyword">from</span> Data <span class="hljs-keyword">class</span>
+         * Connect Exchange i.e <span class="hljs-keyword">set</span> self.Exchange <span class="hljs-keyword">to</span> exchange <span class="hljs-keyword">and</span> <span class="hljs-keyword">call</span> __connect_exchange__() method. --  **<span class="hljs-keyword">Optional</span> <span class="hljs-keyword">when</span> calling outside**
+         * Connect database i.e <span class="hljs-keyword">set</span> self.database <span class="hljs-keyword">to</span> database path <span class="hljs-keyword">and</span> <span class="hljs-keyword">call</span> make_database() method.
+         * <span class="hljs-keyword">Set</span> DataType,MarketPair,Timeframe,Limit values <span class="hljs-keyword">in</span> the <span class="hljs-keyword">for</span> <span class="hljs-keyword">loop</span>.
+         * <span class="hljs-keyword">call</span> database_data <span class="hljs-keyword">function</span> <span class="hljs-keyword">with</span> **data=<span class="hljs-literal">False</span>**.
+         * <span class="hljs-keyword">set</span> self.data[time+<span class="hljs-string">"_"</span>+str(distance)]=data returned.
+ </code></pre><h2 id="atr_change-update-2-for-getting-data-from-database-11-https-github-com-puneeth714-fourgp_bot-issues-11-">Atr_change Update 2 for getting data from database: <a href="https://github.com/puneeth714/fourgp_bot/issues/11">#11</a></h2>
+ <pre><code>  * Process :
+   * Should have <span class="hljs-keyword">Inherited</span> AtrChange <span class="hljs-keyword">to</span> Data <span class="hljs-keyword">class</span>
+   * Call get_data() <span class="hljs-function"><span class="hljs-keyword">method</span>
+   * <span class="hljs-title">In</span> <span class="hljs-title">data_select</span><span class="hljs-params">()</span>:</span>
+         <span class="hljs-number">1</span>.call find_atr()
+ </code></pre><h2 id="license">License</h2>
+ <p><strong>GNU General Public License version 3</strong></p>
+ </body></html>
