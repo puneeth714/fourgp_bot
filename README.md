@@ -4,28 +4,28 @@ A complex market making bot. Which works with both candles and ticks to create s
 
 ## Installation
 
-* clone the repository [fourgp-bot](https://github.com/puneeth714/fourgp_bot.git)
-* install the dependencies by running `bash install.sh`.
-* **pip** install is recommended for windows users as install script is for unix or linux users.
-* But there are some ***conflicts*** with pip.
-
+- clone the repository [fourgp-bot](https://github.com/puneeth714/fourgp_bot.git)
+- install the dependencies by running `bash install.sh`.
+- **pip** install is recommended for windows users as install script is for unix or linux users.
+- But there are some **_conflicts_** with pip.
 
 ## Usage
 
-* change the configurations in `config.json` as per your requirements.
-* Run the main.py file with `python3 main.py`
-
+- change the configurations in `config.json` as per your requirements.
+- Run the main.py file with `python3 main.py`
 
 ## Trend calculation
 
 # Functions
 
-* Functions : 
-      RSI :
-            * parameters -> self,RSI(present)
+- Functions :
+
+#### RSI :
+
+    * parameters -> self,RSI(present)
             * function -> Check if RSI is in local min or max
             * return -> RSI(present)
-      RSI_Price_Slope: More weight
+      # RSI_Price_Slope: More weight
             * parameters -> self,RSI(informative_all),close_prices(informative_all)
             * function ->* call get_slope(RSI)
                         * call get_slope(close_prices)
@@ -36,41 +36,57 @@ A complex market making bot. Which works with both candles and ticks to create s
                               * return slope_difference
                         else:
                               * return 0
-      Ema_short :
-            * parameters -> self,ema_short(present),value(present)
+
+#### Ema_short :
+
+    * parameters -> self,ema_short(present),value(present)
             * function->------------------------------------------Need to add functionality to check n previous values and get the average of them.(difference).
                         * difference = present value - ema_short
                         return difference
-      Ema_long :
-            * parameters -> self,ema_long(present),value(present)-----last n values
+
+#### Ema_long :
+
+    * parameters -> self,ema_long(present),value(present)-----last n values
             * function->------------------------------------------Need to add functionality to check n previous values and get the average of them.(difference).
                         * difference = present value - ema_long
                         return difference
-      EMA_short_Previous :
-            * parameters -> self,ema_short_Previous(present),ema_short_current(present)---last n values
+
+#### EMA_short_Previous :
+
+    * parameters -> self,ema_short_Previous(present),ema_short_current(present)---last n values
             * function->------------------------------------------Need to add functionality to check n previous values and get the average of them.(difference).
                         * difference = ema_short_current - ema_short_Previous
                         return difference
-      EMA_long_Previous :
-            * parameters -> self,ema_long_Previous(present),ema_long_current(present)---last n values
+
+#### EMA_long_Previous :
+
+    * parameters -> self,ema_long_Previous(present),ema_long_current(present)---last n values
             * function->------------------------------------------Need to add functionality to check n previous values and get the average of them.(difference).
                         * difference = ema_long_current - ema_long_Previous
                         return difference
-      Macd :
-            * parameters -> self, macd_histogram(present)
-            * function -> 
+
+#### Macd :
+
+    * parameters -> self, macd_histogram(present)
+            * function ->
                         * return macd_histogram(divide it by present price in trend)
-      Aroon_up :
-            * parameters -> self,aroon_up(present)
-            * function -> 
+
+#### Aroon_up :
+
+    * parameters -> self,aroon_up(present)
+            * function ->
                         * return aroon_up
-      Aroon_down :
-            * parameters -> self,aroon_down(present)
-            * function -> 
+
+#### Aroon_down :
+
+    * parameters -> self,aroon_down(present)
+            * function ->
                         * return 1/aroon_down
-      Resistance and support :
-            * parameters -> self,resistance(all),support(all),High(all),present_value(present)
-            * function -> 
+
+#### Resistance and support :
+
+    * parameters -> self,resistance(all),support(all),High(all),present_value(present)
+            * function ->
                         * near_to_s =resistance    - present value
                         * near_to_r =1/(present value - support)
                         * touched_r = touch(resistance,price(all),up)
@@ -83,9 +99,11 @@ A complex market making bot. Which works with both candles and ticks to create s
                         else:
                               * difference= 1
                         return near_to_r*difference*touched_r
-      Touch :
-            * parameters -> self,touching,prices,side
-            * function -> 
+
+#### Touch :
+
+    * parameters -> self,touching,prices,side
+            * function ->
                   if side is up:
                         * for each_price in prices:(should iterate from present val to past)
                               if prices>touching:
@@ -95,14 +113,17 @@ A complex market making bot. Which works with both candles and ticks to create s
                   elif side is down:
                         * for each_price in prices:(should iterate from present val to past)
                               if prices<touching:
-                                    * return index(prices)       
+                                    * return index(prices)
                         # if not touched the support level
                         return 1
-      Make_trend :
-            * all parameters to make = Add up all the parameters
+
+#### Make_trend :
+
+    * all parameters to make = Add up all the parameters
+
 ## Indicators Update process:
 
-      * Get table name for that indicator
+    * Get table name for that indicator
       * Check if data is present in database or not
       if true:
             * Check if data is new or not
@@ -115,7 +136,7 @@ A complex market making bot. Which works with both candles and ticks to create s
       else:
             * Should have klines data(as Klines is first entrance to program no problem with this test case(if klines not present))
             in database
-            * Get all klines data from database/exchange 
+            * Get all klines data from database/exchange
             * use it to calculate indicators
             * Write the indicators to database
             * clip the calculated data by the specified limit
@@ -123,7 +144,7 @@ A complex market making bot. Which works with both candles and ticks to create s
 
 # Version-2:
 
-      * Get updates for limits
+    * Get updates for limits
       * If first time or no data in database
             * Get indicators data --
                   1.Get kline data from database or already fetched data
@@ -138,20 +159,22 @@ A complex market making bot. Which works with both candles and ticks to create s
 
 ## Atr_change Update for getting data from database: [#11](https://github.com/puneeth714/fourgp_bot/issues/11)
 
-      * Process:
+    * Process:
       * should inherit from Data class
-            * Connect Exchange i.e set self.Exchange to exchange and call __connect_exchange__() method. --  **Optional when calling outside**
+            * Connect Exchange i.e set self.Exchange to exchange and call__connect_exchange__() method. --  **Optional when calling outside**
             * Connect database i.e set self.database to database path and call make_database() method.
             * Set DataType,MarketPair,Timeframe,Limit values in the for loop.
             * call database_data function with **data=False**.
             * set self.data[time+"_"+str(distance)]=data returned.
 
 ## Atr_change Update 2 for getting data from database: [#11](https://github.com/puneeth714/fourgp_bot/issues/11)
-      * Process :
+
+    * Process :
       * Should have Inherited AtrChange to Data class
       * Call get_data() method
       * In data_select():
             1.call find_atr()
+
 ## License
 
 **GNU General Public License version 3**
