@@ -24,5 +24,6 @@
             "group": "fourgp",
             "database": "${workspaceFolder:fourgp_bot}/data/data_test.db"
         }
-    ]
+    ],
+    "livePreview.defaultPreviewPath": "/index.html"
 }
