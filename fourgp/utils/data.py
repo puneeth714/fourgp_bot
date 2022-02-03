@@ -38,7 +38,7 @@ class Data(exchange_data, MakeData, Database_sqlite3, Database_generic, Indicato
         self.config = config
         self.Exchange = Exchange
         self.MarketPair = MarketPair
-        self.timeframes = timeframes  # FIXME: [timeframes] is not working
+        self.timeframes = timeframes
         self.limit = limit
         self.data = data
         self.DataType = DataType

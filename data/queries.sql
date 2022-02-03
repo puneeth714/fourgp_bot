@@ -38,3 +38,9 @@ SELECT * from Kline_ETHUSDT_1m order by Timestamp desc;
 
 --get all table names and drop table names starting with Indicators_ in sqlite3
 SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'Indicators_%';
+
+
+--SELECT max and min timestamp from Kline_ETHUSDT_1m TABLE and find the difference
+SELECT max(Timestamp) from Kline_ETHUSDT_1m;
+SELECT min(Timestamp) from Kline_ETHUSDT_1m;
+SELECT (max(Timestamp) - min(Timestamp))/60000 from Kline_ETHUSDT_1m;

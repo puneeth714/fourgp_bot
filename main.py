@@ -32,11 +32,11 @@ def main(MarketPair: str):
     data.DataType = "Kline"
     Klines = data.get_data()
 
-    # Atr(change of value per unit time) calculate and create table.
-    atr=AtrChange(config)
-    atr.connect()
-    atr.find_atr(Database=database_file_path)
-    atr.create_report()
+    # # Atr(change of value per unit time) calculate and create table.
+    # atr=AtrChange(config)
+    # atr.connect()
+    # atr.find_atr(Database=database_file_path)
+    # atr.create_report()
 
     #  Zig zag
     zz=data.zig_zag_levels(data=Klines)

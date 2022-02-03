@@ -145,4 +145,3 @@ class CreateTables:
         drop table if exists Results_{}""".format(SymbolName, timeframe)
         connection.execute(query)
         connection.commit()
-    # TODO error handling for creation of tables

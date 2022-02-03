@@ -7,7 +7,7 @@ from tabulate import tabulate
 
 
 class AtrChange(Data):
-    def __init__(self, config) -> None:  # TODO create doc string
+    def __init__(self, config) -> None:
         self.connection_exchange = None
         self.config = config
         self.atr_values = {}
@@ -114,14 +114,12 @@ class AtrChange(Data):
         fee_value = amount*total_fee
         value_gets = change-fee_value
         percent_change = value_gets*100/amount
-        # FIXME: #7 Change the rounding to 2 decimal places to more accurately represent the change.
 
         # (Values with 2 decimal places are not accurate and some are showing 0.00)
         return [amount, f"{change:.12f}".rstrip("0"), f"{fee_value:.6f}".rstrip("0"),
                         f"{value_gets:.12f}".rstrip("0"), f"{percent_change:.12f}".rstrip("0")]
 
     def get_values(self, market: str, timeframe: str, distance: int) -> list:
-        # FIXME : use database to fetch data.
         return self.connection_exchange.fetchOHLCV(market, timeframe=timeframe, limit=distance)
 
     def indicator(self, data: dict, distance: int) -> float:
