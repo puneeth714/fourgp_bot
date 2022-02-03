@@ -189,7 +189,7 @@ def dict_update_data(data_pandas: dict, exchange: str, coin: str) -> pd.DataFram
 
 
 def database_type(database):
-    # check if sellf.database has .db or type of self.database is sqlite3.Connection
+    # check if self.database has .db or type of self.database is sqlite3.Connection
     if database.endswith(".db") or type(database) == sqlite3.Connection:
         # if yes return sqlite3
         return "sqlite3"

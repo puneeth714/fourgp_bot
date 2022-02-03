@@ -12,7 +12,7 @@ df = df.drop([1, 2, 4, 5, 6, 7, 8, 9, 10, 11], axis=1)
 df.columns = ['ds', 'y']
 print(df.tail())
 
-# convert unix time to date time in ds coloumn
+# convert unix time to date time in ds column
 df['ds'] = pd.to_datetime(df['ds'], unit='ms')
 print(df.tail())
 

@@ -30,7 +30,7 @@ def main(MarketPair: str):
                 MarketPair=MarketPair, timeframes=config["time_frame"], limit=config["limit"])  # FIXME: [timeframes] is not working list not single value
     # TODO : Kline naming convention is not correct and all other table names are not correct
     data.DataType = "Kline"
-    Klines = data.get_data()
+    Kline = data.get_data()
 
     # # Atr(change of value per unit time) calculate and create table.
     # atr=AtrChange(config)
@@ -39,7 +39,7 @@ def main(MarketPair: str):
     # atr.create_report()
 
     #  Zig zag
-    zz=data.zig_zag_levels(data=Klines)
+    zz=data.zig_zag_levels(data=Kline)
     pprint(zz)
     
     # Get indicators
@@ -58,7 +58,7 @@ def main(MarketPair: str):
         print("Using values from input")
     else:
         sr = support_resistance.main_sr_dict(
-            Klines, "zig_zag", config=config["support_resistance"]["create_type"])
+            Kline, "zig_zag", config=config["support_resistance"]["create_type"])
         # print(sr)
         # clean data
         sr = support_resistance.filter_levels(sr)
@@ -83,7 +83,7 @@ def main(MarketPair: str):
 
     # Trend calculate
     # indicator = indicators[config["primary_timeframe"]]
-    trends = Trend(Klines, indicators, sr, config)
+    trends = Trend(Kline, indicators, sr, config)
     print(trends.trend_find())
 
     # time end

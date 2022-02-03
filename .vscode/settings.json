@@ -25,5 +25,8 @@
             "database": "${workspaceFolder:fourgp_bot}/data/data_test.db"
         }
     ],
-    "livePreview.defaultPreviewPath": "/index.html"
+    "livePreview.defaultPreviewPath": "/index.html",
+    "cSpell.enableFiletypes": [
+        "python"
+    ]
 }

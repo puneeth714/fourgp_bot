@@ -6,17 +6,17 @@ from fourgp.utils.market_depth import DepthData
 
 
 class MakeData:
-    def __init__(self, data, conifg=None) -> None:
+    def __init__(self, data, config=None) -> None:
         """constructor for MakeData class that takes in a dictionary of data and a config file 
         and creates a dataframe for each of the data in the dictionary and stores it in a dictionary
         of dataframes
 
         Args:
             data (dict): [data from exchange i.e data from exchange_market_data]] 
-            conifg ([dict]): [config parameters as a dictionary]
+            config ([dict]): [config parameters as a dictionary]
         """
         self.data = data
-        self.config = conifg
+        self.config = config
 
     def list_to_pandas(self, data=None) -> dict:
         """list_to_pandas method takes in a dictionary of data and creates a dataframe for each of the data in the dictionary

@@ -116,7 +116,7 @@ class Database_sqlite3:
         count, limit = self.check_database()
         if count < limit:
             return int(limit), count
-        # get the last record from database by gettign the max of timestamp
+        # get the last record from database by getting the max of timestamp
         query = "select max(timestamp) from {}".format(self.table_name)
         cursor = self.connection.cursor()
         cursor.execute(query)
@@ -124,13 +124,13 @@ class Database_sqlite3:
 
         # last_record = self.data.iloc[-1]
         # # get the timestamp from the last record
-        # # as the timestamp is in miliseconds
+        # # as the timestamp is in milliseconds
         # last_timestamp = last_record["Timestamp"]/1000
         # # get present time stamp
         return int(get_latest_time_of_pandas_data(latest_time_in_data=last_timestamp, timeframe=self.timeframe)), count
 
     def delete_last_record(self):
-        # or delete coloumn in which TimeStamp is the max
+        # or delete column in which TimeStamp is the max
         query = "delete from {} where TimeStamp = (select max(TimeStamp) from {})".format(
             self.table_name, self.table_name)
         cursor = self.connection.cursor()
@@ -138,8 +138,8 @@ class Database_sqlite3:
         self.connection.commit()
         cursor.close()
 
-    def convert_From_str_To(self, data: pd.DataFrame, coloumn: str, typeIs: str) -> pd.DataFrame:
-       # Convert the data in a coloumn of data from str to list
+    def convert_From_str_To(self, data: pd.DataFrame, column: str, typeIs: str) -> pd.DataFrame:
+       # Convert the data in a column of data from str to list
         if typeIs == "float":
             data = data.apply(lambda x: float(x))
         elif typeIs == "int":
@@ -162,16 +162,16 @@ class Database_sqlite3:
 
     def dict_Convert(self, data: pd.DataFrame) -> dict:
         for timeframe in data:
-            for coloumn in data[timeframe]:
-                if type(data[timeframe][coloumn][1]) == str:
-                    if not self.__check_int__(data[timeframe][coloumn][1]):
-                        data[timeframe][coloumn] = self.convert_From_str_To(
-                            data[timeframe][coloumn], coloumn, "list")
-                    elif self.__check_int__(data[timeframe][coloumn][1]):
-                        data[timeframe][coloumn] = self.convert_From_str_To(
-                            data[timeframe][coloumn], coloumn, "float")
+            for column in data[timeframe]:
+                if type(data[timeframe][column][1]) == str:
+                    if not self.__check_int__(data[timeframe][column][1]):
+                        data[timeframe][column] = self.convert_From_str_To(
+                            data[timeframe][column], column, "list")
+                    elif self.__check_int__(data[timeframe][column][1]):
+                        data[timeframe][column] = self.convert_From_str_To(
+                            data[timeframe][column], column, "float")
                     else:
-                        print("Error in converting {} to dict".format(coloumn))
+                        print("Error in converting {} to dict".format(column))
                         exit(1)
         return data
 

@@ -51,7 +51,7 @@ class CreateTables:
             )""".format(SymbolName, timeframe)
         connection.execute(query)
         connection.commit()
-        # create table in connection database with convention Tick_SymbolName with coloums Timestamp , values
+        # create table in connection database with convention Tick_SymbolName with columns Timestamp , values
         query = """
         create table if not exists Tick_{}(
             Timestamp text NOT NULL PRIMARY KEY,
@@ -59,7 +59,7 @@ class CreateTables:
             )""".format(SymbolName)
         connection.execute(query)
         connection.commit()
-        # create table in connection database with convention SignalName with coloums CreationTime , Buy[ A list of prices for which the signal is buy] , Sell[ A list of prices for which the signal is sell],
+        # create table in connection database with convention SignalName with columns CreationTime , Buy[ A list of prices for which the signal is buy] , Sell[ A list of prices for which the signal is sell],
         # StopLoss[ A list of prices for which the signal is StopLoss] , TakeProfit[ A list of prices for which the signal is takeprofit]
         query = """
         create table if not exists SignalName(

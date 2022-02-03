@@ -8,7 +8,7 @@ from fourgp.utils.exchange_market_data import exchange_data
 from fourgp.utils.make_data import MakeData
 from fourgp.utils.update_data import (database_type, dict_update_data,
                                       insert_new_data, run_updater)
-from fourgp.utils.utilities import dict_pandas, get_specific_coloumn
+from fourgp.utils.utilities import dict_pandas, get_specific_column
 from fourgp.utils.market_depth import DepthData
 
 # from main import database_file_path
@@ -24,14 +24,14 @@ class Data(exchange_data, MakeData, Database_sqlite3, Database_generic, Indicato
         for analysis , and Database_sqlite3 for storing data in a database or fetching data from a database.
 
         Args:
-            database (strorsqlite3.Connection, optional): The path to database file or connection object. Defaults to None.
+            database (str_or_sqlite3.Connection, optional): The path to database file or connection object. Defaults to None.
             config (dict, optional): Dictionary values of configurations. Defaults to None.
             Exchange (str, optional): Name of the exchange. Defaults to None.
             MarketPair (str, optional): Market pair used for getting or analysis of data. Defaults to None.
             timeframes (list, optional): The timeframe for which the data to be fetched. Defaults to None.
             limit (list, optional): The limit for how much data to be fetched. Defaults to None.
             data ([type], optional): Optional parameter for convertion of list data to pandas. Defaults to None.
-            DataType (str, optional): Which type of data to be fetched (klines , indicators , ticks , depth_snapshot , logging , results(any).). Defaults to None.
+            DataType (str, optional): Which type of data to be fetched (Kline , indicators , ticks , depth_snapshot , logging , results(any).). Defaults to None.
             ForceGet (bool, optional): Force the process of fetching the specified data from exchange rather from database. Defaults to False.
         """
         self.database = database
@@ -96,11 +96,11 @@ class Data(exchange_data, MakeData, Database_sqlite3, Database_generic, Indicato
             self.make_indicator()
             # add timestamp of make_data to indicators
             # get the timestamp from make_data and return it
-            coloumn_name = "Timestamp"
-            coloumn_data = get_specific_coloumn(
-                data=self.data, coloumn_name=coloumn_name)
+            column_name = "Timestamp"
+            column_data = get_specific_coloumn(
+                data=self.data, column_name=coloumn_name)
             indicator_data = dict_pandas(
-                data_dictionary=self.indicators, coloumn_data=coloumn_data)
+                data_dictionary=self.indicators, column_data=coloumn_data)
             return self.clip_data(indicator_data, limit_copy)
 
     def clip_data(self, data, limit) -> dict:

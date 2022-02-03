@@ -85,7 +85,7 @@ class exchange_data:
         connecting to exchange and fetching the specified market pair data
 
         Returns:
-            dict: [klines data from exchange for a given market pair ,specified timeframe ,specified range]
+            dict: [Kline data from exchange for a given market pair ,specified timeframe ,specified range]
         """
         # load the marketa
         # self.exchange.load_markets()
