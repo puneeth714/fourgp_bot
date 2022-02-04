@@ -10,7 +10,7 @@ from fourgp.utils.data import Data
 # main function to run the program collecting data and running analysis on it and using analysis to make signals.
 
 
-def main(MarketPair: str):
+def main(MarketPair: str,time_frame:str=None,indicator=None,value_only=None,klines:int=None):
     # whole start
     start_time0 = time.time()
     # Load configuration
@@ -31,6 +31,12 @@ def main(MarketPair: str):
     # TODO : Kline naming convention is not correct and all other table names are not correct
     data.DataType = "Kline"
     Klines = data.get_data()
+    if klines is not None:
+        Klines = dict(Klines[time_frame][-klines:])
+        return Klines
+    if value_only is not None:
+        return float(Klines["1m"].tail(1)["Close"])
+    
 
     # # Atr(change of value per unit time) calculate and create table.
     # atr=AtrChange(config)
@@ -47,6 +53,12 @@ def main(MarketPair: str):
     indicators = data.get_data()
     indicators = data.dict_Convert(data=indicators)
     pprint(indicators)
+    if indicator is not None:
+        send={}
+        for indicator_name in indicators[time_frame]:
+            if indicator in indicator_name:
+                send[indicator_name]=list(indicators[time_frame][indicator_name].tail(1).values)
+        return send
 
 
     # Get support and resistance
@@ -84,7 +96,7 @@ def main(MarketPair: str):
     # Trend calculate
     # indicator = indicators[config["primary_timeframe"]]
     trends = Trend(Klines, indicators, sr, config)
-    print(trends.trend_find())
+    trend=trends.trend_find()
 
     # time end
     end_time = time.time()
@@ -92,4 +104,5 @@ def main(MarketPair: str):
     # print("--- %s seconds ---" % (end_time - start_time))
     print("--- %s whole seconds ---" % (end_time - start_time0))
     print("\n\n\n")
-main("ETHUSDT")
+    return trend
+# print(main("ETHUSDT"))

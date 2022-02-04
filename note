@@ -384,3 +384,14 @@ Trend weight distribution:
 Feature     4.Work on the algorithm for strategy.
             5.Work on the TradeMover functionality.
             5.Work on the trade executions.
+
+
+Azure todo:
+      1. Write documentation to use the bot. *
+      2. Write its functionality.            *
+      3. Demo video.
+      4. Upload to github.
+      5. Create azure vm.
+      6. Deploy the bot.
+      7. Deploy the bot to azure.
+      8. Update readme with used azure modules.

@@ -11,3 +11,5 @@ matplotlib
 mpl_finance
 python-dotenv
 tabulate
+hypercorn
+fastapi
