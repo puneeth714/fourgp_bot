@@ -19,6 +19,8 @@ Api docs : [Visual api requests](http://127.0.0.1:8000/docs/)
 
 ## Installation
 
+### prerequisites
+***-              Assuming you have already installed the gcc compiler,cmake tools,python3.6,and pip3.***
 * clone the repository [fourgp-bot](https://github.com/puneeth714/fourgp_bot.git)
 * The required dependencies are listed in the [requirements.txt](requirements.txt) file.
 * install the dependencies by running `bash install.sh`.
