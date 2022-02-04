@@ -3,9 +3,10 @@
 A complex market making bot. Which works with both candles and ticks to create signals for cryptocurrency trading.
 But in this project we are able to send signals through api.(Signal's supported are, cryptocurrency prices,Klines,indicators,trend of that coin etc.,)
 
-Api docs : [Visual api requests](http://127.0.0.1:8000/docs/)
-      and  [Api usage documentation](http://127.0.0.1:8000/redoc/)
-### Demo video is at [Demo video](https://puneeth714.github.io/fourgp_bot/)
+#### project url : [fourgp](https://puneeth714.github.io/fourgp_bot/)
+Api docs : [Visual api requests](http://20.204.67.186:8000/docs/)
+      and  [Api usage documentation](http://20.204.67.186:8000/redoc/)
+### Demo video link is here :
 # Azure/Microsoft Azure tools used:
 
 - [vscode](https://code.visualstudio.com/)
@@ -87,8 +88,7 @@ Api docs : [Visual api requests](http://127.0.0.1:8000/docs/)
     {"aroon_5m_1": [["50.0",
     " 42.85714285714286",
     " -7.142857142857143"]]}
-  * To get available indicators
-    ``curl -X 'GET'  'http://127.0.0.1:8000/indicators/'  -H 'accept: application/json' ``
+  * To get available indicators20.204.67.186rl -X 'GET'  'http://127.0.0.1:8000/indicators/'  -H 'accept: application/json' ``
     output:
     ``{"ema": [9,25,50,100],"rsi": [6,14],"atr": [14],"macd": [1],"aroon": [1]}``
 
@@ -99,11 +99,11 @@ Api docs : [Visual api requests](http://127.0.0.1:8000/docs/)
     ![api response](data/images/api4.png)
     ![api response](data/images/api5.png)
 
-  ***TO try out the api check this endpoint in the browser:  [docs](http://127.0.0.1:8000/docs/)***
+  ***TO try out the api check this endpoint in the browser:  [docs](http://20.204.67.186:8000/docs/)***
 
 ## To get api documentation
 
-    check[api docs](http://127.0.0.1:8000/redoc/)
+    check[api docs](http://20.204.67.186:8000/redoc/)
 All this works when the api server is running in your local machine.
 
 # Bot Functionality

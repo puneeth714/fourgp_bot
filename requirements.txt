@@ -1,3 +1,5 @@
+numpy
+scipy
 TA-Lib
 ccxt
 pandas_ta
