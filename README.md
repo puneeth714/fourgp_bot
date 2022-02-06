@@ -2,6 +2,9 @@
 
 A complex market making bot. Which works with both candles and ticks to create signals for cryptocurrency trading.
 
+Api docs : [Visual api requests](http://20.204.67.186:8000/docs/) and [Api usage documentation](http://20.204.67.186:8000/redoc/)
+
+***Please check out this link [Readme](https://github.com/puneeth714/fourgp_bot/blob/azure/README.md) for more details***
 ## Installation
 
 - clone the repository [fourgp-bot](https://github.com/puneeth714/fourgp_bot.git)
