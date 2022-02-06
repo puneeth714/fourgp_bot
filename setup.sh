@@ -1,4 +1,4 @@
-required_packages=(gcc g++ make python3.8 python3.8-dev libblas-dev liblapack-dev pybind11 rust setuptools_rust openssl libssl-dev libjpeg  )
+required_packages=(gcc g++ make python3.8 python3.8-pip python3.8-dev libblas-dev liblapack-dev pybind11 rust setuptools_rust openssl libssl-dev libjpeg  )
 pip_packages=(numpy scipy)
 
 # Function to check if installation succeeded
@@ -21,6 +21,13 @@ post_operations()
 echo "Installing required packages"
 sudo apt-get install ${required_packages[@]}
 post_operations "Required packages"
+
+
+# Create python3.8 virtual environment
+echo "Creating python3.8 virtual environment in python3.8-env folder"
+python3.8 -m venv python3.8-env
+source python3.8-env/bin/activate
+echo "Virtual environment created.."
 
 # Install python libraries
 echo "Installing required python libraries..."
@@ -84,6 +91,11 @@ if [ -z "$(which ta-lib-config)" ]; then
     
     cd ..
     rm -rf $extract_dir # Remove build directory
+
+    # Delete all variables
+    unset source
+    unset source_file
+    unset extract_dir
 else
     echo "ta-lib is already installed. Continuing with installation"
 fi
