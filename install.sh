@@ -1,3 +1,5 @@
+required_packages={gcc g++ make python3.8 python3.8-dev libblas-dev liblapack-dev pybind11 rust setuptools_rust openssl libssl-dev libjpeg  }
+pip_packages={numpy scipy}
 
 # Function to check if installation succeeded
 post_operations()
@@ -14,6 +16,19 @@ post_operations()
         fi
     fi
 }
+
+# Install required packages
+echo "Installing required packages"
+sudo apt-get install ${required_packages[@]}
+post_operations "Required packages"
+
+# Install python libraries
+echo "Installing required python libraries..."
+for package in $pip_packages; do
+    echo "Installing $package"
+    pip3 install $package
+    post_operations $package
+done
 
 # install cython
 if [[ -z "$(pip show cython)" ]]; then  # If cython is not installed
