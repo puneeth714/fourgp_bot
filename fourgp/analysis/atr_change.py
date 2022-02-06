@@ -18,7 +18,7 @@ class AtrChange(Data):
 
     def get_configs(self) -> list:
         market_pair = self.config['atr_change_markets']
-        timeframe = self.config['time_frame']
+        timeframe = self.config['timeframe']
         check_back = self.config['atr_change_distance']
         base_coin = self.config['use_this_base_currency']
         self.connection_exchange = self.config["Exchange"]
@@ -134,13 +134,13 @@ class AtrChange(Data):
             self.connection_exchange = ccxt.binance()
 
     def get_coins(self, base_coin: list) -> list:
-        vals = self.connection_exchange.fetch_tickers()
-        # get all values of symbol key in vals dictionary
-        if type(vals) != dict:
+        values = self.connection_exchange.fetch_tickers()
+        # get all values of symbol key in values dictionary
+        if type(values) != dict:
             print("Error Requesting Tickers")
         markets = []
         for base in base_coin:
-            for key in vals:
+            for key in values:
                 if "/"+base in key:
                     markets.append(key)
         return markets

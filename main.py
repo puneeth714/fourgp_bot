@@ -23,11 +23,11 @@ def main(MarketPair: str):
     # create tables if not exist
     # TODO : use only one database connection for all the works.
     tables_create = CreateTables(
-        database=database_file_path, MarketPair=MarketPair, timeframes=config['time_frame'])
+        database=database_file_path, MarketPair=MarketPair, timeframes=config['timeframe'])
     tables_create.make_tables()
     # Load exchange market data in pandas format
     data = Data(database=database_file_path, config=config, Exchange=config["Exchange"],
-                MarketPair=MarketPair, timeframes=config["time_frame"], limit=config["limit"])  # FIXME: [timeframes] is not working list not single value
+                MarketPair=MarketPair, timeframes=config["timeframe"], limit=config["limit"])  # FIXME: [timeframe] is not working list not single value
     # TODO : Kline naming convention is not correct and all other table names are not correct
     data.DataType = "Kline"
     Kline = data.get_data()

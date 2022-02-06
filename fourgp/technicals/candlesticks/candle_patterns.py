@@ -1,32 +1,32 @@
 from fourgp.technicals.candlesticks.all_patterns_talib import all_patterns, all_patterns_pandas_ta
 import talib as ta
 
-# CandlePatterns class will take dictionary of pandas dataframes and the pattern names to recognize and how much to trucate the dataframe
+# CandlePatterns class will take dictionary of pandas dataframes and the pattern names to recognize and how much to truncate the dataframe
 # . optionally __filter_data_latest__ can make dataframe truncate to latest  n rows. and get patterns will find patterns in the dataframe available
 # in talib or pandas ta(pandas_ta with some modifications).
 
 
 class CandlePatterns:
-    def __init__(self, df_dict: dict, patters: list, trucate: int) -> None:
+    def __init__(self, df_dict: dict, patters: list, truncate: int) -> None:
         """CandlePatterns constructor.
 
         Args:
             df_dict (dict): The dictionary of dataframes to be used for pattern recognition.
             patters (list): The list of patterns to be recognized.
-            trucate (int): To number of rows to be trucated from the dataframe from last i.e 
+            truncate (int): To number of rows to be truncated from the dataframe from last i.e 
             latest to be used for pattern recognition.
         """
         self.df_dict = df_dict.copy()
         # self.__filter_data_latest__()
         self.patterns = patters
-        self.trucate = trucate
+        self.truncate = truncate
 
     def __filter_data_latest__(self) -> None:
         """Filter dataframe to latest n rows.
         """
         # get only last 5 values of the dataframe in the given dictionary of dataframes
         for key in self.df_dict:
-            self.df_dict[key] = self.df_dict[key].iloc[-int(self.trucate):]
+            self.df_dict[key] = self.df_dict[key].iloc[-int(self.truncate):]
 
     def available_patterns(self) -> None:
         """Prints the available patterns in talib or pandas ta as mentioned in all_patterns_talib.py.

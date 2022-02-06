@@ -97,10 +97,10 @@ class Data(exchange_data, MakeData, Database_sqlite3, Database_generic, Indicato
             # add timestamp of make_data to indicators
             # get the timestamp from make_data and return it
             column_name = "Timestamp"
-            column_data = get_specific_coloumn(
-                data=self.data, column_name=coloumn_name)
+            column_data = get_specific_column(
+                data=self.data, column_name=column_name)
             indicator_data = dict_pandas(
-                data_dictionary=self.indicators, column_data=coloumn_data)
+                data_dictionary=self.indicators, column_data=column_data)
             return self.clip_data(indicator_data, limit_copy)
 
     def clip_data(self, data, limit) -> dict:

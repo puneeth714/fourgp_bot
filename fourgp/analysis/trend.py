@@ -23,20 +23,20 @@ class Trend:
         self.trend = {}
 
     def trends_calc(self) -> None:
-        time_frame = self.config["primary_timeframe"]
-        values: dict = self.__technicals__(time_frame)
+        timeframe = self.config["primary_timeframe"]
+        values: dict = self.__technicals__(timeframe)
         informatives = self.__technicals__(
             self.config["informative_timeframe"])
         ticker: float = self.__ticker_price__()
         trends = {}
-        if values["rsi_{}_6".format(time_frame)][0] < 30 and values[
-                "ema_{}_9".format(time_frame)][0] > values["ema_{}_9".format(time_frame)][1] and values["macd_{}_1".format(time_frame)][0][2] > values["macd_{}_1".format(time_frame)][1][2] or (values["macd_{}_1".format(time_frame)][0][2] > 0 and values["macd_{}_1".format(time_frame)][1][2] < 0):
+        if values["rsi_{}_6".format(timeframe)][0] < 30 and values[
+                "ema_{}_9".format(timeframe)][0] > values["ema_{}_9".format(timeframe)][1] and values["macd_{}_1".format(timeframe)][0][2] > values["macd_{}_1".format(timeframe)][1][2] or (values["macd_{}_1".format(timeframe)][0][2] > 0 and values["macd_{}_1".format(timeframe)][1][2] < 0):
             print("Trend is changing from down to up")
-        elif values["rsi_{}_6".format(time_frame)][1] < values["rsi_{}_6".format(time_frame)][0] and values["ema_{}_9".format(time_frame)][0] < values["ema_{}_9".format(time_frame)][1] and values["ema_{}_50".format(time_frame)][0] < values["ema_{}_9".format(time_frame)][0] and values["macd_{}_1".format(time_frame)][0][2] > values["macd_{}_1".format(time_frame)][1][2] and values["macd_{}_1".format(time_frame)][0][2] > 0:
+        elif values["rsi_{}_6".format(timeframe)][1] < values["rsi_{}_6".format(timeframe)][0] and values["ema_{}_9".format(timeframe)][0] < values["ema_{}_9".format(timeframe)][1] and values["ema_{}_50".format(timeframe)][0] < values["ema_{}_9".format(timeframe)][0] and values["macd_{}_1".format(timeframe)][0][2] > values["macd_{}_1".format(timeframe)][1][2] and values["macd_{}_1".format(timeframe)][0][2] > 0:
             print("Trend is Uptrend")
-        elif values["rsi_{}_6".format(time_frame)][0] > 70 and values["ema_{}_9".format(time_frame)][0] < values["ema_{}_9".format(time_frame)][1] and values["macd_{}_1".format(time_frame)][0][2] < values["macd_{}_1".format(time_frame)][1][2] or (values["macd_{}_1".format(time_frame)][0][2] < 0 and values["macd_{}_1".format(time_frame)][1][2] > 0):
+        elif values["rsi_{}_6".format(timeframe)][0] > 70 and values["ema_{}_9".format(timeframe)][0] < values["ema_{}_9".format(timeframe)][1] and values["macd_{}_1".format(timeframe)][0][2] < values["macd_{}_1".format(timeframe)][1][2] or (values["macd_{}_1".format(timeframe)][0][2] < 0 and values["macd_{}_1".format(timeframe)][1][2] > 0):
             print("Trend is changing from up to down")
-        elif values["rsi_{}_6".format(time_frame)][1] > values["rsi_{}_6".format(time_frame)][0] and values["ema_{}_9".format(time_frame)][0] < values["ema_{}_9".format(time_frame)][1] and values["ema_{}_50".format(time_frame)][0] > values["ema_{}_9".format(time_frame)][0] and values["macd_{}_1".format(time_frame)][0][2] < values["macd_{}_1".format(time_frame)][1][2] and values["macd_{}_1".format(time_frame)][0][2] < 0:
+        elif values["rsi_{}_6".format(timeframe)][1] > values["rsi_{}_6".format(timeframe)][0] and values["ema_{}_9".format(timeframe)][0] < values["ema_{}_9".format(timeframe)][1] and values["ema_{}_50".format(timeframe)][0] > values["ema_{}_9".format(timeframe)][0] and values["macd_{}_1".format(timeframe)][0][2] < values["macd_{}_1".format(timeframe)][1][2] and values["macd_{}_1".format(timeframe)][0][2] < 0:
             print("Trend is Downtrend")
         else:
             print("Trend is stable")
@@ -45,9 +45,9 @@ class Trend:
                       str(values[keys][1])+" -> "+str(values[keys][0]))
 
     def trend_make(self) -> float:
-        time_frame = self.config["primary_timeframe"]
-        candles = self.__get_candles__(time_frame, 2)
-        values: dict = self.__technicals__(time_frame, 2)
+        timeframe = self.config["primary_timeframe"]
+        candles = self.__get_candles__(timeframe, 2)
+        values: dict = self.__technicals__(timeframe, 2)
         informatives = self.__technicals__(
             self.config["informative_timeframe"])
         ticker: float = self.__ticker_price__()
@@ -59,16 +59,16 @@ class Trend:
                           candles["Close"].values[1]]
         candle = self.candle_check(previous_candle, present_candle)
         rsi_val = [values["rsi_{}_6".format(
-            time_frame)][0], values["rsi_{}_6".format(time_frame)][1]]
+            timeframe)][0], values["rsi_{}_6".format(timeframe)][1]]
         RSI = self.RSI_check(rsi_val)
         macd_val = [values["macd_{}_1".format(
-            time_frame)][0][2], values["macd_{}_1".format(time_frame)][1][2]]
+            timeframe)][0][2], values["macd_{}_1".format(timeframe)][1][2]]
         MACD = self.Macd_check(macd_val)
         aroon_val = [values["aroon_{}_1".format(
-            time_frame)][0], values["aroon_{}_1".format(time_frame)][1]]
+            timeframe)][0], values["aroon_{}_1".format(timeframe)][1]]
         Aroon = self.Aroon_check(aroon_val)
-        ema_val = [[values["ema_{}_9".format(time_frame)][0], values["ema_{}_9".format(time_frame)][1]], [
-            values["ema_{}_50".format(time_frame)][0], values["ema_{}_50".format(time_frame)][1]]]
+        ema_val = [[values["ema_{}_9".format(timeframe)][0], values["ema_{}_9".format(timeframe)][1]], [
+            values["ema_{}_50".format(timeframe)][0], values["ema_{}_50".format(timeframe)][1]]]
         Ema = self.Ema_check(ema_val=ema_val)
         support_resistance_val = self.sr
         candles_check = self.__get_candles__(5)
@@ -197,22 +197,22 @@ class Trend:
     def get_all_indicator_names(self) -> list:
         return list(self.indicators.keys())
 
-    def __technicals__(self, time_frame: str, count=-1) -> Dict[str, pd.DataFrame]:
+    def __technicals__(self, timeframe: str, count=-1) -> Dict[str, pd.DataFrame]:
         """Return a dictionary containing indicator as key (string) and its value as pandas DataFrame (using self.indicators DataFrame)
 
         Args:
-            time_frame ([str]): time as string (e.g. "1m", "5m", "1h", "1d")
+            timeframe ([str]): time as string (e.g. "1m", "5m", "1h", "1d")
             count (int, optional): number of rows to fetch for each indicator. Defaults to -1 (return all rows)
 
         Returns:
             Dict[str, pd.DataFrame]: key is indicator, value as pandas DataFrame
         """
         Indicators = {}
-        __indicators__ = self.indicators[time_frame] if count == -1 \
-            else self.indicators[time_frame].tail(count)
+        __indicators__ = self.indicators[timeframe] if count == -1 \
+            else self.indicators[timeframe].tail(count)
 
         for indicator in __indicators__:
-            if "_" + time_frame + "_" in indicator:
+            if "_" + timeframe + "_" in indicator:
                 Indicators[indicator] = __indicators__[indicator]
 
         return Indicators
@@ -229,7 +229,7 @@ class Trend:
 
         candles = self.__get_candles__(timeframe, -1)
         candles_informative = self.__get_candles__(informative_timeframe, -1)
-        values: dict = self.__technicals__(time_frame=timeframe)
+        values: dict = self.__technicals__(timeframe=timeframe)
         informatives = self.__technicals__(informative_timeframe)
         # if want latest value
         self.marketpair = self.config["market_pair"][0]
@@ -240,24 +240,24 @@ class Trend:
         close_values_informatives = candles_informative["Close"].values
         close_present = candles["Close"].values[0]
         # RSI
-        rsi_lenght = str(self.config["periods"]["rsi"][1])
-        rsi_present = float(values["rsi"+"_"+timeframe+"_"+rsi_lenght].tail(1))
-        rsi_informative_lenght = self.config["periods"]["rsi"][0]
+        rsi_length = str(self.config["periods"]["rsi"][1])
+        rsi_present = float(values["rsi"+"_"+timeframe+"_"+rsi_length].tail(1))
+        rsi_informative_length = self.config["periods"]["rsi"][0]
         rsi_informative = informatives["rsi" +
-                                       "_"+informative_timeframe+"_"+rsi_lenght]
+                                       "_"+informative_timeframe+"_"+rsi_length]
         RSI = self.rsi(rsi_present=rsi_present)
         RSI_informative = self.rsi_Price_Slope(
             rsi_informative=rsi_informative, close_informative=close_values_informatives)
         # EMA
-        ema_lenght = str(self.config["periods"]["ema"][1])
+        ema_length = str(self.config["periods"]["ema"][1])
         ema_short_present = float(
-            values["ema"+"_"+timeframe+"_"+ema_lenght].tail(1))
+            values["ema"+"_"+timeframe+"_"+ema_length].tail(1))
         ema_long_present = float(
-            informatives["ema"+"_"+informative_timeframe+"_"+ema_lenght].tail(1))
+            informatives["ema"+"_"+informative_timeframe+"_"+ema_length].tail(1))
         ema_short_previous = float(
-            values["ema"+"_"+timeframe+"_"+ema_lenght].tail(2).values[0])
+            values["ema"+"_"+timeframe+"_"+ema_length].tail(2).values[0])
         ema_long_previous = informatives["ema"+"_" +
-                                         informative_timeframe+"_"+ema_lenght].tail(2).values[0]
+                                         informative_timeframe+"_"+ema_length].tail(2).values[0]
         EMA_short = self.ema_Short(ema_short_present, close_present)
         EMA_long = self.ema_Long(ema_long_present, close_present)
         EMA_Short_Previous = self.ema_Short_Previous(
@@ -265,19 +265,19 @@ class Trend:
         EMA_Long_Previous = self.ema_Long_Previous(
             ema_long_previous, ema_long_present)
         # MACD
-        Macd_lenght = str(self.config["periods"]["macd"][0])
+        Macd_length = str(self.config["periods"]["macd"][0])
         Macd_present_histogram = float(
-            values["macd"+"_"+timeframe+"_"+Macd_lenght].tail(1).values[0][2])
+            values["macd"+"_"+timeframe+"_"+Macd_length].tail(1).values[0][2])
         MACD = self.macd(Macd_present_histogram, close_present)
         # Aroon up
-        aroon_up_lenght = str(self.config["periods"]["aroon"][0])
+        aroon_up_length = str(self.config["periods"]["aroon"][0])
         arron_up_present = float(
-            values["aroon"+"_"+timeframe+"_"+aroon_up_lenght].tail(1).values[0][1])
+            values["aroon"+"_"+timeframe+"_"+aroon_up_length].tail(1).values[0][1])
         AROON_UP = self.aroonUp(arron_up_present=arron_up_present)
         # Aroon down
-        aroon_down_lenght = str(self.config["periods"]["aroon"][0])
+        aroon_down_length = str(self.config["periods"]["aroon"][0])
         arron_down_present = float(
-            values["aroon"+"_"+timeframe+"_"+aroon_down_lenght].tail(1).values[0][0])
+            values["aroon"+"_"+timeframe+"_"+aroon_down_length].tail(1).values[0][0])
         AROON_DOWN = self.aroonDown(aroon_down_present=arron_down_present)
         # Support and Resistance
         SUPPORT_RESISTANCE = self.support_resistance(
@@ -286,7 +286,7 @@ class Trend:
         # Trend
         # for calculation of trend the upper bound and lower bound of multiplication of all parameters are used
         # Based on the upper bound value and lower bound value trend value is calculated which is in between 0 and 1(with 4 decimal places)
-        # i.e theorotically if take upper bound as 1 and lower bound as 0 then trend value will be between 0 and 1
+        # i.e theoretically if take upper bound as 1 and lower bound as 0 then trend value will be between 0 and 1
 
         # weight distribution of each parameter is given i note.
         TREND_MAX = None
@@ -327,8 +327,8 @@ class Trend:
 
     def macd(self, macd_histogram, current_price):
         # Implement the macd value
-        stregth = macd_histogram/current_price
-        return stregth
+        strength = macd_histogram/current_price
+        return strength
 
     def aroonUp(self, arron_up_present):
         # Based on aroon up value
@@ -377,6 +377,6 @@ class Trend:
         RSI_min = 70
         RSI_max = 30
         # EMA
-        # val= val*constant/(lenght,seconds)
+        # val= val*constant/(length,seconds)
         EMA_short_min = 0
         # MACD

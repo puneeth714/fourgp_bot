@@ -51,7 +51,7 @@ class exchange_data:
 
     def load_from_config(self):
         self.Exchange = self.config['Exchange']
-        self.timeframes = self.config['time_frame']
+        self.timeframes = self.config['timeframe']
         self.limit = self.config['limit']
 
     def __connect_exchange__(self) -> None:
@@ -92,11 +92,11 @@ class exchange_data:
         if self.Exchange.has['fetchOHLCV']:
             # fetch the data using the fetchOHLCV method
             data = {
-                time_frame: self.Exchange.fetch_ohlcv(
-                    self.MarketPair, time_frame, limit=int(
-                        self.limit[time_frame])
+                timeframe: self.Exchange.fetch_ohlcv(
+                    self.MarketPair, timeframe, limit=int(
+                        self.limit[timeframe])
                 )
-                for time_frame in self.timeframes
+                for timeframe in self.timeframes
             }
 
         else:
