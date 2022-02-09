@@ -10,11 +10,6 @@ Api docs : [Visual api requests](http://20.204.67.186:8000/docs/)
 
 ### Demo video link is here :
 
-https://user-images.githubusercontent.com/69947340/152581989-b6672762-ca6c-4844-8547-2d98e08daf36.mp4
-
-
-https://user-images.githubusercontent.com/69947340/152582012-0b115e15-4166-4a46-a5f7-1c81284419c5.mp4
-
 
 
 # Azure/Microsoft Azure tools used:
