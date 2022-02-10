@@ -1,32 +1,32 @@
 {
-    "cSpell.words": [
-        "ADAUSDT",
-        "aroon",
-        "BTCUSDT",
-        "ETHUSDT",
-        "macd",
-        "SHIBUSDT",
-        "SOLBTC",
-        "timeframe"
-    ],
-    "sqltools.connections": [
-        {
-            "previewLimit": 100,
-            "driver": "SQLite",
-            "name": "queries",
-            "group": "fourgp",
-            "database": "${workspaceFolder:fourgp_bot}/data/data.db"
-        },
-        {
-            "previewLimit": 100,
-            "driver": "SQLite",
-            "name": "test_data",
-            "group": "fourgp",
-            "database": "${workspaceFolder:fourgp_bot}/data/data_test.db"
-        }
-    ],
-    "livePreview.defaultPreviewPath": "/index.html",
-    "cSpell.enableFiletypes": [
-        "python"
-    ]
+  "cSpell.words": [
+    "ADAUSDT",
+    "aroon",
+    "BTCUSDT",
+    "ETHUSDT",
+    "fourgp",
+    "macd",
+    "SHIBUSDT",
+    "SOLBTC",
+    "technicals",
+    "timeframe"
+  ],
+  "sqltools.connections": [
+    {
+      "previewLimit": 100,
+      "driver": "SQLite",
+      "name": "queries",
+      "group": "fourgp",
+      "database": "${workspaceFolder:fourgp_bot}/data/data.db"
+    },
+    {
+      "previewLimit": 100,
+      "driver": "SQLite",
+      "name": "test_data",
+      "group": "fourgp",
+      "database": "${workspaceFolder:fourgp_bot}/data/data_test.db"
+    }
+  ],
+  "livePreview.defaultPreviewPath": "/index.html",
+  "cSpell.enableFiletypes": ["python"]
 }

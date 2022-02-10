@@ -25,7 +25,7 @@ class AtrChange(Data):
         return [market_pair, timeframe, check_back, base_coin]
 
     def check_coin(self, pair) -> str:
-        return any(re.search(base_coin+"$", pair) for base_coin in self.base_coin)
+        return any(re.search(f'{base_coin}$', pair) for base_coin in self.base_coin)
 
     def find_atr(self, Database=True) -> None:
         if self.market_pair == "all":
