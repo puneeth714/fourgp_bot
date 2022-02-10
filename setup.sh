@@ -1,5 +1,7 @@
-required_packages=(gcc g++ make python3.8 python3.8-pip python3.8-dev libblas-dev liblapack-dev pybind11 rust setuptools_rust openssl libssl-dev libjpeg  )
-pip_packages=(numpy matplotlib scikit-learn pandas scipy cython)
+#!/bin/bash
+
+required_packages=(gcc g++ make python3.8 python3.8-venv python3-pip python3-dev libblas-dev liblapack-dev pybind11-dev rustc  openssl libssl-dev libjpeg9  )
+pip_packages=(numpy matplotlib scikit-learn pandas scipy cython setuptools_rust)
 
 # Function to check if installation succeeded
 post_operations()
@@ -22,7 +24,8 @@ InstallPackage() {
     # TODO: Check distribution and install appropriate packages
     linux_distro=$(cat /etc/os-release | grep "^ID=" | cut -d '=' -f 2)
     if [[ $linux_distro == "ubuntu" ]]; then
-        sudo apt-get install $1
+        sudo apt-get update
+        sudo apt-get install  --no-install-recommends "$@"
     fi
 }
 
