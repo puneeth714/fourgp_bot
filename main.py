@@ -18,8 +18,9 @@ def main(MarketPair: str):
     config = Config(config_file)
     config = config.config
     # create database name
-    database_file_path = config['database_path']+"/"+config['database_name']
-    secondary_database_file_path = config['secondary_database_path']+"/"+config['secondary_database_name']
+    database_file_path = f'{config["database_path"]}/{config["database_name"]}'
+    secondary_database_file_path = f'{config["secondary_database_path"]}/{config["secondary_database_name"]}'
+
     # create tables if not exist
     # TODO : use only one database connection for all the works.
     tables_create = CreateTables(
@@ -41,7 +42,7 @@ def main(MarketPair: str):
     #  Zig zag
     zz=data.zig_zag_levels(data=Kline)
     pprint(zz)
-    
+
     # Get indicators
     data.DataType = "Indicators"
     indicators = data.get_data()
