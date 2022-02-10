@@ -1,4 +1,4 @@
-required_packages=(gcc g++ make python3.8 python3.8-pip python3.8-dev libblas-dev liblapack-dev pybind11 rust setuptools_rust openssl libssl-dev libjpeg  )
+required_packages=(gcc g++ make python3.8 python3.8-pip python3.8-venv python3.8-dev libblas-dev liblapack-dev pybind11-dev rust-all  openssl libssl-dev libjpeg9  )
 pip_packages=(numpy scipy)
 
 # Function to check if installation succeeded
@@ -31,6 +31,7 @@ echo "Virtual environment created.."
 
 # Install python libraries
 echo "Installing required python libraries..."
+pip3 install wheel
 for package in $pip_packages; do
     echo "Installing $package"
     pip3 install $package
