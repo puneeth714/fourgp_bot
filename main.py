@@ -85,7 +85,7 @@ def main(MarketPair: str):
     # Trend calculate
     # indicator = indicators[config["primary_timeframe"]]
     trends = Trend(Kline, indicators, sr, config)
-    print(trends.trend_find())
+    print(trends.trend_make())
 
     # time end
     end_time = time.time()

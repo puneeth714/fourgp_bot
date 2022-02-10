@@ -40,24 +40,30 @@ class AtrChange(Data):
             data_is = {}
             for time in self.timeframe_atr:
                 for distance in self.check_back:
-                    if Database != None:
+                    if Database is None:
+                        data_is = self.__no_database__(
+                            time=time, distance=distance, market=market)
+                    else:
                         self.DataType = "Kline"
                         self.MarketPair = market
                         self.timeframes = [time]
                         self.limit = {time: distance}
                         data = self.database_data()
                         if self.__check_status__(data=data):
-                            data_is[time+"_"+str(distance)
-                                    ] = data[list(data.keys())[0]]
+                            data_is[f'{time}_' + str(distance)] = data[list(data.keys())[0]]
                         else:
                             data_is = self.__no_database__(
                                 time=time, distance=distance, market=market)
-                    else:
-                        data_is = self.__no_database__(
-                            time=time, distance=distance, market=market)
-                    atr_values[time+"_"+str(distance)] = self.profit_calculate(
-                        self.get_present_price(data_is[time+"_"+str(distance)]), self.indicator(
-                            data_is[time+"_"+str(distance)], distance))
+                    atr_values[f'{time}_' + str(distance)] = self.profit_calculate(
+                        self.get_present_price(
+                            data_is[f'{time}_' + str(distance)]
+                        ),
+                        self.indicator(
+                            data_is[f'{time}_' + str(distance)], distance
+                        ),
+                    )
+
+
             self.atr_values[market] = atr_values
             atr_values = {}
 
@@ -71,7 +77,7 @@ class AtrChange(Data):
 
     def __no_database__(self, time, distance, market):
         self.data = {}
-        self.data[time+"_"+str(distance)] = self.get_values(
+        self.data[f'{time}_' + str(distance)] = self.get_values(
             market=market, timeframe=time, distance=distance)
         return self.list_to_pandas()
 
