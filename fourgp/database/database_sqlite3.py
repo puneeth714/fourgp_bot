@@ -50,7 +50,6 @@ class Database_sqlite3:
             # log table type is not found
             # rise table type error
             raise Exception("Table type is not found")
-            exit(1)
 
     def get_data_from_database(self, force_all=None):
         # get the data from the database containing DataType_market_pair_timeframe (some times no timeframe and some times no market_pair is not used in name)
@@ -158,7 +157,8 @@ class Database_sqlite3:
         # convert string to list
         string = string.replace("[", "")
         string = string.replace("]", "")
-        return string.split(",")
+        string=string.split(",")
+        return [float(i) for i in string]
 
     def dict_Convert(self, data: pd.DataFrame) -> dict:
         for timeframe in data:
