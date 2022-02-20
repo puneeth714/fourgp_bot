@@ -17,7 +17,7 @@
     "depth_data_limit" : 100,
     "primary_timeframe" : "5m",
     "informative_timeframe" : "4h",
-    "support_resistance" : {"create_type":"zig_zag","use_from_config":"True","sr":[]},
+    "support_resistance" : {"create_type":"zig_zag","use_from_config":"False","sr":[],"get_from_user":"False","size":4},
     "market_data_limit" : "1",
     "atr_change_percentage" : "0.5",
     "atr_change_markets" : ["BTCUSDT","ETHUSDT","SOLBTC","ADAUSDT","SHIBUSDT"], 

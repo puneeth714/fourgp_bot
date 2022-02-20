@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 import time
 import pandas as pd
 from pprint import pprint
@@ -41,7 +42,7 @@ def main(MarketPair: str):
 
     #  Zig zag
     zz=data.zig_zag_levels(data=Kline)
-    pprint(zz)
+    pprint(zz["5m"])
 
     # Get indicators
     data.DataType = "Indicators"
@@ -54,7 +55,8 @@ def main(MarketPair: str):
     if  config["support_resistance"]["use_from_config"] == "True":
         sr = config["support_resistance"]["sr"]
         print("Using values from configuration")
-    elif input("Do you want to use values in configuration :\nTrue/False :") == "True":
+    elif config["support_resistance"]["get_from_user"] == "True":
+        sr=input("Enter support and resistance values ( A list of values ): ")
         sr = config["support_resistance"]["sr"]
         print("Using values from input")
     else:
@@ -62,10 +64,13 @@ def main(MarketPair: str):
             Kline, "zig_zag", config=config["support_resistance"]["create_type"])
         # print(sr)
         # clean data
-        sr = support_resistance.filter_levels(sr)
-        sr = support_resistance.clean_levels(sr)
-        sr = support_resistance.get_support_resistance(sr_each=sr)
-    print(sr)
+        # sr = support_resistance.filter_levels(sr,size=4)
+        sr = support_resistance.clean_levels(sr)[config["informative_timeframe"]]
+        # sr = support_resistance.get_support_resistance(sr_each=sr)
+        # get nearest support and resistance levels
+        sr = support_resistance.get_nearest_levels(sr,data.tick_value()["close"],config["support_resistance"]["size"])
+    print(f"Support and resistance levels: {sr}")
+
 
     #  Depth of the market
     data.limit = config["depth_data_limit"]

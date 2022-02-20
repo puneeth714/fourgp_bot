@@ -1,6 +1,6 @@
 import numpy as np
 import pandas_ta as ta
-from fourgp.technicals.zig_zag import zig_zag_binary
+from fourgp.technicals.zig_zag import zig_zag_binary, zigzag
 
 
 class Indicators:
@@ -50,13 +50,12 @@ class Indicators:
             print(self.indicators[indicator])
             print("\n")
 
-    def zig_zag_levels(self,data=None):
+    def zig_zag_levels(self, data=None):
         if data is None:
             data = self.data
         return {
-            timeframe: zig_zag_binary(
-                data[timeframe], self.config
-            )
+            timeframe: zigzag(
+                data[timeframe], depth=10, deviation=0.1, backstep=1, pip_size=0.0001)
             for timeframe in data.keys()
         }
 

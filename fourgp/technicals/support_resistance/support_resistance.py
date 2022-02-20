@@ -202,5 +202,27 @@ def zig_zag(df: pd.DataFrame) -> dict:
 
 
 def filter_levels(sr, size):
-    # get the levels with most touches
+    # get the levels which are nearer to present level
     pass
+
+def get_nearest_levels(sr:list, present_value,n):
+    # get the levels which are nearer to present level that is nearest to the present level
+    
+    # sort the sr levels in ascending order
+    sr.sort()
+    # get the numbers which are nearest to the present value in sr
+    # that is by checking the difference between present value and each value in sr
+    # return the n nearest values
+
+    # find in between which values in sr the present value lies
+    values=[]
+    for i in range(len(sr)):
+        if present_value > sr[i]:
+            continue
+        else:
+            values.append(sr[i-2])
+            values.append(sr[i-1])
+            values.append(sr[i])
+            values.append(sr[i+1])
+            break
+    return values
