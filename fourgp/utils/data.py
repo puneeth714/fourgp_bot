@@ -101,6 +101,7 @@ class Data(exchange_data, MakeData, Database_sqlite3, Database_generic, Indicato
                 data=self.data, column_name=column_name)
             indicator_data = dict_pandas(
                 data_dictionary=self.indicators, column_data=column_data)
+            # FIXME #27 : Here the data in indicator_data is having data ,in which list is converted to string which is then written into database , which create 1N normalization problem.
             return self.clip_data(indicator_data, limit_copy)
 
     def clip_data(self, data, limit) -> dict:
