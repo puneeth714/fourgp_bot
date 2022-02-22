@@ -8,6 +8,7 @@ from fourgp.database.create_tables import CreateTables
 from fourgp.technicals.support_resistance import support_resistance
 from fourgp.utils.config import Config
 from fourgp.utils.data import Data
+from fourgp.strategies.Strategy import Strategy_wrapper
 # main function to run the program collecting data and running analysis on it and using analysis to make signals.
 
 
@@ -98,4 +99,6 @@ def main(MarketPair: str):
     # print("--- %s seconds ---" % (end_time - start_time))
     print("--- %s whole seconds ---" % (end_time - start_time0))
     print("\n\n\n")
+    # strategy wrapper gets all data to make signals
+    Strategy=Strategy_wrapper(config)
 main("ETHUSDT")
