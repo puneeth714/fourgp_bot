@@ -1,30 +1,89 @@
 {
-    "Exchange"      : "binance",
-    "MakerFee"      : 0.001,
-    "TakerFee"      : 0.001,
-    "market_pair"   : ["ETHUSDT"],
-    "timeframe"    : ["1m","3m","5m","4h","1d"],
-    "limit"         : {"1m":1000,"5m":1000,"3m":1000,"4h":1000,"1d":1000},
-    "periods"       : {"ema":[9,25,50,100],"rsi":[6,14],"atr":[14],"macd":[1],"aroon":[1]},
-    "order_type"    : ["limit"],
-    "database_type" : "sqlite3",
-    "database_path" : "data",
-    "database_name" : "data.db",
-    "secondary_database_type" : "json",
-    "secondary_database_path" : "data",
-    "secondary_database_name" : "data.json",
-    "type_of_trade" : "live",
-    "depth_data_limit" : 100,
-    "primary_timeframe" : "5m",
-    "informative_timeframe" : "4h",
-    "support_resistance" : {"create_type":"zig_zag","use_from_config":"False","sr":[],"get_from_user":"False","size":4},
-    "market_data_limit" : "1",
-    "atr_change_percentage" : "0.5",
-    "atr_change_markets" : ["BTCUSDT","ETHUSDT","SOLBTC","ADAUSDT","SHIBUSDT"], 
-    "use_this_base_currency" : ["USDT"],
-    "atr_change_distance":[2,5,10],
-    "volume_pair_list":"True",
-    "whitelist_pairs_static":[]
-    
-
+    "Exchange": "binance",
+    "MakerFee": 0.001,
+    "TakerFee": 0.001,
+    "market_pair": [
+        "ETHUSDT"
+    ],
+    "timeframe": [
+        "1m",
+        "3m",
+        "5m",
+        "4h",
+        "1d"
+    ],
+    "limit": {
+        "1m": 1000,
+        "5m": 1000,
+        "3m": 1000,
+        "4h": 1000,
+        "1d": 1000
+    },
+    "periods": {
+        "ema": [
+            9,
+            25,
+            50,
+            100
+        ],
+        "rsi": [
+            6,
+            14
+        ],
+        "atr": [
+            14
+        ],
+        "macd": [
+            1
+        ],
+        "aroon": [
+            1
+        ]
+    },
+    "order_type": [
+        "limit"
+    ],
+    "database_type": "sqlite3",
+    "database_path": "data",
+    "database_name": "data.db",
+    "secondary_database_type": "json",
+    "secondary_database_path": "data",
+    "secondary_database_name": "data.json",
+    "type_of_trade": "live",
+    "depth_data_limit": 100,
+    "primary_timeframe": "5m",
+    "informative_timeframe": "4h",
+    "support_resistance": {
+        "create_type": "zig_zag",
+        "use_from_config": "False",
+        "sr": [],
+        "get_from_user": "False",
+        "size": 4
+    },
+    "market_data_limit": "1",
+    "atr_change_percentage": "0.5",
+    "atr_change_markets": [
+        "BTCUSDT",
+        "ETHUSDT",
+        "SOLBTC",
+        "ADAUSDT",
+        "SHIBUSDT"
+    ],
+    "use_this_base_currency": [
+        "USDT"
+    ],
+    "atr_change_distance": [
+        2,
+        5,
+        10
+    ],
+    "volume_pair_list": "True",
+    "whitelist_pairs_static": [],
+    "strategy": {
+        "switch": {
+            "sr": 0.3,
+            "local_mm": 0.2,
+            "hard_mm": 0.5
+        }
+    }
 }
