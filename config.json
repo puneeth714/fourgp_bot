@@ -9,14 +9,14 @@
         "1m",
         "3m",
         "5m",
-        "4h",
+        "1h",
         "1d"
     ],
     "limit": {
         "1m": 1000,
         "5m": 1000,
         "3m": 1000,
-        "4h": 1000,
+        "1h": 1000,
         "1d": 1000
     },
     "periods": {
@@ -52,7 +52,8 @@
     "type_of_trade": "live",
     "depth_data_limit": 100,
     "primary_timeframe": "5m",
-    "informative_timeframe": "4h",
+    "informative_timeframe": "1h",
+    "fast_timeframe": "1m",
     "support_resistance": {
         "create_type": "zig_zag",
         "use_from_config": "False",
@@ -63,11 +64,7 @@
     "market_data_limit": "1",
     "atr_change_percentage": "0.5",
     "atr_change_markets": [
-        "BTCUSDT",
-        "ETHUSDT",
-        "SOLBTC",
-        "ADAUSDT",
-        "SHIBUSDT"
+        "ETHUSDT"
     ],
     "use_this_base_currency": [
         "USDT"
@@ -84,6 +81,14 @@
             "sr": 0.3,
             "local_mm": 0.2,
             "hard_mm": 0.5
+        },
+        "weight":{
+            "s_weight": 0.5,
+            "r_weight": 0.5,
+            "l_max_weight": 0.5,
+            "l_min_weight": 0.5,
+            "hard_up_weight": 0.5,
+            "hard_down_weight": 0.5
         }
     }
 }
