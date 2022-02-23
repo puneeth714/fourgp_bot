@@ -30,7 +30,7 @@ class Orders:
         # load the markets from the exchange
         self.markets = self.exchange.load_markets()
 
-    def balance(self):
+    def get_balance(self):
         # get all balance from the exchange
         try:
             self.balance = self.exchange.fetch_balance()
@@ -48,8 +48,8 @@ class Orders:
         # read the quote and base from the config file
         # FIXME : This is not the best way to do this. Works with only first one pair.
         try:
-            self.quote = self.config["market_pair"][0][:3]
-            self.base = self.config["market_pair"][0][3:]
+            self.base = self.config["market_pair"][0][:3]
+            self.quote = self.config["market_pair"][0][3:]
             # print(self.quote,self.base)
         except Exception as e:
             print(e)

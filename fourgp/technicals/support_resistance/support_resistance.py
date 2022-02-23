@@ -1,6 +1,5 @@
-from typing import Any
 import pandas as pd
-
+from loguru import logger
 from fourgp.technicals.support_resistance.pricelevels.cluster import ZigZagClusterLevels
 from fourgp.technicals.support_resistance.pricelevels.cluster import RawPriceClusterLevels
 from fourgp.technicals.support_resistance.pricelevels.scoring.touch_scorer import TouchScorer
@@ -220,9 +219,13 @@ def get_nearest_levels(sr:list, present_value,n):
         if present_value > sr[i]:
             continue
         else:
-            values.append(sr[i-2])
-            values.append(sr[i-1])
-            values.append(sr[i])
-            values.append(sr[i+1])
-            break
+            try:
+                values.append(sr[i-2])
+                values.append(sr[i-1])
+                values.append(sr[i])
+                values.append(sr[i+1])
+                break
+            except IndexError:
+                logger.warning("IndexError\nContinuing")
+                continue
     return values
