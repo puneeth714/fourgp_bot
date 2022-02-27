@@ -2,6 +2,7 @@
 import time
 import pandas as pd
 from pprint import pprint
+from loguru import logger
 from fourgp.analysis.atr_change import AtrChange
 from fourgp.analysis.trend import Trend
 from fourgp.database.create_tables import CreateTables
@@ -37,7 +38,7 @@ def main(MarketPair: str):
     Kline = data.get_data()
 
     # Atr(change of value per unit time) calculate and create table.
-    atr=AtrChange(config)
+    atr = AtrChange(config)
     atr.connect()
     atr.find_atr(Database=database_file_path)
     atr.create_report()
@@ -78,20 +79,22 @@ def main(MarketPair: str):
         sr_fast = support_resistance.get_nearest_levels(support_resistance.clean_levels(
             sr)[config["fast_timeframe"]], current_price, config["support_resistance"]["size"])
 
-
     print(f"Support and resistance levels: {sr_present}")
     print(f"Informative support and resistance levels: {sr_info}")
     print(f"Fast support and resistance levels: {sr_fast}")
-
 
     #  Depth of the market
     data.limit = config["depth_data_limit"]
     # data.DataType = "Depth"
     depth = data.get_market_depth()
-    depth = data.make_depth(depth_data=depth)
-    data.database_name = secondary_database_file_path
-    data.write_file_json(depth)
-    pprint(depth)
+    data.bids = depth["bids"]
+    data.asks = depth["asks"]
+
+    # depth = data.make_depth(depth_data=depth)
+    # data.database_name = secondary_database_file_path
+    # data.write_file_json(depth)
+    # pprint(depth)
+
     # # asks=depth_sort.get_total_asks()
     # # print(asks)
     # # bids=depth_sort.get_total_bids()
@@ -100,14 +103,41 @@ def main(MarketPair: str):
 
     # Trend calculate
     # indicator = indicators[config["primary_timeframe"]]
-    trends = Trend(Kline, indicators, sr, config)
-    print(trends.trend_make())
+    trends = Trend(Kline, indicators, sr_present, config)
+    trend_value = trends.trend_make()
+    logger.info(f"Trend value: {trend_value}")
+    # get touched_sr returns s or r , stores in touched_sr
+    trends.touch(touching=sr_info,prices=Kline[config["primary_timeframe"]])
 
     order = Orders(config)
     order.load()
     order.create_connection_with_exchange()
-    order.get_balance()
-    order.get_open_orders()
+    logger.debug(f"balance is {order.get_balance()}")
+    logger.debug(f"open orders are {order.get_open_orders()}")
+    if (order.get_open_orders() != []):
+        logger.warning("There are open orders in the exchange!!!")
+    # tmp
+    sr_present=support_resistance.tmp_make(sr_present)
+    sr_info=support_resistance.tmp_make(sr_info)
+    sr_fast=support_resistance.tmp_make(sr_fast)
+    Strategy = Strategy_wrapper(config, sr=sr_present, current_price=current_price, internal_sr=sr_info,
+                                atr_informative=float(indicators[config["primary_timeframe"]]["atr_{}_14".format(
+                                    config["primary_timeframe"])][-1:]),
+                                trend_value=trend_value, depth=depth, fast_sr=sr_fast,
+                                art_current=float(indicators[config["informative_timeframe"]]["atr_{}_{}".format(
+                                    config["informative_timeframe"], 14)][-1:]),
+                                balance=order.get_balance(), touched_sr=trends.touched_sr)
+    
+    
+    Strategy.get_switches()
+    Strategy.pre_check_values_legality()
+    orders = Strategy.make_orders()
+    logger.debug(orders)
+    # do post checks of the order
+    if not Strategy.post_check_values_legality(orders):
+        logger.critical("Order values are not legal")
+        exit(1)
+
     # time end
     end_time = time.time()
     print("\n\n\n")
@@ -115,15 +145,6 @@ def main(MarketPair: str):
     print("--- %s whole seconds ---" % (end_time - start_time0))
     print("\n\n\n")
     # strategy wrapper gets all data to make signals
-
-    """self, config: dict, sr: dict, current_price: float, internal_sr: dict,
-                 atr_informative: float, trend_value: float, depth: dict, fast_sr: dict, art_current: float"""
-    Strategy = Strategy_wrapper(config,sr=sr_present,current_price=current_price,
-        internal_sr=sr_info,atr_informative=0,trend_value=trend_value,depth=depth,
-        fast_sr=sr_fast,art_current=0,balance=order.get_balance())
-    Strategy.get_switches()
-    Strategy.pre_check_values_legality()
-    print(Strategy.create_sr_levels())
 
 
 main("ETHUSDT")

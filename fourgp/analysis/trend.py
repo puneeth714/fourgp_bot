@@ -1,5 +1,6 @@
 import time
 from typing import Dict
+from loguru import logger
 import pandas as pd
 from fourgp.utils.update_data import present_time
 
@@ -133,21 +134,13 @@ class Trend:
 
     def Macd_check(self, macd_val) -> float:  # sourcery skip: remove-redundant-if
         if macd_val[1] < macd_val[0]:
-            if macd_val[1] < 0:
-                return 0.2
-            return 0.1
+            return 0.2 if macd_val[1] < 0 else 0.1
         elif macd_val[1] < macd_val[0]:
-            if macd_val[1] > 0:
-                return 0.1
-            return 0.05
+            return 0.1 if macd_val[1] > 0 else 0.05
         elif macd_val[1] > macd_val[0]:
-            if macd_val[1] > 0:
-                return 0.00
-            return 0.03
+            return 0.00 if macd_val[1] > 0 else 0.03
         elif macd_val[1] == macd_val[0]:
-            if macd_val[1] < 0:
-                return 0.05
-            return 0.1
+            return 0.05 if macd_val[1] < 0 else 0.1
 
     def RSI_check(self, rsi_val) -> float:
         if rsi_val[0] < 30 or rsi_val[1] < 38:
@@ -193,10 +186,8 @@ class Trend:
         Returns:
             pd.DataFrame: candles (pd.DataFrame)
         """
-        __data__ = self.data if count == -1 \
+        return self.data if count == -1 \
             else self.data[timeframe].tail(count)
-
-        return __data__
 
     def get_all_indicator_names(self) -> list:
         return list(self.indicators.keys())
@@ -214,10 +205,28 @@ class Trend:
         Indicators = {}
         __indicators__ = self.indicators[timeframe] if count == -1 \
             else   self.indicators[timeframe].tail(count)
+        return __indicators__.reset_index(drop=True)
 
         # for indicator in __indicators__:
         #     if "_" + time_frame + "_" in indicator:
         #         Indicators[indicator] = __indicators__[indicator]
         # convert all the values in the indicators to float
 
-        return __indicators__.reset_index(drop=True)
+    def touch(self, touching, prices):
+        # TODO : This should be updated after the get_nearest_levels function is updated to use dict touching insted of list
+        resistance_count = 0
+        support_count = 0
+        for each_price in prices["High"][::-1]:
+            resistance_count += 1
+            if each_price > touching[0]:
+                self.touched_sr="r"
+                break
+        for each_price in prices["Low"][::-1]:
+            support_count += 1
+            if each_price < touching[-1]:
+                self.touched_sr="s"
+                break
+        logger.warning(f"{self.touched_sr} {resistance_count} {support_count}")
+        logger.warning("I know you are not expecting this is what you are getting")
+        return resistance_count, support_count
+

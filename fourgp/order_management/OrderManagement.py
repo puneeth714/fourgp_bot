@@ -59,8 +59,7 @@ class Orders:
         
     def get_open_orders(self):
         # get open orders from the exchange of the market pair
-        open_orders = self.exchange.fetch_open_orders(self.config["market_pair"][0])
         # print(self.open_orders)
-        return open_orders
+        return self.exchange.fetch_open_orders(self.config["market_pair"][0])
     
     
