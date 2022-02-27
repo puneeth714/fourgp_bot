@@ -100,9 +100,8 @@ def main(MarketPair: str):
 
     # Trend calculate
     # indicator = indicators[config["primary_timeframe"]]
-    trends = Trend(Kline, indicators, sr_present, config)
-    trend_value = trends.trend_find()
-    print(trend_value)
+    trends = Trend(Kline, indicators, sr, config)
+    print(trends.trend_make())
 
     order = Orders(config)
     order.load()
