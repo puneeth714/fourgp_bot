@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+from loguru import logger
 # import json file  config.json or path given as commandline argument and load it to a python dictionary
 
 # Config class will get the config file and return the values in python dictionary format.
@@ -25,7 +26,7 @@ class Config:
                 self.config_file = 'config.json'
             # if config.json file is not found rise an error
             except Exception as e:
-                print(e)
+                logger.error(e)
                 sys.exit(1)
 
         self.config = self.load_config()
@@ -39,8 +40,9 @@ class Config:
         # try to open config.json file
         with open(self.config_file, 'r') as f:
             # if config.json file is found load it to a python dictionary
+            logger.debug(f"Loading config file {self.config_file}")
             try:
                 return json.load(f)
             except Exception as e:
-                print(e)
+                logger.error(e)
                 sys.exit(1)
