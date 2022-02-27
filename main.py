@@ -13,7 +13,7 @@ from fourgp.strategies.Strategy import Strategy_wrapper
 from fourgp.order_management.OrderManagement import Orders
 # main function to run the program collecting data and running analysis on it and using analysis to make signals.
 
-
+@logger.catch
 def main(MarketPair: str):
     # whole start
     start_time0 = time.time()
@@ -45,7 +45,7 @@ def main(MarketPair: str):
 
     #  Zig zag
     zz = data.zig_zag_levels(data=Kline)
-    pprint(zz["5m"])
+    logger.info(f"Zig zag levels for {MarketPair} is {zz}")
 
     # Get indicators
     data.DataType = "Indicators"
@@ -130,7 +130,10 @@ def main(MarketPair: str):
     
     
     Strategy.get_switches()
-    Strategy.pre_check_values_legality()
+    if not Strategy.pre_check_values_legality():
+        logger.critical("Values are not legal")
+        logger.info("Exiting")
+        exit(1)
     orders = Strategy.make_orders()
     logger.debug(orders)
     # do post checks of the order
@@ -142,7 +145,7 @@ def main(MarketPair: str):
     end_time = time.time()
     print("\n\n\n")
     # print("--- %s seconds ---" % (end_time - start_time))
-    print("--- %s whole seconds ---" % (end_time - start_time0))
+    logger.info("--- %s whole seconds ---" % (end_time - start_time0))
     print("\n\n\n")
     # strategy wrapper gets all data to make signals
 
