@@ -1,6 +1,7 @@
 import re
 import ccxt
 import pandas_ta as ta
+from loguru import logger
 from fourgp.utils.make_data import MakeData
 from fourgp.utils.data import Data
 from tabulate import tabulate
@@ -21,7 +22,10 @@ class AtrChange(Data):
         timeframe = self.config['timeframe']
         check_back = self.config['atr_change_distance']
         base_coin = self.config['use_this_base_currency']
+        logger.info(f"Using {base_coin} as base currency")
+        logger.info(f"Using {market_pair} as market pair")
         self.connection_exchange = self.config["Exchange"]
+        logger.info(f"Using {self.connection_exchange}")
         return [market_pair, timeframe, check_back, base_coin]
 
     def check_coin(self, pair) -> str:
@@ -29,13 +33,16 @@ class AtrChange(Data):
 
     def find_atr(self, Database=True) -> None:
         if self.market_pair == "all":
+            logger.info("Using all markets")
             self.market_pair = self.get_coins(self.base_coin)
         if Database != None:
             self.database = Database
+            logger.debug(f"Using {self.database} as database as Database is not None")
             self.make_database()
         atr_values = {}
         for market in self.market_pair:
             if not self.check_coin(market):
+                logger.debug(f"{market} is not a {self.base_coin}")
                 continue
             data_is = {}
             for time in self.timeframe_atr:
@@ -50,18 +57,17 @@ class AtrChange(Data):
                         self.limit = {time: distance}
                         data = self.database_data()
                         if self.__check_status__(data=data):
-                            data_is[f'{time}_' + str(distance)] = data[list(data.keys())[0]]
+                            data_is[f'{time}_{str(distance)}'] = data[list(data.keys())[0]]
                         else:
                             data_is = self.__no_database__(
                                 time=time, distance=distance, market=market)
-                    atr_values[f'{time}_' + str(distance)] = self.profit_calculate(
-                        self.get_present_price(
-                            data_is[f'{time}_' + str(distance)]
-                        ),
+                    atr_values[f'{time}_{str(distance)}'] = self.profit_calculate(
+                        self.get_present_price(data_is[f'{time}_{str(distance)}']),
                         self.indicator(
-                            data_is[f'{time}_' + str(distance)], distance
+                            data_is[f'{time}_{str(distance)}'], distance
                         ),
                     )
+
 
 
             self.atr_values[market] = atr_values
@@ -77,7 +83,7 @@ class AtrChange(Data):
 
     def __no_database__(self, time, distance, market):
         self.data = {}
-        self.data[f'{time}_' + str(distance)] = self.get_values(
+        self.data[f'{time}_{str(distance)}'] = self.get_values(
             market=market, timeframe=time, distance=distance)
         return self.list_to_pandas()
 

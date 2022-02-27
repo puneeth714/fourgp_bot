@@ -229,12 +229,15 @@ def get_nearest_levels(sr: list, present_value, n):
                 values.append(sr[i-1])
                 values.append(sr[i])
                 values.append(sr[i+1])
-                break
+                return values
             except IndexError:
                 logger.warning("IndexError\nContinuing")
                 continue
+    # If else is not used, the values list will be empty so need to work with different values
+    logger.debug("values: {}".format(values))
+    logger.warning("values are empty")
     # FIXME : this function should return a dictionary of s and r keys
-    return values
+    return None
 
 def tmp_make(sr_values):
     # this method is for temporary use after the get_nearest_levels method is implemented properly
