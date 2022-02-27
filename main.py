@@ -19,6 +19,8 @@ from fourgp.utils.data import Data
 @logger.catch
 def main(MarketPair: str):
     # whole start
+    logger.remove()
+    logger.add(level="INFO", sink="out.log")
     start_time0 = time.time()
     # Load configuration
     config_file = 'config.json'
