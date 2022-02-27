@@ -104,8 +104,10 @@ def clean_levels(levels: dict) -> dict:
         if levels[level] is None:
             print("No levels found for {}".format(level))
             continue
-        for vals in range(len(levels[level])):
-            each_timeframe.append(int(value[vals]["price"]))
+        each_timeframe.extend(
+            int(value[vals]["price"]) for vals in range(len(levels[level]))
+        )
+
         each_timeframe.sort()
         new[level] = each_timeframe
         each_timeframe = []
@@ -204,9 +206,11 @@ def filter_levels(sr, size):
     # get the levels which are nearer to present level
     pass
 
-def get_nearest_levels(sr:list, present_value,n):
+
+def get_nearest_levels(sr: list, present_value, n):
+    # sourcery skip: merge-list-appends-into-extend, remove-unnecessary-else
     # get the levels which are nearer to present level that is nearest to the present level
-    
+
     # sort the sr levels in ascending order
     sr.sort()
     # get the numbers which are nearest to the present value in sr
@@ -214,12 +218,13 @@ def get_nearest_levels(sr:list, present_value,n):
     # return the n nearest values
 
     # find in between which values in sr the present value lies
-    values=[]
+    values = []
     for i in range(len(sr)):
         if present_value > sr[i]:
             continue
         else:
             try:
+                # TODO : should use n to get the nearest n values on each side,n is never used for that
                 values.append(sr[i-2])
                 values.append(sr[i-1])
                 values.append(sr[i])
@@ -228,4 +233,14 @@ def get_nearest_levels(sr:list, present_value,n):
             except IndexError:
                 logger.warning("IndexError\nContinuing")
                 continue
+    # FIXME : this function should return a dictionary of s and r keys
     return values
+
+def tmp_make(sr_values):
+    # this method is for temporary use after the get_nearest_levels method is implemented properly
+    # this can be removed
+    # this method is used to make the levels of support and resistance dict from sr_values list
+    if len(sr_values) == 0:
+        return {}
+    else:
+        return {"support": sr_values[0], "resistance": sr_values[3]}

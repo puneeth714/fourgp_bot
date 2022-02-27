@@ -82,13 +82,44 @@
             "local_mm": 0.2,
             "hard_mm": 0.5
         },
-        "weight":{
+        "weight": {
             "s_weight": 0.5,
             "r_weight": 0.5,
             "l_max_weight": 0.5,
             "l_min_weight": 0.5,
             "hard_up_weight": 0.5,
             "hard_down_weight": 0.5
+        },
+        "hard_mm_distance": {
+            "upper": 0.25,
+            "lower": 0.25
+        },
+        "advanced": {
+            "force_atr": "True",
+            "trend": {
+                "force": "False",
+                "value": 0.5
+            },
+            "force_sr": "False",
+            "sr": {
+                "sr_present": {
+                    "support": "True",
+                    "resistance": "True"
+                },
+                "sr_info": {
+                    "support": 2598,
+                    "resistance": 2896
+                },
+                "sr_fast": {
+                    "support": "True",
+                    "resistance": "True"
+                }
+            },
+            "sr_sr": [],
+            "force_trend": {
+                "force": "False",
+                "value": 0.5
+            }
         }
     }
 }
