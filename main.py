@@ -3,7 +3,7 @@ import time
 
 import pandas as pd
 from loguru import logger
-
+import sys
 from fourgp.analysis.atr_change import AtrChange
 from fourgp.analysis.trend import Trend
 from fourgp.database.create_tables import CreateTables
@@ -20,7 +20,7 @@ from fourgp.utils.data import Data
 def main(MarketPair: str):
     # whole start
     logger.remove()
-    logger.add(level="INFO", sink="out.log")
+    logger.add(level="INFO", sink=sys.stdout)
     start_time0 = time.time()
     # Load configuration
     config_file = 'config.json'
