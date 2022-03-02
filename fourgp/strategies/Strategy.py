@@ -48,8 +48,8 @@ class Strategy_wrapper(Orders):
                     # no key value in self.balance should be less than 30 dollars.
                     # convert base to quote balance
                     least = self.__least__()
-                    # self.balance["base"] = 100
-                    # self.balance["quote"] = 100
+                    self.balance["base"] = 100
+                    self.balance["quote"] = 100
                     base_to_quote_balance = self.balance["base"] * \
                         self.current_price * least
                     # TODO here only usd based quote is going to work fine -> need some enhancements to consider any coin pair.

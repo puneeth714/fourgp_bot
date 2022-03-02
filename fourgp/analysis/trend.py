@@ -157,6 +157,9 @@ class Trend:
             return 0.0
         elif rsi_val[1] > 40:
             return 0.05
+        else:
+            logger.info("RSI is not calculatable")
+            return 0.05
 
     def candle_check(self, previous_candle, present_candle) -> float:
         if previous_candle[0] > previous_candle[1] and present_candle[0] < present_candle[1]:
@@ -212,7 +215,7 @@ class Trend:
         #         Indicators[indicator] = __indicators__[indicator]
         # convert all the values in the indicators to float
 
-    def touch(self, touching, prices):
+    def touch(self, touching:list, prices:float):
         # TODO : This should be updated after the get_nearest_levels function is updated to use dict touching insted of list
         resistance_count = 0
         support_count = 0

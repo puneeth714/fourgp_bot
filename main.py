@@ -20,7 +20,7 @@ from fourgp.utils.data import Data
 def main(MarketPair: str):
     # whole start
     logger.remove()
-    logger.add(level="INFO", sink=sys.stdout)
+    logger.add(level="DEBUG", sink=sys.stdout)
     start_time0 = time.time()
     # Load configuration
     config_file = 'config.json'
@@ -62,6 +62,7 @@ def main(MarketPair: str):
 
     # Current price of the given market pair
     current_price = data.tick_value()["close"]
+    logger.info("current price is : {}".format(current_price))
 
     # Get support and resistance
     if config["support_resistance"]["use_from_config"] == "True":

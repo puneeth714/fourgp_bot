@@ -384,3 +384,24 @@ Trend weight distribution:
 Feature     4.Work on the algorithm for strategy.
             5.Work on the TradeMover functionality.
             5.Work on the trade executions.
+
+
+
+
+TODO :
+1.Add the data to database.
+      * rewrite the structure of indicator table. i.e making it follow first form of realization.
+      * Their is actually no use of storing the market depth data in database. But some parts of it are 
+            really usefull for future analysis and ML. So we can rather store it in a json file or csv file.
+            And remove the database table.
+      * It is of no use of storing the log in a database. Rather a cyclic or static log file or timestamp based
+            loggging file is more reliable.and remove logging table
+      * The signal table has currently time,buy,sell,stoploss,takeprofit need structural modifications
+            to store customm data whatever stated at the first time of running the bot with a particular 
+            configuration.
+                  Eg: if signal has x(number),y(string),z(int),t(timestamp)
+                  database creation algo should be given this as x,y,z,t keys and their values.
+                  Eg: Using pandas dataframe it is more easy to write into table and read from table.
+            * And the current state of the bot and signal is important for furture invertigations,so they can be written into anaother table with a timestamp as key and using this key to point to the signal table. and wise versa. current state inclue -> current price,current indicator values,trend,kline,
+            sr,balance.. but no need to store all, as they are logged into log file if particular level is set
+            or the time stamp will correspond to the time of the signal.
