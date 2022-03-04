@@ -39,18 +39,21 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Installed python3, pip, numpy matplotlib scikit-learn pandas scipy cython
+# Install python3, pip, numpy matplotlib scikit-learn pandas scipy cython
 sudo pacman -Sy
-sudo pacman -S --needed --nocomfirm python3 python-{pip,numpy,matplotlib,scikit-learn,pandas,scipy,cython} git
+sudo pacman -S --needed --noconfirm python3 python-{pip,numpy,matplotlib,scikit-learn,pandas,scipy} git
+sudo pip install cython
 
 if [[ $no_env -eq 0 ]]; then
-    # Create python3.8 virtual environment
-    echo "Creating python3.8 virtual environment in python3.8-env folder"
+    echo "Creating virtual environment in $env_dir"
     python3 -m venv $env_dir
-    source python3.8-env/bin/activate
-    echo "Virtual environment created.."
-    unset no_env env_dir
+    source $env_dir/bin/activate
+elif [[ $no_env -eq 1 ]]; then
+    echo "No virtual environment created"
 fi
+
+unset no_env env_dir
+
 
 # Install ta-lib
 # Clone ta-lib aur package
