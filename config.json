@@ -2,6 +2,7 @@
     "Exchange": "binance",
     "MakerFee": 0.001,
     "TakerFee": 0.001,
+    "FetchFee":"True",
     "market_pair": [
         "ETHUSDT"
     ],
@@ -59,7 +60,12 @@
         "use_from_config": "False",
         "sr": [],
         "get_from_user": "False",
-        "size": 4
+        "size": 4,
+        "const":{
+            "sr":0.05,
+            "local_mm":0.005,
+            "hard_mm":0.001
+        }
     },
     "market_data_limit": "1",
     "atr_change_percentage": "0.5",
@@ -119,6 +125,32 @@
             "force_trend": {
                 "force": "False",
                 "value": 0.5
+            }
+        }
+    },
+    "mover": {
+        "first_move": {
+            "usage":"This is uptile how much times/percentage of the price should be moved then after this level is used as base for that order",
+            "percent_times":"percentage",
+            "hard_mm":0.1,
+            "local_mm":0.2,
+            "sr":0.5,
+            "Remarks":["But i don't think this is used as the move is made rapidly dynamic every time the price moved in the desired direction "]
+        },
+        "Come_down_move":{
+            "usage":"This is checked every time the price moved in reverse direction of the expected trend that is if checking buy side and price moved down and moved a littele up this slight moment is checked with the preconfigured val or ml takes descision",
+            "hard_mm":{
+                "upper":0.02,
+                "lower":0.02
+            },
+            "local_mm":{
+                "upper":0.1,
+                "lower":0.1
+            },  
+            "sr":{
+                "upper":0.4,
+                "lower":0.4
+            
             }
         }
     }

@@ -62,4 +62,7 @@ class Orders:
         # print(self.open_orders)
         return self.exchange.fetch_open_orders(self.config["market_pair"][0])
     
+    def send_orders(self):
+        pass
+    
     

@@ -102,7 +102,7 @@ def clean_levels(levels: dict) -> dict:
     each_timeframe = []
     for level, value in levels.items():
         if levels[level] is None:
-            print("No levels found for {}".format(level))
+            print(f"No levels found for {level}")
             continue
         each_timeframe.extend(
             int(value[vals]["price"]) for vals in range(len(levels[level]))
@@ -207,10 +207,24 @@ def filter_levels(sr, size):
     pass
 
 
-def get_nearest_levels(sr: list, present_value, n):
+def get_nearest_levels(sr_all: dict,timeframe:list, present_value, n,timeframe_str:str):
     # sourcery skip: merge-list-appends-into-extend, remove-unnecessary-else
     # get the levels which are nearer to present level that is nearest to the present level
-
+    # get timeframe
+    time=timeframe_from_str(timeframe_str,timeframe_str)
+    if sr_all[timeframe_str].__len__() == 0:
+        # go to upper timeframe
+        # The function has parameter timeframe_num which denotes the number of the timeframe
+        try:
+            # timeframe_num+=1
+            return get_nearest_levels(sr_all, timeframe, present_value, timeframe[time+1])
+        except IndexError:
+            # implement process to use default values
+            logger.error(f"No levels found for {timeframe[timeframe_str]}")
+            logger.critical("Exiting")
+            exit()
+    else:
+        sr=sr_all[timeframe_str]
     # sort the sr levels in ascending order
     sr.sort()
     # get the numbers which are nearest to the present value in sr
@@ -220,24 +234,48 @@ def get_nearest_levels(sr: list, present_value, n):
     # find in between which values in sr the present value lies
     values = []
     for i in range(len(sr)):
+
         if present_value > sr[i]:
             continue
-        else:
-            try:
-                # TODO : should use n to get the nearest n values on each side,n is never used for that
+        # check if the present value lies between the values in sr
+        try:
+            if present_value < sr[i + 1]:
                 values.append(sr[i-2])
                 values.append(sr[i-1])
                 values.append(sr[i])
-                values.append(sr[i+1])
-                return values
-            except IndexError:
-                logger.warning("IndexError\nContinuing")
-                continue
-    # If else is not used, the values list will be empty so need to work with different values
-    logger.debug("values: {}".format(values))
-    logger.warning("values are empty")
-    # FIXME : this function should return a dictionary of s and r keys
-    return None
+                values.append(sr[i + 1])
+                break
+        except IndexError:
+            values.append(sr[i])
+            check_get_s_or_r(sr,present_value)
+            break
+    
+    return values
+    #     else:
+    #         try:
+    #             # TODO : should use n to get the nearest n values on each side,n is never used for that
+    #             values.append(sr[i-2])
+    #             values.append(sr[i-1])
+    #             values.append(sr[i])
+    #             values.append(sr[i+1])
+    #             return values
+    #         except IndexError:
+    #             logger.warning("IndexError\nContinuing")
+    #             continue
+    # # If else is not used, the values list will be empty so need to work with different values
+    # logger.debug(f"values: {values}")
+    # logger.warning("values are empty")
+    # # FIXME : this function should return a dictionary of s and r keys
+    # return None
+
+def check_get_s_or_r(sr,present_value):
+    # after getting the place where the error occured make use of it to return sr values based on it.
+    if upper_bound_sr(sr,present_value):
+        # add 0.05% to the present value
+        return present_value*1.005
+    elif lower_bound_sr(sr,present_value):
+        # subtract 0.05% from the present value
+        return present_value*0.995
 
 def tmp_make(sr_values):
     # this method is for temporary use after the get_nearest_levels method is implemented properly
@@ -247,3 +285,26 @@ def tmp_make(sr_values):
         return {}
     else:
         return {"support": sr_values[0], "resistance": sr_values[3]}
+
+def upper_bound_sr(sr_values:list,current_price:float):
+    # if the current price is the bigger price than any resistance level set resistance level to current price+0.05% of current price
+    return max(sr_values) < current_price
+def lower_bound_sr(sr_values:list,current_price:float):
+    # if the current price is the smaller price than any support level set support level to current price-0.05% of current price
+    return min(sr_values) > current_price
+
+def get_greater_sr(sr_values,current_price):
+    # This is only called or used when the current price is greater than any resistance level of sr_present,sr_info,sr_fast
+    # or when the current price is lesser than any support level of sr_present,sr_info,sr_fast
+    # sr_present,sr_info,sr_fast are the levels of support and resistance with first half of the values being the support levels
+    # and the second half being the resistance levels
+    # The actual thing is that as the lower level sr levels are no sufficient to get the levels we are using the upper level sr levels
+    # i.e if the primary_timeframe in config is 5m and informative_timeframe is 1h, then the upper levels of support and resistance are
+    # 1d,1w,1m,3m,6m,1y,2y,5y,10y etc.,
+    # sr_values contain a dictionary of levels of support and resistance with timeframes as keys
+    pass
+
+def timeframe_from_str(timefram:list,timeframe_str):
+    # this method is used to get the index of the timeframe in the list of timeframes
+    # this is used to get the index of the timeframe in the list of timeframes
+    return timefram.index(timeframe_str)

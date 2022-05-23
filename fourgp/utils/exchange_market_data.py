@@ -39,8 +39,7 @@ class exchange_data:
             self.get_from_user()
         else:
             print("May have unhandled exception or error or total perfect")
-            print("Check this vars: exchange = {}, coin = {}, timeframes = {}, limit = {}".format(
-                self.Exchange, self.MarketPair, self.timeframes, self.limit))
+            print(f"Check this vars: exchange = {self.Exchange}, coin = {self.MarketPair}, timeframes = {self.timeframes}, limit = {self.limit}")
 
     def get_from_user(self):
         print('No config file found')
@@ -91,12 +90,14 @@ class exchange_data:
         # self.exchange.load_markets()
         if self.Exchange.has['fetchOHLCV']:
             # fetch the data using the fetchOHLCV method
+            # If the limit =0 then the fetch should be skipped
+            
             data = {
                 timeframe: self.Exchange.fetch_ohlcv(
-                    self.MarketPair, timeframe, limit=int(
-                        self.limit[timeframe])
+                    self.MarketPair, timeframe, limit=int(self.limit[timeframe])
                 )
                 for timeframe in self.timeframes
+                if self.limit[timeframe] != 0
             }
 
         else:
@@ -119,3 +120,4 @@ class exchange_data:
 
     def __get_fee__(self, side: str):
         return self.Exchange.load_markets()[self.MarketPair][side]
+

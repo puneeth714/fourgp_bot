@@ -73,7 +73,7 @@ class Trend:
         present_val = ticker
         SR = self.SR_check(support_resistance_val,
                            candles_check, present_val=present_val)
-        return candle+RSI+MACD+Aroon+Ema+SR
+        return candle+RSI+MACD+Aroon+Ema+SR #FIXME : Handle None values 
 
     def SR_check(self, support_resistance_val, candles_check: pd.DataFrame, present_val) -> float:
         positives = {}

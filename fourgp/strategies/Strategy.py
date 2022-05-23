@@ -212,3 +212,18 @@ class Strategy_wrapper(Orders):
             logger.error("value should be greater than 0")
             exit(1)
         return least
+    
+    def check_values(self):
+        """check if the created signal are profitable if exchange fee is taken into consideration"""
+        # that is read the exchange fee from the config dict with key exchange_fee and use it to calculate the profit
+        # if the key is not present get the fee from the exchange and use it to calculate the profit
+        fee = self.config["exchange_fee"]
+        if fee is None:
+            fee = self.__get_fee__()
+        # check if the signal is profitable
+        # if yes then return True
+        # if no then return False
+        
+    def __get_fee__():
+        # get the fee from the exchange
+        pass

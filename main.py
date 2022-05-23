@@ -43,7 +43,9 @@ def main(MarketPair: str):
     # TODO : Kline naming convention is not correct and all other table names are not correct
     data.DataType = "Kline"
     Kline = data.get_data()
-
+    if config["FetchFee"] == "True":
+        config["MakerFee"]=    data.__get_fee__("maker")
+        config["TakerFee"]=    data.__get_fee__("taker")
     # # Atr(change of value per unit time) calculate and create table.
     # atr = AtrChange(config)
     # atr.connect()
@@ -80,21 +82,29 @@ def main(MarketPair: str):
         # get nearest support and resistance levels
 
     # Trend
-
-    sr_present = support_resistance.get_nearest_levels(support_resistance.clean_levels(
-        sr)[config["primary_timeframe"]], current_price, config["support_resistance"]["size"])
-    sr_info = support_resistance.get_nearest_levels(support_resistance.clean_levels(
-        sr)[config["informative_timeframe"]], current_price, config["support_resistance"]["size"])
-    sr_fast = support_resistance.get_nearest_levels(support_resistance.clean_levels(
-        sr)[config["fast_timeframe"]], current_price, config["support_resistance"]["size"])
+    sr_values = support_resistance.clean_levels(sr)
+    sr_present = support_resistance.get_nearest_levels(
+        sr_values, config["timeframe"], current_price, config["support_resistance"]["size"], config["primary_timeframe"])
+    sr_info = support_resistance.get_nearest_levels(
+        sr_values, config["timeframe"], current_price, config["support_resistance"]["size"], config["informative_timeframe"])
+    sr_fast = support_resistance.get_nearest_levels(
+        sr_values, config["timeframe"], current_price, config["support_resistance"]["size"], config["fast_timeframe"])
     # FIXME the resistance levels should not be None for the strategy to work properly
     # need to fix the support and resistance levels finding logic
     if sr_present is None:
-        sr_present = sr_info
+        if sr_info is not None:
+            sr_present = sr_info
+        else:
+            support_resistance.get_greater_sr(
+                sr_values=sr_values, current_price=current_price)
     if sr_fast is None:
-        if sr_present is None:
-            sr_fast = sr_info
-        sr_fast = sr_present
+        if sr_info is not None:
+            if sr_present is None:
+                sr_fast = sr_info
+            sr_fast = sr_present
+        else:
+            support_resistance.get_greater_sr(
+                sr_values=sr_values, current_price=current_price)
 
     logger.info(f"Support and resistance levels: {sr_present}")
     logger.info(f"Informative support and resistance levels: {sr_info}")

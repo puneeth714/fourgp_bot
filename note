@@ -384,3 +384,75 @@ Trend weight distribution:
 Feature     4.Work on the algorithm for strategy.
             5.Work on the TradeMover functionality.
             5.Work on the trade executions.
+
+
+#TODO:
+      1. getting use of atr values in strategy
+      2. Completion of hard real time method in strategy
+      3. Completion of strategy
+      4. Creating loging for strategy and docs strings also
+      5. Moveer fumction thinking
+      6. Bug fixes
+      7. docs and documentation
+
+
+#TODO:
+      Mover:
+            * Need to make it more customizable.
+            * Need to write data given by Mover to database.
+            * logging should be done.
+            * Have ability to send orders to exchange.
+            * Need to make it more customizable with configurations.
+      FUnctionality:
+            * get all the configuarations
+            * check if they are desirable values.
+            * if not then change them to default and log that message as warning.
+            * if a specific value which is highly proritized is not desirable raise an error.
+            * start:    
+                  1. get presnet price value
+                  2. check it with hard_mm if hard_mm upper is greater than present price or hard_mm lower is less than present price
+                  3. Move hard_mm upper to present price if present price is greater than hard_mm upper.
+                  4. Move hard_mm lower to present price if present price is less than hard_mm lower.
+                  5. 
+
+#FIXME:
+      In support and resistance levels getting:
+      parameters:
+            1. current price
+            2. sr values
+            3. timerame
+      functionality:
+            1. make sr in ascending order.
+            2. check if the current price is in the range of sr values.
+            3. if it is check at which level it is. and get upper n and lower n values from current price.
+            4. if n values are not present:
+                  * code looks like this:
+``` 
+for i in sr:
+      if i<current_price:
+            k=i
+            break
+const=0.005
+for i in range(n%2):
+      try:
+            values.append(sr[k-i])
+            const=const*2
+      except IndexError:
+            #As the values are not present at that place create your own values 
+            #and append them to values list.
+            values.append(current_price-current_price*const)
+const=0.005
+for i in range(n%2):
+      try:
+            values.append(sr[k+i])
+            const=const*2
+      except IndexError:
+            #As the values are not present at that place create your own values 
+            #and append them to values list.
+            values.append(current_price+current_price*const)
+
+```
+            2. Another way:
+                  * without doing sr values every time calculate the values for wide range of prices and store them and use them for future use.
+                  * for this you have to collect the whole previous data and itterate for through the whole data.with respective timeframe.
+                  * actually it is more ideal for sr values, which are more stable comparitively.
