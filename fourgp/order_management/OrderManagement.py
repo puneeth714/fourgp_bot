@@ -42,7 +42,7 @@ class Orders:
         self.quote_balance = self.balance[self.quote]["free"]
         self.base_balance = self.balance[self.base]["free"]
         # print(f"Quote value is = {self.quote_balance}\nBase value is  = {self.base_balance}\n")
-        return {"quote": self.quote_balance, "base": self.base_balance}
+        return {"base": self.base_balance, "quote": self.quote_balance}
 
     def __read_quote_base__(self):
         # read the quote and base from the config file

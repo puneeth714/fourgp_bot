@@ -105,7 +105,7 @@ class Trend:
             i -= 1
             if high > smallest_positive_value:
                 return 0.2
-
+        return 0.0
     def get_support_resistance(self) -> float:
         sr = []
         for i in self.sr:

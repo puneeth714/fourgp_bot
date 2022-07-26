@@ -1,5 +1,6 @@
 __pycache__/
 data.db
+data1.db
 .env
 out.log
 database_updates.py

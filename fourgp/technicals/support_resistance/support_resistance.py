@@ -207,11 +207,11 @@ def filter_levels(sr, size):
     pass
 
 
-def get_nearest_levels(sr_all: dict,timeframe:list, present_value, n,timeframe_str:str):
+def get_nearest_levels(sr_all: dict, timeframe: list, present_value: float, n: int, timeframe_str: str, const: float):
     # sourcery skip: merge-list-appends-into-extend, remove-unnecessary-else
     # get the levels which are nearer to present level that is nearest to the present level
     # get timeframe
-    time=timeframe_from_str(timeframe_str,timeframe_str)
+    time = timeframe_from_str(timeframe_str, timeframe_str)
     if sr_all[timeframe_str].__len__() == 0:
         # go to upper timeframe
         # The function has parameter timeframe_num which denotes the number of the timeframe
@@ -224,7 +224,7 @@ def get_nearest_levels(sr_all: dict,timeframe:list, present_value, n,timeframe_s
             logger.critical("Exiting")
             exit()
     else:
-        sr=sr_all[timeframe_str]
+        sr = sr_all[timeframe_str]
     # sort the sr levels in ascending order
     sr.sort()
     # get the numbers which are nearest to the present value in sr
@@ -233,23 +233,40 @@ def get_nearest_levels(sr_all: dict,timeframe:list, present_value, n,timeframe_s
 
     # find in between which values in sr the present value lies
     values = []
-    for i in range(len(sr)):
 
-        if present_value > sr[i]:
+    for i in sr:
+        if i > present_value:
+            k = i
+            for i in range(n // 2):
+                try:
+                    values.append(sr[k-i])
+                    const = const*2
+                except IndexError:
+                    # As the values are not present at that place create your own values
+                    # and append them to values list.
+                    values.append(present_value-present_value*const)
+                    const = const*2
+
+            for i in range(n // 2):
+                try:
+                    values.append(sr[k+i])
+                    const = const*2
+                except IndexError:
+                    # As the values are not present at that place create your own values
+                    # and append them to values list.
+                    values.append(present_value+present_value*const)
+                    const = const*2
+            return values
+        else:
             continue
-        # check if the present value lies between the values in sr
-        try:
-            if present_value < sr[i + 1]:
-                values.append(sr[i-2])
-                values.append(sr[i-1])
-                values.append(sr[i])
-                values.append(sr[i + 1])
-                break
-        except IndexError:
-            values.append(sr[i])
-            check_get_s_or_r(sr,present_value)
-            break
-    
+
+            # create values at a distance of value configured in the config file
+    for _ in range(n // 2):
+        values.append(present_value-present_value*const)
+        values.append(present_value+present_value*const)
+        const = const*2
+    values.sort()
+
     return values
     #     else:
     #         try:
@@ -268,14 +285,16 @@ def get_nearest_levels(sr_all: dict,timeframe:list, present_value, n,timeframe_s
     # # FIXME : this function should return a dictionary of s and r keys
     # return None
 
-def check_get_s_or_r(sr,present_value):
+
+def check_get_s_or_r(sr, present_value):
     # after getting the place where the error occured make use of it to return sr values based on it.
-    if upper_bound_sr(sr,present_value):
+    if upper_bound_sr(sr, present_value):
         # add 0.05% to the present value
         return present_value*1.005
-    elif lower_bound_sr(sr,present_value):
+    elif lower_bound_sr(sr, present_value):
         # subtract 0.05% from the present value
         return present_value*0.995
+
 
 def tmp_make(sr_values):
     # this method is for temporary use after the get_nearest_levels method is implemented properly
@@ -286,14 +305,18 @@ def tmp_make(sr_values):
     else:
         return {"support": sr_values[0], "resistance": sr_values[3]}
 
-def upper_bound_sr(sr_values:list,current_price:float):
-    # if the current price is the bigger price than any resistance level set resistance level to current price+0.05% of current price
-    return max(sr_values) < current_price
-def lower_bound_sr(sr_values:list,current_price:float):
-    # if the current price is the smaller price than any support level set support level to current price-0.05% of current price
-    return min(sr_values) > current_price
 
-def get_greater_sr(sr_values,current_price):
+def upper_bound_sr(sr_values: list, present_value: float):
+    # if the current price is the bigger price than any resistance level set resistance level to current price+0.05% of current price
+    return max(sr_values) < present_value
+
+
+def lower_bound_sr(sr_values: list, present_value: float):
+    # if the current price is the smaller price than any support level set support level to current price-0.05% of current price
+    return min(sr_values) > present_value
+
+
+def get_greater_sr(sr_values, present_value):
     # This is only called or used when the current price is greater than any resistance level of sr_present,sr_info,sr_fast
     # or when the current price is lesser than any support level of sr_present,sr_info,sr_fast
     # sr_present,sr_info,sr_fast are the levels of support and resistance with first half of the values being the support levels
@@ -304,7 +327,8 @@ def get_greater_sr(sr_values,current_price):
     # sr_values contain a dictionary of levels of support and resistance with timeframes as keys
     pass
 
-def timeframe_from_str(timefram:list,timeframe_str):
+
+def timeframe_from_str(timefram: list, timeframe_str):
     # this method is used to get the index of the timeframe in the list of timeframes
     # this is used to get the index of the timeframe in the list of timeframes
     return timefram.index(timeframe_str)
