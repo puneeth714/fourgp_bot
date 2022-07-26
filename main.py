@@ -20,9 +20,10 @@ from fourgp.utils.data import Data
 def main(MarketPair: str):
     # whole start
     logger.remove()
-    logger.add(level="INFO", sink=sys.stdout)
+    logger.add(level="DEBUG", sink="log/out.log",rotation="50 KB",format="{time} {level} {message}")
     start_time0 = time.time()
     # Load configuration
+    logger.debug("Loading configuration")
     config_file = 'config.json'
     config = Config(config_file)
     config = config.config
@@ -44,8 +45,8 @@ def main(MarketPair: str):
     data.DataType = "Kline"
     Kline = data.get_data()
     if config["FetchFee"] == "True":
-        config["MakerFee"]=    data.__get_fee__("maker")
-        config["TakerFee"]=    data.__get_fee__("taker")
+        logger.debug("Fetching fee from the exchange")
+        config["MakerFee"], config["TakerFee"] = data.__get_fee__()
     # # Atr(change of value per unit time) calculate and create table.
     # atr = AtrChange(config)
     # atr.connect()
@@ -84,27 +85,27 @@ def main(MarketPair: str):
     # Trend
     sr_values = support_resistance.clean_levels(sr)
     sr_present = support_resistance.get_nearest_levels(
-        sr_values, config["timeframe"], current_price, config["support_resistance"]["size"], config["primary_timeframe"])
+        sr_values, config["timeframe"], current_price, config["support_resistance"]["size"], config["primary_timeframe"], const=config["support_resistance"]["const"]["local_mm"])
     sr_info = support_resistance.get_nearest_levels(
-        sr_values, config["timeframe"], current_price, config["support_resistance"]["size"], config["informative_timeframe"])
+        sr_values, config["timeframe"], current_price, config["support_resistance"]["size"], config["informative_timeframe"], const=config["support_resistance"]["const"]["sr"])
     sr_fast = support_resistance.get_nearest_levels(
-        sr_values, config["timeframe"], current_price, config["support_resistance"]["size"], config["fast_timeframe"])
+        sr_values, config["timeframe"], current_price, config["support_resistance"]["size"], config["fast_timeframe"], const=config["support_resistance"]["const"]["hard_mm"])
     # FIXME the resistance levels should not be None for the strategy to work properly
     # need to fix the support and resistance levels finding logic
-    if sr_present is None:
-        if sr_info is not None:
-            sr_present = sr_info
-        else:
-            support_resistance.get_greater_sr(
-                sr_values=sr_values, current_price=current_price)
-    if sr_fast is None:
-        if sr_info is not None:
-            if sr_present is None:
-                sr_fast = sr_info
-            sr_fast = sr_present
-        else:
-            support_resistance.get_greater_sr(
-                sr_values=sr_values, current_price=current_price)
+    # if sr_present is None:
+    #     if sr_info is not None:
+    #         sr_present = sr_info
+    #     else:
+    #         support_resistance.get_greater_sr(
+    #             sr_values=sr_values, current_price=current_price)
+    # if sr_fast is None:
+    #     if sr_info is not None:
+    #         if sr_present is None:
+    #             sr_fast = sr_info
+    #         sr_fast = sr_present
+    #     else:
+    #         support_resistance.get_greater_sr(
+    #             sr_values=sr_values, current_price=current_price)
 
     logger.info(f"Support and resistance levels: {sr_present}")
     logger.info(f"Informative support and resistance levels: {sr_info}")
@@ -140,8 +141,9 @@ def main(MarketPair: str):
     order.load()
     order.create_connection_with_exchange()
     logger.debug(f"balance is {order.get_balance()}")
-    logger.debug(f"open orders are {order.get_open_orders()}")
-    if (order.get_open_orders() != []):
+    open_orders = order.get_open_orders()
+    logger.debug(f"open orders are {open_orders}")
+    if (open_orders != []):
         logger.warning("There are open orders in the exchange!!!")
     # tmp
     sr_present = support_resistance.tmp_make(sr_present)
@@ -159,9 +161,11 @@ def main(MarketPair: str):
     if not Strategy.pre_check_values_legality():
         logger.critical("Values are not legal")
         logger.info("Exiting")
-        exit(1)
+        # exit(1)
+
     orders = Strategy.make_orders()
-    logger.debug(orders)
+    #FIXME #37 : The created orders has mismatch between local_mm and sr : they should be reversed.
+    logger.debug(orders) #FIXME #36 : Order placment issue with decimal places in set price
     # do post checks of the order
     if not Strategy.post_check_values_legality(orders):
         logger.critical("Order values are not legal")
@@ -169,10 +173,9 @@ def main(MarketPair: str):
 
     # time end
     end_time = time.time()
-    print("\n\n\n")
     # print("--- %s seconds ---" % (end_time - start_time))
-    logger.info("--- %s whole seconds ---" % (end_time - start_time0))
-    print("\n\n\n")
+    logger.info(f"--- {end_time - start_time0} whole seconds ---")
+    logger.info("\n\n\n")
     # strategy wrapper gets all data to make signals
 
 

@@ -33,8 +33,8 @@ class Strategy_wrapper(Orders):
         # call create_sr_levels, create_local_minima_maxima_levels,create_hard_real_time_levels functions and store the values in a dictionary
         # and return the dictionary
         # TODO : just make use of those functions whose weights are not zero
-        self.signals["sr"] = self.create_sr_levels()
-        self.signals["local_mm"] = self.create_local_minima_maxima_levels()
+        self.signals["sr"] = self.create_local_minima_maxima_levels()
+        self.signals["local_mm"] = self.create_sr_levels()
         self.signals["hard_rt"] = self.create_hard_real_time_levels()
         return self.signals
 
@@ -224,6 +224,6 @@ class Strategy_wrapper(Orders):
         # if yes then return True
         # if no then return False
         
-    def __get_fee__():
+    def __get_fee__(self):
         # get the fee from the exchange
-        pass
+        return self.config["Maker_Fee"]

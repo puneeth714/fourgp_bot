@@ -118,6 +118,7 @@ class exchange_data:
     def tick_value(self):
         return self.Exchange.fetch_ticker(self.MarketPair)
 
-    def __get_fee__(self, side: str):
-        return self.Exchange.load_markets()[self.MarketPair][side]
+    def __get_fee__(self):
+        data=self.Exchange.fees["trading"]
+        return data["maker"],data["taker"]
 
